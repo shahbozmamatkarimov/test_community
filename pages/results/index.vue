@@ -80,7 +80,7 @@
                   </thead>
                   <tbody class="bg-gray-800">
                     <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">1</td>
+                      <td class="pl-2"><img class="w-6 h-10 object-cover" src="../../assets/images/first.png" alt=""></td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         <img
                           class="w-5"
@@ -161,7 +161,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="pl-4">2</td>
+                      <td class="pl-2"><img class="w-6 h-10 object-cover" src="../../assets/images/second.png" alt=""></td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         <img
                           class="w-5"
@@ -242,7 +242,7 @@
                       </td>
                     </tr>
                     <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">3</td>
+                      <td class="pl-1"><img class="w-8 h-10 object-cover" src="../../assets/images/third.png" alt=""></td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         <img
                           class="w-5"

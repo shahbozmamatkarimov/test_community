@@ -6,12 +6,12 @@
         <div
           class="flex justify-between text-lg text-gray-400 px-10 font-medium"
         >
-          <h1>Testlar</h1>
+          <h1>Guruhlar</h1>
           <button
             @click="store.modalCreate = true"
             class="bg-blue-600 py-1 px-3 rounded-md"
           >
-            <i class="bx bx-plus"></i> Test qo'shish
+            <i class="bx bx-plus"></i> Guruh qo'shish
           </button>
         </div>
         <div class="flex flex-col w-full px-10 mt-6">
@@ -33,19 +33,19 @@
                         scope="col"
                         class="px-3 py-3 text-left tracking-wider"
                       >
-                        Mavzusi
+                        Nomi
                       </th>
                       <th
                         scope="col"
                         class="px-2 text-center py-3 tracking-wider"
                       >
-                        Soni
+                        Tavfsif
                       </th>
                       <th
                         scope="col"
                         class="px-2 py-3 whitespace-nowrap text-center tracking-wider"
                       >
-                        O'tish bali
+                        O'quvchilar soni
                       </th>
                       <th
                         scope="col"
