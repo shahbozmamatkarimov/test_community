@@ -688,6 +688,25 @@
                 >Passwordni o'zgartirish</label
               >
             </div>
+            <div
+              class="relative z-0 w-full mb-5 group"
+            >
+              <label for="group" class="text-sm cursor-pointer"
+                >Guruhni tanlang</label
+              >
+              <a-select
+                v-model:value="value"
+                class="w-full mt-1"
+                id="group"
+                loading
+                show-search
+                placeholder="Guruhni tanlang"
+                :options="store.options"
+                :filter-option="filterOption"
+                @change="handleChange"
+                required
+              ></a-select>
+            </div>
             <div v-if="!store.edit" class="relative z-0 w-full mb-6 group">
               <input
                 v-model="createModal.password"
@@ -864,6 +883,7 @@ const store = reactive({
   editId: "",
   current_time: false,
   changePassword: false,
+  options: [],
 });
 
 const createModal = reactive({
@@ -871,16 +891,26 @@ const createModal = reactive({
   password: "",
   start_date: "",
   student_id: "",
+  group_id: "",
 });
 
 const closeModal = () => {
   createModal.username = "";
   createModal.password = "";
   createModal.start_date = "";
+  createModal.group_id = "";
   createModal.student_id = false;
   store.modalCreate = false;
   store.current_time = false;
   store.edit = false;
+};
+
+const handleChange = (value) => {
+  createModal.group_id = value;
+};
+
+const filterOption = (input, option) => {
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 const handleSubmit = () => {
@@ -891,7 +921,7 @@ const handleSubmit = () => {
     editStudent();
     return;
   }
-  fetch(baseURL+"/student/create", {
+  fetch(baseURL + "/student/create", {
     method: "POST",
     body: JSON.stringify(createModal),
     headers: {
@@ -918,7 +948,7 @@ const handleSubmit = () => {
 
 const getAllStudents = () => {
   showLoading("Ma'lumotlar yuklanmoqda...");
-  fetch(baseURL+"/student")
+  fetch(baseURL + "/student")
     .then((res) => res.json())
     .then((res) => {
       console.log(res);
@@ -932,8 +962,40 @@ const getAllStudents = () => {
     });
 };
 
+const getAllGroups = () => {
+  showLoading("Guruhlar yuklanmoqda...");
+  fetch(baseURL + "/groups", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      destroy();
+      store.allProducts = res;
+      store.options = []
+
+      for (let i = 0; i < res.length; i++){
+        let values  = {};
+        values.value = res[i].id;
+        values.label = res[i].name;
+        store.options.push(values);
+      }
+
+      document.querySelector(".ant-select-arrow").innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`
+      showSuccess("Guruhlar yuklandi");
+    })
+    .catch((err) => {
+      console.log(err);
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
 const getOneStudent = (id) => {
-  fetch(baseURL+`/student/${id}`, {
+  fetch(baseURL + `/student/${id}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -1056,6 +1118,7 @@ function getDays(startDate) {
 
 onMounted(() => {
   store.token = localStorage.getItem("token");
+  getAllGroups();
   getAllStudents();
 });
 </script>

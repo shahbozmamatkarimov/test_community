@@ -9,3 +9,7 @@ body, html {
 .ant-btn{
     background: blue;
 }
+
+.required {
+    color: red;
+}
