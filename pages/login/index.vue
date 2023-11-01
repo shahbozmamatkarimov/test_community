@@ -103,7 +103,7 @@ const form = reactive({
 });
 
 const handleSubmit = () => {
-  fetch("http://localhost:3001/api/admin/login", {
+  fetch("http://localhost:4000/api/admin/login", {
     method: "POST",
     body: JSON.stringify(form),
     headers: {
@@ -113,7 +113,6 @@ const handleSubmit = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
 
       if (res.mesage === "Tizimga muvaffaqiyatli kirildi") {
         localStorage.setItem("token", res.access_token);

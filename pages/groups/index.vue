@@ -1,27 +1,28 @@
 <template>
   <main>
     <section>
-      <div class="flex flex-col w-full min-h-screen bg-gray-900 py-10">
+      <div class="flex flex-col w-full bg-gray-900">
         <!-- Component Start -->
-        <div
-          class="flex justify-between text-lg text-gray-400 px-10 font-medium"
-        >
-          <h1>Guruhlar</h1>
+        <div class="flex justify-between text-lg font-medium">
+          <h1></h1>
           <button
-            @click="store.modalCreate = true"
-            class="bg-blue-600 py-1 px-3 rounded-md"
+            @click="
+              useSocket.modal.create = true;
+              useSocket.modal.edit = false;
+            "
+            class="h-[46px] -mt-2 px-[56px] rounded-lg text-sm leading-4 bg-[#027DFC] text-white"
           >
             <i class="bx bx-plus"></i> Guruh qo'shish
           </button>
         </div>
-        <div class="flex flex-col w-full px-10 mt-6">
+        <div class="flex flex-col w-full mt-5">
           <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div
               class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
             >
               <div class="shadow overflow-hidden sm:rounded-lg">
-                <table class="min-w-full text-sm text-gray-400">
-                  <thead class="bg-gray-800 text-xs uppercase font-medium">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-blue-600 text-xs uppercase font-medium">
                     <tr>
                       <th
                         scope="col"
@@ -37,221 +38,325 @@
                       </th>
                       <th
                         scope="col"
-                        class="px-2 text-center py-3 tracking-wider"
+                        class="px-2 text-start py-3 tracking-wider"
                       >
                         Tavfsif
                       </th>
                       <th
                         scope="col"
-                        class="px-2 py-3 whitespace-nowrap text-center tracking-wider"
+                        class="px-2 py-3 whitespace-nowrap tracking-wider"
                       >
                         O'quvchilar
                       </th>
                       <th scope="col" class="px-2 py-3"></th>
                     </tr>
                   </thead>
-                  <tbody class="bg-gray-800">
+                  <tbody
+                    v-if="store.is_Loading"
+                    class="bg-gray-800 pointer-events-none"
+                  >
                     <tr
-                      v-for="(i, index) in store.allProducts"
+                      v-for="i in 5"
                       :key="i.id"
-                      :class="i % 2 == 0 ? '' : 'bg-black'"
-                      class="bg-opacity-20"
+                      :class="i % 2 == 0 ? 'bg-gray-800' : 'bg-black'"
+                      class="bg-opacity-20 animate-pulse"
                     >
-                      <td class="px-4 py-4">{{ index + 1 }}</td>
+                      <td
+                        v-for="i in 5"
+                        :key="i"
+                        class="px-4 h-[62px] py-4"
+                      ></td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else class="bg-gray-800">
+                    <tr
+                      v-for="(i, index) in isLoading.store.allData"
+                      :key="i.id"
+                      :class="index % 2 == 0 ? 'bg-black' : 'bg-gray-800'"
+                      class="bg-opacity-20 hover:bg-[#027DFC1A]"
+                    >
+                      <td class="px-4 py-4">#{{ i.id }}</td>
                       <td
                         class="px-2 items-center align-start w-40 whitespace-nowrap"
                       >
                         <p class="font-medium truncate w-40">{{ i.name }}</p>
                       </td>
-                      <td class="px-2 py-4 whitespace-nowrap text-center">
+                      <td class="px-2 py-4 whitespace-nowrap">
                         {{ i.description }}
                       </td>
-                      <td class="px-2 py-4 whitespace-nowrap text-center">
+                      <td class="px-2 py-4 text-center whitespace-nowrap">
                         <button
-                          class="bx bx-show bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                          @click="$router.push('/groups/' + i.id)"
+                          class="bx bx-show bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
                         ></button>
                       </td>
-                      <td
-                        class="px-2 py-4 space-x-2 whitespace-nowrap text-center"
-                      >
+                      <td class="px-2 py-4 space-x-2 whitespace-nowrap">
                         <button
-                          @click="() => getOneTest(i.id)"
-                          class="bx bx-pencil bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                          @click="() => useSocket.getDataById(i.id)"
+                          class="bx bx-pencil bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
                         ></button>
                         <button
                           @click="
                             () => {
-                              store.modalDelete = true;
-                              store.deleteId = i.id;
+                              useSocket.modal.delete = true;
+                              useGroup.store.id = i.id;
                             }
                           "
-                          class="bx bx-trash bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                          class="bx bx-trash bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
                         ></button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
+                <div
+                  v-if="!store.is_Loading && !isLoading.store.allData?.length"
+                  class="flex flex-col space-y-5 items-center justify-center font-medium mt-0.5 h-80 bg-gray-800"
+                >
+                  <p>Guruh mavjud emas</p>
+                  <button
+                    @click="useSocket.modal.create = true"
+                    class="bg-blue-600 py-1 px-3 rounded-lg"
+                  >
+                    <i class="bx bx-plus"></i> Guruh qo'shish
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
         <!-- Component End  -->
       </div>
     </section>
 
-    <!-- Create and edit modal -->
-    <section
-      v-show="store.modalCreate"
-      class="flex justify-center bg-[#ffffff23] top-0 left-0 min-w-full items-center absolute z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 min-h-screen"
-    >
-      <div class="relative w-full max-w-sm max-h-full">
-        <form
-          @submit.prevent="handleSubmit"
-          class="relative bg-gray-900 rounded-lg shadow dark:bg-gray-700"
+    <nav class="flex justify-between py-5">
+      <div>
+        <button
+          v-show="useSocket?.store.pageData.total_pages > 10"
+          @click="() => pageNext('minusTen')"
+          :class="
+            store.paginationStep !== 0
+              ? ''
+              : 'pointer-events-none opacity-50 bg-blue-400'
+          "
+          class="flex items-center gap-2 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
         >
-          <div
-            class="flex items-start justify-between py-4 px-6 border-b rounded-t border-gray-600"
-          >
-            <h3 v-if="!store.edit" class="text-xl font-semibold text-white/50">
-              Test qo'shish
-            </h3>
-            <h3 v-else class="text-xl font-semibold text-white/50">
-              Test ma'lumotlarini o'zgartirish
-            </h3>
-            <button
-              @click="closeModal"
-              type="button"
-              class="text-white/50 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-            >
-              <i class="bx bx-x text-2xl"></i>
-            </button>
-          </div>
-          <!-- Modal body -->
-          <div class="p-6 space-y-6 text-white/50">
-            <div class="relative z-0 w-full mb-6 group">
-              <input
-                v-model="form.name"
-                type="text"
-                maxlength="100"
-                id="name"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="name"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Guruh nomi <span class="required">*</span></label
-              >
-            </div>
-            <div class="relative z-0 w-full mb-6 group">
-              <input
-                v-model="form.description"
-                type="text"
-                maxlength="100"
-                id="description"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="description"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Guruh tavfsifi</label
-              >
-            </div>
-          </div>
-          <!-- Modal footer -->
-          <div
-            class="flex items-center justify-end p-6 space-x-2 rounded-b dark:border-gray-600"
-          >
-            <button
-              @click="closeModal"
-              type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-1.5 text-center"
-            >
-              Bekor qilish
-            </button>
-            <button
-              v-if="!store.edit"
-              type="submit"
-              class="text-gray-500 bg-white hover:bg-gray-100 focus:outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-1.5 hover:text-gray-900 focus:z-10"
-            >
-              Yaratish
-            </button>
-            <button
-              v-else
-              type="submit"
-              class="text-gray-500 bg-white hover:bg-gray-100 focus:outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-1.5 hover:text-gray-900 focus:z-10"
-            >
-              O'zgartirish
-            </button>
-          </div>
-        </form>
+          <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
+          Previous
+        </button>
       </div>
-    </section>
+      <ul class="flex">
+        <li
+          :class="
+            useSocket?.store.pagination === 1
+              ? 'opacity-50 pointer-events-none'
+              : ''
+          "
+        >
+          <a
+            @click="() => pageNext('minus')"
+            class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 hover:border-blue-600 active:bg-blue-600 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
+            href="#"
+            aria-label="Previous"
+          >
+            <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
+          </a>
+        </li>
+        <li v-for="i in 10">
+          <a
+            @click="() => pageNext(i + store.paginationStep, 'next')"
+            v-if="
+              i + store.paginationStep <=
+              useSocket?.store?.pageData?.total_pages
+            "
+            :class="
+              i + store.paginationStep == useSocket.store.pagination
+                ? 'bg-blue-600 border-blue-600'
+                : 'border border-blue-gray-100 bg-transparent'
+            "
+            class="mx-1 flex h-9 w-9 items-center justify-center hover:bg-blue-500 rounded-full p-0 text-sm text-white shadow-md transition duration-500 ease-in-out"
+            href="#"
+          >
+            {{ i + store.paginationStep }}
+          </a>
+        </li>
+        <li
+          :class="
+            useSocket?.store.pagination ==
+            useSocket?.store?.pageData?.total_pages
+              ? 'opacity-50 pointer-events-none'
+              : ''
+          "
+        >
+          <a
+            @click="() => pageNext('plus')"
+            class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 hover:border-blue-600 active:bg-blue-600 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
+            href="#"
+            aria-label="Next"
+          >
+            <img src="@/assets/navbar/arrow.svg" alt="" />
+          </a>
+        </li>
+      </ul>
+      <div>
+        <button
+          v-show="useSocket?.store.pageData.total_pages > 10"
+          @click="() => pageNext('plusTen')"
+          :class="
+            store.paginationStep <
+            Math.floor(useSocket?.store.pageData.total_pages) - 10
+              ? ''
+              : 'pointer-events-none opacity-50 bg-blue-400'
+          "
+          class="flex items-center gap-2 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
+        >
+          Next
+          <img src="@/assets/navbar/arrow.svg" alt="" />
+        </button>
+      </div>
+    </nav>
 
-    <!-- Delete Modal -->
-    <section
-      v-show="store.modalDelete"
-      class="flex justify-center bg-[#ffffff23] top-0 left-0 min-w-full items-center absolute z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 min-h-screen"
+    <!------------------------- edit contact ------------------------------->
+    <el-dialog
+      v-if="isMount"
+      v-model="useSocket.modal.create"
+      style="border-radius: 16px"
+      class="max-w-fit rounded-2xl p-10 min-w-[500px] mx-auto h-[240]"
+      align-center
+      close-icon="false"
     >
-      <div class="relative w-full max-w-sm max-h-full">
-        <div class="relative bg-gray-900 rounded-lg shadow dark:bg-gray-700">
-          <div
-            class="flex items-start justify-between py-4 px-6 border-b rounded-t border-gray-600"
-          >
-            <h3 class="text-xl font-semibold text-white/50">O'chirish</h3>
-            <button
-              @click="() => (store.modalDelete = false)"
-              type="button"
-              class="text-white/50 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-            >
-              <i class="bx bx-x text-2xl"></i>
-            </button>
-          </div>
-          <!-- Modal body -->
-          <div class="p-6 space-y-6 text-white/50">
-            <h1 class="text-2xl text-center">
-              Siz ushbu o'quvchini o'chirishni xohlaysizmi?
-            </h1>
-          </div>
-          <!-- Modal footer -->
-          <div
-            class="flex items-center justify-center p-6 space-x-2 rounded-b dark:border-gray-600"
-          >
-            <button
-              @click="() => (store.modalDelete = false)"
-              type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-1.5 text-center"
-            >
-              Yo'q
-            </button>
-            <button
-              @click="() => deleteStudent()"
-              class="text-gray-500 bg-white hover:bg-red-500 focus:outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-1.5 hover:text-gray-900 focus:z-10"
-            >
-              Ha
-            </button>
+      <div class="flex justify-between items-center w-full">
+        <h1
+          v-if="!store.edit"
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <i class="bx bxs-group"></i>
+          Guruh qo'shish
+        </h1>
+        <h1
+          v-else="!store.edit"
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <i class="bx bxs-group"></i>
+          Guruhni tahrirlash
+        </h1>
+        <img
+          @click="useSocket.modal.create = false"
+          class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
+      </div>
+      <form
+        :class="
+          isLoading.isLoadingType('modal')
+            ? 'pointer-events-none animate-pulse'
+            : ''
+        "
+        @submit.prevent="handleSubmit"
+      >
+        <div class="mt-8">
+          <div>
+            <div class="space-y-3">
+              <div class="grid gap-3">
+                <input
+                  type="text"
+                  class="w-full"
+                  v-model="useGroup.group.name"
+                  placeholder="Guruh nomi"
+                  required
+                />
+                <input
+                  type="text"
+                  v-model="useGroup.group.description"
+                  class="w-full"
+                  placeholder="Guruh tavsifi"
+                />
+              </div>
+            </div>
           </div>
         </div>
+        <button
+          v-if="useSocket.modal.edit"
+          :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Guruhni tahrirlash
+          <Loading />
+        </button>
+        <button
+          v-else
+          :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Guruhni qo'shish
+          <Loading />
+        </button>
+      </form>
+    </el-dialog>
+
+    <!---------------- delete category ----------------------->
+    <el-dialog
+      v-if="isMount"
+      v-model="useSocket.modal.delete"
+      width="500"
+      style="border-radius: 16px"
+      class="max-w-fit rounded-2xl p-10 min-w-[420px] mx-auto"
+      align-center
+      close-icon="false"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h1
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <img
+            class="w-6 h-6 !fill-blue-600"
+            src="@/assets/svg/delete.svg"
+            alt=""
+          />
+          Guruhni o'chirish
+        </h1>
+        <img
+          @click="useSocket.modal.delete = false"
+          class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
       </div>
-    </section>
+      <p class="mt-12 text-[16px] leading-[19px]">
+        Haqiqatan ham bu guruhni o'chirib tashlamoqchimisiz?
+      </p>
+      <div>
+        <button
+          @click="useSocket.deleteData()"
+          class="bg-[#027DFC] h-[46px] rounded-full overflow-hidden text-white mt-10 w-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Guruhni o'chirish
+        </button>
+        <button
+          @click="useSocket.modal.delete = false"
+          class="h-[46px] rounded-[10px] mt-4 w-full"
+        >
+          Bekor qilish
+        </button>
+      </div>
+    </el-dialog>
   </main>
 </template>
 
 <script setup>
-import { useNotification } from "../../composables/notification";
+import { useLoadingStore, useSocketStore, useGroupStore } from "@/store";
+const isMount = ref(false);
 
-const { showLoading, showSuccess, showWarning, showError, destroy } =
-  useNotification();
-
-const runtimeConfig = useRuntimeConfig();
-const baseURL = runtimeConfig.public.baseURL;
+let useSocket;
+const isLoading = useLoadingStore();
+const useGroup = useGroupStore();
+isLoading.store.pageName = "groups";
 
 const store = reactive({
-  allProducts: "",
+  allGroups: "",
   modalCreate: false,
   modalDelete: false,
   token: "",
@@ -259,6 +364,9 @@ const store = reactive({
   edit: false,
   editId: "",
   test_time: "",
+  is_Loading: false,
+
+  paginationStep: 0,
 });
 
 const form = reactive({
@@ -266,141 +374,61 @@ const form = reactive({
   description: "",
 });
 
-const closeModal = () => {
-  form.name = "";
-  form.description = "";
-  store.edit = false;
-  store.modalCreate = false;
-};
-
-const handleSubmit = () => {
-  if (store.edit === true) {
-    editTest();
-    return;
+function handleSubmit() {
+  if (useSocket.modal.edit) {
+    useSocket.updateData();
+  } else {
+    useSocket.createData();
   }
+}
 
-  fetch(baseURL + "/groups", {
-    method: "POST",
-    body: JSON.stringify(form),
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      if (res.message === "Test qo'shildi") {
-        closeModal();
-        getAllGroups();
-      } else {
-        showError(res.message);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("error");
-    });
-};
+function pageNext(page, next) {
+  console.log(useSocket.store.pagination);
+  console.log(store.paginationStep + 10);
+  if (
+    (page == "minusTen" ||
+      (useSocket.store.pagination == store.paginationStep + 1 &&
+        page == "minus")) &&
+    store.paginationStep !== 0
+  ) {
+    store.paginationStep -= 10;
+    console.log(store.paginationStep);
+    useSocket.store.pagination = store.paginationStep + 10;
+  } else if (
+    (page == "plusTen" ||
+      (useSocket.store.pagination == store.paginationStep + 10 &&
+        page == "plus")) &&
+    store.paginationStep < Math.floor(useSocket.store.pageData.total_pages) - 10
+  ) {
+    store.paginationStep += 10;
+    useSocket.store.pagination = store.paginationStep + 1;
+  } else if (page == "plus") {
+    useSocket.store.pagination += 1;
+    useSocket.getAllData();
+  } else if (page == "minus") {
+    useSocket.store.pagination -= 1;
+    useSocket.getAllData();
+  } else if (next == "next") {
+    useSocket.store.pagination = page;
+    useSocket.getAllData();
+  }
+}
 
-const getAllGroups = () => {
-  showLoading("Ma'lumotlar yuklanmoqda...");
-  fetch(baseURL + "/groups", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      destroy();
-      store.allProducts = res;
-      showSuccess("Ma'lumotlar yuklandi");
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Ma'lumotlar topilmadi");
-    });
-};
+function paginationStep(page) {
+  console.log(useSocket.store.pageData.total_pages);
+  console.log(page);
+}
 
-const getOneTest = (id) => {
-  fetch(baseURL + `/groups/${id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      form.name = res.name;
-      form.description = res.description;
-      store.editId = res.id;
-      store.edit = true;
-      console.log(res);
-      store.modalCreate = true;
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Ma'lumotlar topilmadi");
-    });
-};
-
-const editTest = () => {
-  fetch(baseURL + `/groups/${store.editId}`, {
-    method: "PATCH",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-    body: JSON.stringify(form),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      if (res.message == "Group o'zgartirildi") {
-        closeModal();
-        store.edit = false;
-        getAllGroups();
-        showSuccess("Ma'lumotlar o'zgartirildi");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Iltimos ma'lumotlarni to'g'ri tartibda kiriting!");
-    });
-};
-
-const deleteStudent = () => {
-  fetch(`http://localhost:3001/api/groups/${store.deleteId}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      showError("Test o'chirildi");
-      console.log(res);
-      getAllGroups();
-      store.modalDelete = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Test topilmadi");
-    });
+const deleteGroup = () => {
+  console.log("object");
+  useSocket.deleteData(store.deleteId);
 };
 
 onMounted(() => {
-  store.token = localStorage.getItem("token");
-  getAllGroups();
+  useSocket = useSocketStore();
+  isMount.value = true;
+
+  useSocket.getAllData();
 });
 </script>
 

@@ -1,0 +1,36 @@
+// input round
+.el-select .el-input__wrapper {
+    border-radius: 50px;
+    background: transparent;
+    box-shadow: 0.1px 0.1px 0.1px 1px white !important;
+    height: 40px;
+
+    * {
+        color: rgb(156 163 175) !important;
+    }
+}
+
+// el-dialog background
+.el-dialog.is-align-center {
+    background: rgb(31 41 55);
+}
+
+// x
+.el-dialog__headerbtn, .el-dialog__header {
+    display: none;
+}
+
+.el-select-dropdown {
+    background: rgb(31 41 55);
+    .options:hover{
+        background: #027DFC1A !important;
+    }
+    .options {
+        background: transparent !important;
+    }
+}
+
+.el-message--error {
+    background: red !important;
+    border-radius: 60px !important;
+}

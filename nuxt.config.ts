@@ -15,8 +15,18 @@ export default defineNuxtConfig({
       ],
     },
   },
-  modules: ["@ant-design-vue/nuxt"],
-  css: ["~/assets/main.css"],
+  modules: ["@element-plus/nuxt", "@pinia/nuxt"],
+  // io: {
+  //   sockets: [
+  //     {
+  //       name: "tags",
+  //       url: "http://localhost:4000",
+  //       default: true,
+  //     },
+  //   ],
+  // },
+  css: ["~/assets/main.scss"],
+  plugins: [{ src: "~/plugins/socket.js", ssr: false }],
   postcss: {
     plugins: {
       tailwindcss: {},

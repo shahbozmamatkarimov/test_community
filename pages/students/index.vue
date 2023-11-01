@@ -1,20 +1,20 @@
 <template>
   <main>
     <section
-      class="bg-gray-900 min-h-screen flex items-center justify-center w-full p-5"
+      class="bg-gray-900 student flex items-center justify-center w-full"
     >
       <div
         class="bg-gray-800 flex-1 flex flex-col space-y-5 lg:space-y-0 lg:flex-row lg:space-x-10 sm:p-6 sm:rounded-2xl"
       >
         <!-- Navigation -->
         <div
-          class="bg-gray-900 px-2 lg:px-4 py-2 lg:py-10 sm:rounded-xl flex lg:flex-col justify-between"
+          class="bg-gray-900 px-2 lg:px-4 py-2 lg:py-10 sm:rounded-2xl flex lg:flex-col justify-between"
         >
           <nav
             class="flex items-center flex-row space-x-2 lg:space-x-0 lg:flex-col lg:space-y-2"
           >
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-md hover:bg-gray-800 hover:text-white smooth-hover"
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -30,7 +30,7 @@
             </a>
             <!-- Active: bg-gray-800 text-white, Not active: text-white/50 -->
             <a
-              class="bg-gray-800 text-white p-4 inline-flex justify-center rounded-md"
+              class="bg-gray-800 text-white p-4 inline-flex justify-center rouded-lg"
               href="#"
             >
               <svg
@@ -45,7 +45,7 @@
               </svg>
             </a>
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-md hover:bg-gray-800 hover:text-white smooth-hover"
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -66,7 +66,7 @@
             class="flex items-center flex-row space-x-2 lg:space-x-0 lg:flex-col lg:space-y-2"
           >
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-md hover:bg-gray-800 hover:text-white smooth-hover"
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -83,7 +83,7 @@
               </svg>
             </a>
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-md hover:bg-gray-800 hover:text-white smooth-hover"
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -105,9 +105,20 @@
         <div class="flex-1 px-2 sm:px-0">
           <div class="flex justify-between items-center">
             <h3 class="text-3xl font-extralight text-white/50">Groups</h3>
+            <a-select
+              class="max-w-fit mt-1"
+              id="group"
+              loading
+              show-search
+              placeholder="Guruhni tanlang"
+              :options="store.options"
+              :filter-option="filterOption"
+              @change="handleChange"
+              required
+            ></a-select>
             <div class="inline-flex items-center space-x-2">
               <a
-                class="bg-gray-900 text-white/50 p-2 rounded-md hover:text-white smooth-hover"
+                class="bg-gray-900 text-white/50 p-2 rounded-lg hover:text-white smooth-hover"
                 href="#"
               >
                 <svg
@@ -126,7 +137,7 @@
                 </svg>
               </a>
               <a
-                class="bg-gray-900 text-white/50 p-2 rounded-md hover:text-white smooth-hover"
+                class="bg-gray-900 text-white/50 p-2 rounded-lg hover:text-white smooth-hover"
                 href="#"
               >
                 <svg
@@ -151,7 +162,7 @@
           >
             <div
               @click="() => (store.modalCreate = true)"
-              class="group bg-gray-900/30 py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-md hover:bg-gray-700 hover:smooth-hover"
+              class="group bg-gray-900/30 py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <a
                 class="bg-gray-900/70 text-white/50 group-hover:text-white group-hover:smooth-hover flex w-20 h-20 rounded-full items-center justify-center"
@@ -179,9 +190,32 @@
               </button>
             </div>
             <div
+              v-if="store.is_Loading"
+              class="relative animate-pulse group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
+            >
+              <img
+                class="w-20 h-20 object-cover object-center rounded-full"
+                src="@/assets/images/userplaceholder.png"
+                alt="art"
+              />
+              <h4 class="text-white text-2xl font-bold capitalize text-center">
+                loading...
+              </h4>
+              <p class="text-white/50">0 ball</p>
+              <p
+                class="absolute top-2 text-white/20 inline-flex items-center text-xs"
+              >
+                False
+                <span
+                  class="ml-2 w-2 h-2 block bg-red-500 rounded-full group-hover:animate-pulse"
+                ></span>
+              </p>
+            </div>
+            <div
+              v-else
               v-for="i in store.allProducts"
               :key="i.id"
-              class="relative userInfo group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-md hover:bg-gray-700 hover:smooth-hover"
+              class="relative userInfo group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <img
                 v-if="i.image"
@@ -192,21 +226,21 @@
               <img
                 v-else
                 class="w-20 h-20 object-cover object-center rounded-full"
-                src="../../assets/images/userplaceholder.png"
-                :alt="i.username"
+                src="@/assets/images/userplaceholder.png"
+                :alt="i?.username"
               />
               <h4 class="text-white text-2xl font-bold capitalize text-center">
-                {{ i.username }}
+                {{ i?.username }}
               </h4>
               <p class="text-white/50">80 ball</p>
               <p class="absolute bottom-5 text-green-500">
-                <span class="bg-gray-800 rounded-md px-2 py-1">{{
+                <span class="bg-gray-800 rounded-lg px-2 py-1">{{
                   addMonth(i.start_date)
                 }}</span
                 ><span
-                  class="bg-red-500 ml-2 text-white rounded-md px-2 py-1"
-                  v-if="getDays(i.start_date)"
-                  >{{ getDays(i.start_date) }}</span
+                  class="bg-red-500 ml-2 text-white rounded-lg px-2 py-1"
+                  v-if="getDays(i?.start_date)"
+                  >{{ getDays(i?.start_date) }}</span
                 >
               </p>
               <p
@@ -219,7 +253,7 @@
               </p>
 
               <p
-                class="absolute hidden top-0 actions right-2 text-white bg-gray-800 rounded-md space-x-2"
+                class="absolute hidden top-0 actions right-2 text-white bg-gray-800 rounded-lg space-x-2"
               >
                 <i
                   @click="
@@ -234,28 +268,6 @@
                   @click="() => getOneStudent(i.id)"
                   class="p-2 hover:bg-gray-600 rounded-r-md bx bx-pencil"
                 ></i>
-              </p>
-            </div>
-            <div
-              v-if="!store.allProducts"
-              class="relative animate-pulse group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-md hover:bg-gray-700 hover:smooth-hover"
-            >
-              <!-- <img
-                class="w-20 h-20 object-cover object-center rounded-full"
-                src="../../assets/images/userplaceholder.png"
-                alt="art"
-              /> -->
-              <h4 class="text-white text-2xl font-bold capitalize text-center">
-                loading...
-              </h4>
-              <p class="text-white/50">0 ball</p>
-              <p
-                class="absolute top-2 text-white/20 inline-flex items-center text-xs"
-              >
-                False
-                <span
-                  class="ml-2 w-2 h-2 block bg-red-500 rounded-full group-hover:animate-pulse"
-                ></span>
               </p>
             </div>
           </div>
@@ -370,7 +382,7 @@
                       <input
                         id="checkbox-all-search"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-all-search" class="sr-only"
                         >checkbox</label
@@ -392,7 +404,7 @@
                       <input
                         id="checkbox-table-search-1"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-table-search-1" class="sr-only"
                         >checkbox</label
@@ -440,7 +452,7 @@
                       <input
                         id="checkbox-table-search-2"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-table-search-2" class="sr-only"
                         >checkbox</label
@@ -488,7 +500,7 @@
                       <input
                         id="checkbox-table-search-2"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-table-search-2" class="sr-only"
                         >checkbox</label
@@ -536,7 +548,7 @@
                       <input
                         id="checkbox-table-search-2"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-table-search-2" class="sr-only"
                         >checkbox</label
@@ -584,7 +596,7 @@
                       <input
                         id="checkbox-table-search-3"
                         type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label for="checkbox-table-search-3" class="sr-only"
                         >checkbox</label
@@ -635,7 +647,7 @@
 
     <!-- Modal -->
     <section
-      v-show="store.modalCreate"
+      v-if="store.modalCreate"
       class="flex justify-center bg-[#ffffff23] top-0 left-0 min-w-full items-center absolute z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 min-h-screen"
     >
       <div class="relative w-full max-w-sm max-h-full">
@@ -688,14 +700,11 @@
                 >Passwordni o'zgartirish</label
               >
             </div>
-            <div
-              class="relative z-0 w-full mb-5 group"
-            >
+            <div class="relative z-0 w-full mb-5 group">
               <label for="group" class="text-sm cursor-pointer"
                 >Guruhni tanlang</label
               >
               <a-select
-                v-model:value="value"
                 class="w-full mt-1"
                 id="group"
                 loading
@@ -864,11 +873,11 @@
 </template>
 
 <script setup>
-import { useNotification } from "../../composables/notification";
+import { useNotification } from "@/composables/notification";
 
-const { showLoading, showSuccess, showError, destroy } = useNotification();
+const { showLoading, showSuccess, showWarning, showError, destroy } =
+  useNotification();
 
-console.log(useRuntimeConfig().public);
 const runtimeConfig = useRuntimeConfig();
 const baseURL = runtimeConfig.public.baseURL;
 
@@ -883,6 +892,7 @@ const store = reactive({
   editId: "",
   current_time: false,
   changePassword: false,
+  is_Loading: false,
   options: [],
 });
 
@@ -907,6 +917,7 @@ const closeModal = () => {
 
 const handleChange = (value) => {
   createModal.group_id = value;
+  getOneGroup(createModal.group_id);
 };
 
 const filterOption = (input, option) => {
@@ -914,6 +925,10 @@ const filterOption = (input, option) => {
 };
 
 const handleSubmit = () => {
+  if (!createModal.group_id) {
+    showWarning("Iltimos, guruhni tanlang!");
+    return;
+  }
   if (store.current_time) {
     createModal.start_date = new Date();
   }
@@ -932,10 +947,10 @@ const handleSubmit = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       if (res.message === "O'quvchi ro'yxatga kiritildi") {
         closeModal();
-        getAllStudents();
+        // getAllStudents();
+        getOneGroup(createModal.group_id);
       } else {
         showError(res.message);
       }
@@ -946,21 +961,23 @@ const handleSubmit = () => {
     });
 };
 
-const getAllStudents = () => {
-  showLoading("Ma'lumotlar yuklanmoqda...");
-  fetch(baseURL + "/student")
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      destroy();
-      store.allProducts = res;
-      showSuccess("Ma'lumotlar yuklandi");
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Ma'lumotlar topilmadi");
-    });
-};
+// const getAllStudents = () => {
+//   showLoading("Ma'lumotlar yuklanmoqda...");
+//   fetch(baseURL + "/student")
+//     .then((res) => res.json())
+//     .then((res) => {
+//       console.log(res);
+//       if (res.length) {
+//         destroy();
+//         showSuccess("Ma'lumotlar yuklandi");
+//       }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       showError("Ma'lumotlar topilmadi");
+//       store.is_Loading = false;
+//     });
+// };
 
 const getAllGroups = () => {
   showLoading("Guruhlar yuklanmoqda...");
@@ -973,19 +990,23 @@ const getAllGroups = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       destroy();
-      store.allProducts = res;
-      store.options = []
+      // store.allProducts = res;
+      console.log(res[0]);
+      createModal.group_id = res[0].id
+      getOneGroup(createModal.group_id)
+      store.options = [];
 
-      for (let i = 0; i < res.length; i++){
-        let values  = {};
+      for (let i = 0; i < res.length; i++) {
+        let values = {};
         values.value = res[i].id;
         values.label = res[i].name;
         store.options.push(values);
       }
 
-      document.querySelector(".ant-select-arrow").innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`
+      document.querySelector(
+        ".ant-select-arrow"
+      ).innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`;
       showSuccess("Guruhlar yuklandi");
     })
     .catch((err) => {
@@ -995,6 +1016,7 @@ const getAllGroups = () => {
 };
 
 const getOneStudent = (id) => {
+  store.is_Loading = true;
   fetch(baseURL + `/student/${id}`, {
     method: "GET",
     headers: {
@@ -1007,11 +1029,9 @@ const getOneStudent = (id) => {
     .then((res) => {
       createModal.username = res.username;
       createModal.start_date = res.start_date.slice(0, 10);
-      console.log(createModal.start_date);
       createModal.student_id = res.student_id;
       store.editId = res.id;
       store.edit = true;
-      console.log(res);
       store.modalCreate = true;
     })
     .catch((err) => {
@@ -1020,8 +1040,32 @@ const getOneStudent = (id) => {
     });
 };
 
+const getOneGroup = (id) => {
+  store.is_Loading = true;
+
+  fetch(baseURL + `/groups/${id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      store.allProducts = res.students;
+      store.is_Loading = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      store.is_Loading = false;
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
 const editStudent = () => {
-  fetch(`http://localhost:3001/api/student/update/${store.editId}`, {
+  fetch(`http://localhost:4000/api/student/update/${store.editId}`, {
     method: "PATCH",
     headers: {
       Accept: "application/json",
@@ -1032,11 +1076,11 @@ const editStudent = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       if (res.message == "Ma'lumotlar o'zgartirildi") {
         closeModal();
         store.edit = false;
-        getAllStudents();
+        // getAllStudents();
+        getOneGroup(createModal.group_id);
       }
     })
     .catch((err) => {
@@ -1046,7 +1090,7 @@ const editStudent = () => {
 };
 
 const deleteStudent = () => {
-  fetch(`http://localhost:3001/api/student/${store.deleteId}`, {
+  fetch(`http://localhost:4000/api/student/${store.deleteId}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -1057,8 +1101,8 @@ const deleteStudent = () => {
     .then((res) => res.json())
     .then((res) => {
       showError("O'chirildi");
-      console.log(res);
-      getAllStudents();
+      getOneGroup(createModal.group_id);
+      // getAllStudents();
       store.modalDelete = false;
     })
     .catch((err) => {
@@ -1093,7 +1137,6 @@ function getDays(startDate) {
   nowDate = nowDate - date;
   if (nowDate > 0) {
     const days = secondsToDhms(nowDate);
-    console.log(startDate, days);
     if (days > 0) {
       return days;
     }
@@ -1111,7 +1154,6 @@ function getDays(startDate) {
     const mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
     const sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
     // return dDisplay + hDisplay + mDisplay + sDisplay;
-    console.log(dDisplay?.slice(0, 7));
     return dDisplay?.slice(0, dDisplay.length - 7) - 30;
   }
 }
@@ -1119,7 +1161,7 @@ function getDays(startDate) {
 onMounted(() => {
   store.token = localStorage.getItem("token");
   getAllGroups();
-  getAllStudents();
+  // getAllStudents();
 });
 </script>
 

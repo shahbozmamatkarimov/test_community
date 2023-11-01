@@ -450,8 +450,37 @@
           </div>
         </div>
       </section>
+      <section
+        class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border"
+      >
+        <GradientLineChart />
+      </section>
+    </div>
+
+    <div>
+      <input v-model="message" type="text" />
+      <button class="bg-blue-600 text-white" @click="sendMessage">Send</button>
     </div>
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:4000");
+
+const message = ref("");
+
+const sendMessage = () => {
+  socket.emit("newMessage", message.value);
+  message.value = "";
+};
+
+onMounted(() => {
+  
+  socket.on("onMessage", (data) => {
+    console.log("Received new message:", data);
+    // Handle the received message data
+  });
+});
+</script>

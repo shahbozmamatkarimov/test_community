@@ -36,6 +36,12 @@
                         Mavzusi
                       </th>
                       <th
+                      scope="col"
+                      class="px-3 py-3 text-left tracking-wider"
+                    >
+                      Guruhi
+                    </th>
+                      <th
                         scope="col"
                         class="px-2 text-center py-3 tracking-wider"
                       >
@@ -71,10 +77,74 @@
                       >
                         Rasmi
                       </th>
+                      <th
+                        scope="col"
+                        class="px-2 py-3 text-center tracking-wider"
+                      >
+                        Javob qo'shish
+                      </th>
                       <th scope="col" class="px-2 py-3"></th>
                     </tr>
                   </thead>
-                  <tbody class="bg-gray-800">
+                  <tbody
+                    v-if="store.is_Loading"
+                    class="bg-gray-800 animate-pulse pointer-events-none"
+                  >
+                    <tr
+                      v-for="i in 5"
+                      :key="i.id"
+                      :class="i % 2 == 0 ? '' : 'bg-black'"
+                      class="bg-opacity-20"
+                    >
+                      <td class="px-4 py-4">{{ i }}</td>
+                      <td class="px-2 w-40">
+                        <p class="font-medium w-40"></p>
+                      </td>
+                      <td class="px-2 py-4"></td>
+                      <td class="px-2 py-4"></td>
+                      <td class="px-2 py- whitespace-nowrap text-center">
+                        <button
+                          class="bg-gray-700 hover:bg-gray-600 rounded-md"
+                        >
+                          <a-button
+                            ><i
+                              class="bx bx-key text-white rotate-45 text-lg"
+                            ></i
+                          ></a-button>
+                        </button>
+                      </td>
+                      <td class="px-2 py-4"></td>
+                      <td class="px-2 py-4"></td>
+                      <td
+                        class="flex px-2 -mr-6 justify-center py-4 whitespace-nowrap"
+                      >
+                        <button
+                          class="bx bx-plus bg-[#80808073] backdrop-blur-sm text-white text-xl font-bold w-10 h-10 -ml-6 shadow-lg shadow-black rounded-full"
+                        ></button>
+                      </td>
+                      <td
+                        class="px-2 py-4 space-x-2 whitespace-nowrap text-center"
+                      >
+                        <button
+                          class="bx bx-plus bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                        ></button>
+                      </td>
+                      <td
+                        class="px-2 py-4 space-x-2 whitespace-nowrap text-center"
+                      >
+                        <button
+                          class="bx bx-show bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                        ></button>
+                        <button
+                          class="bx bx-pencil bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                        ></button>
+                        <button
+                          class="bx bx-trash bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                        ></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else class="bg-gray-800">
                     <tr
                       v-for="(i, index) in store.allProducts"
                       :key="i.id"
@@ -87,6 +157,11 @@
                       >
                         <p class="font-medium truncate w-40">{{ i.title }}</p>
                       </td>
+                      <td
+                      class="px-2 items-center align-start w-40 whitespace-nowrap"
+                    >
+                      <p class="font-medium truncate w-40">{{ i.group?.name }}</p>
+                    </td>
                       <td class="px-2 py-4 whitespace-nowrap text-center">
                         {{ i.test_count }}
                       </td>
@@ -97,7 +172,11 @@
                         <button
                           class="bg-gray-700 hover:bg-gray-600 rounded-md"
                         >
-                          <a-button @click="()=>success(i.answers)"><i class="bx bx-key text-white rotate-45 text-lg"></i></a-button>
+                          <a-button @click="() => success(i.answers)"
+                            ><i
+                              class="bx bx-key text-white rotate-45 text-lg"
+                            ></i
+                          ></a-button>
                         </button>
                       </td>
                       <td
@@ -129,6 +208,13 @@
                       <td
                         class="px-2 py-4 space-x-2 whitespace-nowrap text-center"
                       >
+                        <button @click="$router.push(`/tests/${i.id}/${i.group?.id}`)"
+                          class="bx bx-plus bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
+                        ></button>
+                      </td>
+                      <td
+                        class="px-2 py-4 space-x-2 whitespace-nowrap text-center"
+                      >
                         <button
                           class="bx bx-show bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-md"
                         ></button>
@@ -149,6 +235,18 @@
                     </tr>
                   </tbody>
                 </table>
+                <div
+                  v-if="!store.is_Loading && !store.allProducts?.length"
+                  class="flex flex-col space-y-5 items-center justify-center font-medium text-gray-400 mt-0.5 h-80 bg-gray-800"
+                >
+                  <p>Test mavjud emas</p>
+                  <button
+                    @click="store.modalCreate = true"
+                    class="bg-blue-600 py-1 px-3 rounded-md"
+                  >
+                    <i class="bx bx-plus"></i> Test qo'shish
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -234,6 +332,32 @@
                 ><span>O'tish bali({{ form.min_ball }}%)</span
                 ><span>Umumiy ball(100%)</span></label
               >
+            </div>
+            <div class="flex gap-2">
+              <input
+                v-model="store.is_group"
+                type="checkbox"
+                id="group"
+                class="block py-2 w-5 h-5 text-sm bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label for="group" class="text-sm cursor-pointer"
+                >Barcha guruhlar uchun</label
+              >
+            </div>
+            <div v-if="!store.is_group" class="z-0 w-full mb-6 group">
+              <label for="selectGroup" class="flex justify-between w-full"
+                >Guruhlar</label
+              >
+              <a-select
+                v-model:value="value"
+                id="selectGroup"
+                mode="multiple"
+                style="width: 100%"
+                placeholder="Guruhni tanlang "
+                :options="store.options"
+                :loading="store.options?.length === 0"
+              />
             </div>
             <div id="testtime" class="relative z-0 w-full mb-6 group">
               <label class="scale-75 text-sm">Vaqti</label>
@@ -398,10 +522,12 @@
 </template>
 
 <script setup>
-import { useNotification } from "../../composables/notification";
+// import { useNotification } from "@/composables/notification";
 
 const { showLoading, showSuccess, showWarning, showError, destroy } =
   useNotification();
+
+const value = ref([]);
 
 const runtimeConfig = useRuntimeConfig();
 const baseURL = runtimeConfig.public.baseURL;
@@ -415,10 +541,14 @@ const store = reactive({
   edit: false,
   editId: "",
   test_time: "",
+  is_Loading: false,
+  is_group: false,
+  options: [],
+  optionsId: {},
 });
 
 const success = (text) => {
-  destroy()
+  destroy();
   message.success({
     content: () => text,
     class: "custom-class",
@@ -431,7 +561,6 @@ const success = (text) => {
 };
 
 const onRangeChange = (value, dateString) => {
-  console.log("Formatted Selected Time: ", dateString);
   form.start_time = dateString[0];
   form.end_time = dateString[1];
 };
@@ -492,6 +621,12 @@ const closeModal = () => {
 };
 
 const handleSubmit = () => {
+  let step = 0;
+  const groups = Object.values(value.value);
+  if (!groups?.length) {
+    showWarning("Iltimos, guruhlarni tanlang!");
+    return;
+  }
   if (store.edit === true) {
     editTest();
     return;
@@ -510,32 +645,40 @@ const handleSubmit = () => {
     editStudent();
     return;
   }
-  fetch(baseURL + "/tests", {
-    method: "POST",
-    body: JSON.stringify(form),
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      if (res.message === "Test qo'shildi") {
-        closeModal();
-        getAllTests();
-      } else {
-        showError(res.message);
-      }
+  showLoading("Iltimos, kuting! \n Test guruhlarga biriktirilmoqda!!!");
+  for (let i of groups) {
+    fetch(baseURL + "/tests", {
+      method: "POST",
+      body: JSON.stringify({ ...form, group_id: store.optionsId[i] }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + store.token,
+      },
     })
-    .catch((err) => {
-      console.log(err);
-      showError("error");
-    });
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "Test qo'shildi") {
+          closeModal();
+          getAllTests();
+          step += 1;
+        } else {
+          showError(res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        showError("error");
+      });
+  }
+
+  if (step == groups.length) {
+    showSuccess("Test guruhlarga biriktirildi!");
+  }
 };
 
 const getAllTests = () => {
+  store.is_Loading = true;
   showLoading("Ma'lumotlar yuklanmoqda...");
   fetch(baseURL + "/tests", {
     headers: {
@@ -546,9 +689,37 @@ const getAllTests = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       destroy();
+      console.log(res);
       store.allProducts = res;
+      showSuccess("Ma'lumotlar yuklandi");
+      store.is_Loading = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
+const getAllGroups = () => {
+  showLoading("Ma'lumotlar yuklanmoqda...");
+  fetch(baseURL + "/groups", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      for (let i of res) {
+        const value = i.name;
+        store.options.push({
+          value,
+        });
+        store.optionsId[i.name] = i.id;
+      }
+      destroy();
       showSuccess("Ma'lumotlar yuklandi");
     })
     .catch((err) => {
@@ -579,7 +750,6 @@ const getOneTest = (id) => {
       form.answers = res.answers;
       store.editId = res.id;
       store.edit = true;
-      console.log(res);
       store.modalCreate = true;
     })
     .catch((err) => {
@@ -600,7 +770,6 @@ const editTest = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       if (res.message == "Test o'zgartirildi") {
         closeModal();
         store.edit = false;
@@ -615,7 +784,7 @@ const editTest = () => {
 };
 
 const deleteStudent = () => {
-  fetch(`http://localhost:3001/api/tests/${store.deleteId}`, {
+  fetch(`http://localhost:4000/api/tests/${store.deleteId}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -626,7 +795,6 @@ const deleteStudent = () => {
     .then((res) => res.json())
     .then((res) => {
       showError("Test o'chirildi");
-      console.log(res);
       getAllTests();
       store.modalDelete = false;
     })
@@ -639,6 +807,7 @@ const deleteStudent = () => {
 onMounted(() => {
   store.token = localStorage.getItem("token");
   getAllTests();
+  getAllGroups();
 });
 </script>
 
@@ -647,7 +816,7 @@ onMounted(() => {
   border: none;
 }
 
-.ant-btn{
+.ant-btn {
   background: transparent;
   border: none;
 }

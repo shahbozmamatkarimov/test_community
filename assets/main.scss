@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@500&display=swap");
+@import "./styles/elementplus.scss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #f4f3f9;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+*,
+pre {
+  scroll-behavior: smooth;
+
+  font-family: "Figtree", sans-serif;
+  color: white !important;
+}
+
+input {
+  outline: none;
+  border: none;
+  color: white !important;
+  background: transparent;
+  height: 40px;
+  border-radius: 60px;
+  padding: 0 20px;
+  box-shadow: 0.1px 0.1px 0.1px 1px white !important;
+}
+
+.searchBy input {
+  box-shadow: none !important;
+}

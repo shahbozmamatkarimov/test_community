@@ -2,10 +2,33 @@
   <main>
     <section>
       <div
-        class="flex flex-col items-center justify-center w-full min-h-screen bg-gray-900 py-10"
+        class="flex flex-col items-center w-full min-h-screen bg-gray-900 py-10"
       >
         <!-- Component Start -->
-        <h1 class="text-lg text-gray-400 font-medium">2020-21 Season</h1>
+        <div class="w-full space-x-5 px-10 mx-auto">
+          <a-select
+            class="max-w-fit mt-1"
+            id="group"
+            loading
+            show-search
+            placeholder="Guruhni tanlang"
+            :options="store.options"
+            :filter-option="filterOption"
+            @change="handleChange"
+            required
+          ></a-select>
+          <a-select
+            class="max-w-fit mt-1"
+            id="group"
+            loading
+            show-search
+            placeholder="Testni tanlang"
+            :options="store.testOptions"
+            :filter-option="testFilterOption"
+            @change="testHandleChange"
+            required
+          ></a-select>
+        </div>
         <div class="flex flex-col w-full px-10 mt-6">
           <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div
@@ -20,1685 +43,88 @@
                         scope="col"
                         class="px-6 py-3 text-left tracking-wider"
                       >
-                        Club
+                        O'quvchilar
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left tracking-wider"
                       >
-                        MP
+                        Natijasi
+                      </th>
+                      <th v-for="i in store.allTest" :key="i.id">
+                        {{ i.title }}
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left tracking-wider"
                       >
-                        W
+                        <img
+                          class="w-4"
+                          src="@/assets/svg/true.svg"
+                          alt=""
+                        />
                       </th>
                       <th
                         scope="col"
                         class="px-6 py-3 text-left tracking-wider"
                       >
-                        D
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        L
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        GF
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        GA
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        GD
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        Pts
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-6 py-3 text-left tracking-wider"
-                      >
-                        Last 5
+                        <img
+                          class="w-4"
+                          src="@/assets/svg/false.svg"
+                          alt=""
+                        />
                       </th>
                     </tr>
                   </thead>
                   <tbody class="bg-gray-800">
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-2"><img class="w-6 h-10 object-cover" src="../../assets/images/first.png" alt=""></td>
+                    <tr
+                      class="bg-black bg-opacity-20"
+                      v-for="(i, index) in store.groups"
+                      :key="index"
+                    >
+                      <td class="pl-2">
+                        <img
+                          v-if="index == 0"
+                          class="w-6 h-10 object-cover"
+                          src="@/assets/images/first.png"
+                          alt=""
+                        />
+                        <img
+                          v-else-if="index == 1"
+                          class="w-6 h-10 object-cover"
+                          src="@/assets/images/second.png"
+                          alt=""
+                        />
+                        <img
+                          v-else-if="index == 2"
+                          class="w-6 h-10 object-cover"
+                          src="@/assets/images/third.png"
+                          alt=""
+                        />
+                        <p v-else>{{ index }}</p>
+                      </td>
+                      <td v-for="group in store.groups">
+                        <!-- {{ group }}{{ i.id }} -->
+                        <p v-if="group.test_id == store.allTest[index]?.id">
+                          {{ group.true_answers }}
+                        </p>
+                      </td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         <img
                           class="w-5"
                           src="https://ssl.gstatic.com/onebox/media/sports/logos/udQ6ns69PctCv143h-GeYw_48x48.png"
                           alt=""
                         />
-                        <span class="ml-2 font-medium">Man United</span>
+                        <span class="ml-2 font-medium">{{ i.username }}</span>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="px-6 py-4 whitespace-nowrap">3</td>
-                      <td class="px-6 py-4 whitespace-nowrap">3</td>
-                      <td class="px-6 py-4 whitespace-nowrap">34</td>
-                      <td class="px-6 py-4 whitespace-nowrap">24</td>
-                      <td class="px-6 py-4 whitespace-nowrap">10</td>
-                      <td class="px-6 py-4 whitespace-nowrap">34</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ i.result }}
                       </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-2"><img class="w-6 h-10 object-cover" src="../../assets/images/second.png" alt=""></td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/0iShHhASp5q1SL4JhtwJiw_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Liverpool</span>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ i.true_answers }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">9</td>
-                      <td class="px-6 py-4 whitespace-nowrap">6</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">37</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">16</td>
-                      <td class="px-6 py-4 whitespace-nowrap">33</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-1"><img class="w-8 h-10 object-cover" src="../../assets/images/third.png" alt=""></td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/UDYY4FSlty6fXFBzvFfcyw_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Leicester City</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">10</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">31</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">10</td>
-                      <td class="px-6 py-4 whitespace-nowrap">32</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">4</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/C3J47ea36cMBc4XPbp9aaA_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Everton</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">10</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">28</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">32</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">5</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/k3Q_mKE98Dnohrcea0JFgQ_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Tottenham</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">16</td>
-                      <td class="px-6 py-4 whitespace-nowrap">18</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">3</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="px-6 py-4 whitespace-nowrap">15</td>
-                      <td class="px-6 py-4 whitespace-nowrap">14</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">6</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/z44l-a0W1v5FmgPnemV6Xw_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Man. City</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">15</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">24</td>
-                      <td class="px-6 py-4 whitespace-nowrap">13</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">7</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/y1V4sm2SEBiWUPRIYl5rfg_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Southampton</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">26</td>
-                      <td class="px-6 py-4 whitespace-nowrap">19</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">8</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/uyNNelfnFvCEnsLrUL-j2Q_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Aston Villa</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">15</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="px-6 py-4 whitespace-nowrap">16</td>
-                      <td class="px-6 py-4 whitespace-nowrap">13</td>
-                      <td class="px-6 py-4 whitespace-nowrap">26</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">9</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/fhBITrIlbQxhVB6IjxUO6Q_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Chelsea</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">32</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="px-6 py-4 whitespace-nowrap">26</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">10</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/bXkiyIzsbDip3x2FFcUU3A_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Westham</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">24</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">3</td>
-                      <td class="px-6 py-4 whitespace-nowrap">26</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">11</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/4us2nCgl6kgZc0t3hpW75Q_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Arsenal</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">20</td>
-                      <td class="px-6 py-4 whitespace-nowrap">19</td>
-                      <td class="px-6 py-4 whitespace-nowrap">1</td>
-                      <td class="px-6 py-4 whitespace-nowrap">23</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">12</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/5dqfOKpjjW6EwTAx_FysKQ_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Leeds United</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">30</td>
-                      <td class="px-6 py-4 whitespace-nowrap">33</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-3</td>
-                      <td class="px-6 py-4 whitespace-nowrap">23</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">13</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/8piQOzndGmApKYTcvyN9vA_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Crystal Palace</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">6</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">22</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">22</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">14</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/-WjHLbBIQO9xE2e2MW3OPQ_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Wolves</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">18</td>
-                      <td class="px-6 py-4 whitespace-nowrap">6</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">19</td>
-                      <td class="px-6 py-4 whitespace-nowrap">26</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">22</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">15</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/96CcNNQ0AYDAbssP0V9LuQ_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Newcastle</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">18</td>
-                      <td class="px-6 py-4 whitespace-nowrap">27</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-9</td>
-                      <td class="px-6 py-4 whitespace-nowrap">19</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">16</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/teLLSaMXim_8BA1d93sMng_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Burnley</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">16</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">4</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">9</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-12</td>
-                      <td class="px-6 py-4 whitespace-nowrap">16</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">17</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/EKIe0e-ZIphOcfQAwsuEEQ_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Brighton</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">21</td>
-                      <td class="px-6 py-4 whitespace-nowrap">28</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-7</td>
-                      <td class="px-6 py-4 whitespace-nowrap">14</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">18</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/Gh7_5p3n364p4vxeM8FhNg_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">Fullham</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">15</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="px-6 py-4 whitespace-nowrap">13</td>
-                      <td class="px-6 py-4 whitespace-nowrap">23</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-10</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr class="bg-black bg-opacity-20">
-                      <td class="pl-4">19</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/Im2UqFKvfm3TaM7R2RYkjw_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium">West Brom</span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">17</td>
-                      <td class="px-6 py-4 whitespace-nowrap">1</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="px-6 py-4 whitespace-nowrap">11</td>
-                      <td class="px-6 py-4 whitespace-nowrap">39</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-28</td>
-                      <td class="px-6 py-4 whitespace-nowrap">8</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="pl-4">20</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <img
-                          class="w-5"
-                          src="https://ssl.gstatic.com/onebox/media/sports/logos/wF8AgQsssfy3_GLyVR3dSg_48x48.png"
-                          alt=""
-                        />
-                        <span class="ml-2 font-medium"
-                          >Sheffield Wednesday</span
-                        >
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">18</td>
-                      <td class="px-6 py-4 whitespace-nowrap">1</td>
-                      <td class="px-6 py-4 whitespace-nowrap">2</td>
-                      <td class="px-6 py-4 whitespace-nowrap">15</td>
-                      <td class="px-6 py-4 whitespace-nowrap">9</td>
-                      <td class="px-6 py-4 whitespace-nowrap">29</td>
-                      <td class="px-6 py-4 whitespace-nowrap">-20</td>
-                      <td class="px-6 py-4 whitespace-nowrap">5</td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
-                        <svg
-                          class="w-4 fill-current text-green-600"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-red-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <svg
-                          class="w-4 fill-current text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {{ i.false_answers }}
                       </td>
                     </tr>
                   </tbody>
@@ -1714,6 +140,183 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+import { useNotification } from "@/composables/notification";
+
+const { showLoading, showSuccess, showWarning, showError, destroy } =
+  useNotification();
+
+const filterOption = (input, option) => {
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+const getResults = (results, type) => {
+  console.log(results);
+  for (let i of results) {
+    console.log(i.test_id, store.test_id);
+    if (i.test_id == store.test_id) {
+      if (type == "foiz") {
+        return (
+          (i.true_answers * 100) / (i.true_answers + i.false_answers) + "%"
+        );
+      }
+      if (type) {
+        return i.true_answers;
+      }
+      return i.false_answers;
+    }
+  }
+};
+
+const testFilterOption = (input, option) => {
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+const handleChange = (value) => {
+  store.group_id = value;
+  getOneGroup();
+};
+
+const testHandleChange = (value) => {
+  store.test_id = value;
+  getOneGroup();
+};
+
+const runtimeConfig = useRuntimeConfig();
+const baseURL = runtimeConfig.public.baseURL;
+
+const store = reactive({
+  allProducts: [],
+  groups: [],
+  token: "",
+  is_Loading: false,
+  options: [],
+  testOptions: [],
+  group_id: "",
+  test_id: "",
+  allTest: "",
+});
+
+const getAllGroups = () => {
+  showLoading("Ma'lumotlar yuklanmoqda...");
+  store.is_Loading = true;
+  fetch(baseURL + "/groups", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      store.options = [];
+
+      for (let i = 0; i < res.length; i++) {
+        let values = {};
+        values.value = res[i].id;
+        values.label = res[i].name;
+        store.options.push(values);
+      }
+
+      document.querySelector(
+        ".ant-select-arrow"
+      ).innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`;
+      store.group_id = res[0].id;
+      getOneGroup();
+      destroy();
+      store.allProducts = res;
+      showSuccess("Ma'lumotlar yuklandi");
+      store.is_Loading = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
+const getOneGroup = () => {
+  store.groups = [];
+  fetch(baseURL + `/groups/${store.group_id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+
+      for (let i of res.students) {
+        console.log(i);
+        for (let res of i.results) {
+          console.log(res);
+          // if (res.test_id == store.test_id) {
+            store.groups.push({
+              test_id: res.test_id,
+              username: i.username,
+              result: getResults(i.results, "foiz"),
+              true_answers: getResults(i.results, true),
+              false_answers: getResults(i.results, false),
+            });
+          // }
+        }
+      }
+      console.log(store.groups);
+
+      console.log(store.groups.sort((a, b) => b.true_answers - a.true_answers));
+    })
+    .catch((err) => {
+      console.log(err);
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
+const getAllTests = () => {
+  store.is_Loading = true;
+  showLoading("Ma'lumotlar yuklanmoqda...");
+  fetch(baseURL + "/tests", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + store.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      store.test_id = res[0].id;
+      store.testOptions = [];
+
+      for (let i = 0; i < res.length; i++) {
+        let values = {};
+        values.value = res[i].id;
+        values.label = res[i].title;
+        store.testOptions.push(values);
+      }
+
+      const arrows = document.querySelectorAll(".ant-select-arrow");
+      for (let i of arrows) {
+        i.innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`;
+      }
+      destroy();
+      console.log(res);
+      store.allTest = res;
+      showSuccess("Ma'lumotlar yuklandi");
+      store.is_Loading = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      showError("Ma'lumotlar topilmadi");
+    });
+};
+
+onMounted(() => {
+  store.token = localStorage.getItem("token");
+  getAllGroups();
+  getAllTests();
+});
+</script>
 
 <style lang="scss" scoped></style>

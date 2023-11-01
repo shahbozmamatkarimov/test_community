@@ -1,5 +1,5 @@
 <template>
-  <apexchart
+  <apexchart v-if="is_mount"
     type="area"
     :height="height"
     :options="chartOptions"
@@ -8,6 +8,7 @@
 </template>
 
 <script setup>
+const is_mount = ref(false);
 defineProps({
   height: {
     type: [Number, String],
@@ -52,5 +53,7 @@ onMounted(() => {
   nextTick(() => {
     window.dispatchEvent(new Event("resize"));
   });
+
+  is_mount.value=true;
 });
 </script>
