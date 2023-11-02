@@ -131,7 +131,7 @@
     <nav class="flex justify-between py-5">
       <div>
         <button
-          v-show="useSocket?.store.pageData.total_pages > 10"
+          v-show="useSocket?.store.pageData?.total_pages > 10"
           @click="() => pageNext('minusTen')"
           :class="
             store.paginationStep !== 0
@@ -169,7 +169,7 @@
               useSocket?.store?.pageData?.total_pages
             "
             :class="
-              i + store.paginationStep == useSocket.store.pagination
+              i + store.paginationStep == useSocket?.store.pagination
                 ? 'bg-blue-600 border-blue-600'
                 : 'border border-blue-gray-100 bg-transparent'
             "
@@ -182,7 +182,8 @@
         <li
           :class="
             useSocket?.store.pagination ==
-            useSocket?.store?.pageData?.total_pages
+              useSocket?.store?.pageData?.total_pages ||
+            useSocket?.store.pageData.total_count === 0
               ? 'opacity-50 pointer-events-none'
               : ''
           "
@@ -199,11 +200,11 @@
       </ul>
       <div>
         <button
-          v-show="useSocket?.store.pageData.total_pages > 10"
+          v-show="useSocket?.store.pageData?.total_pages > 10"
           @click="() => pageNext('plusTen')"
           :class="
             store.paginationStep <
-            Math.floor(useSocket?.store.pageData.total_pages) - 10
+            Math.floor(useSocket?.store.pageData?.total_pages) - 10
               ? ''
               : 'pointer-events-none opacity-50 bg-blue-400'
           "

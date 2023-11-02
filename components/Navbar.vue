@@ -78,26 +78,29 @@
             </div>
           </div>
           <input
-            @input="isLoading.searchBy"
+            @input="searchBy"
             v-model="isLoading.search.search"
+            id="searchType"
             class="font-bold rounded-full w-full h-10 pl-4 bg-transparent ring-1 ring-white leading-tight focus:outline-none focus:shadow-outline lg:text-sm text-xs"
-            type="text"
+            :type="isLoading.search.searchType == 'id' ? 'number' : 'text'"
             placeholder="Search..."
           />
           <el-select
             v-model="isLoading.search.searchType"
-            @change="isLoading.searchBy"
+            @change="() => searchBy('changeSearchType')"
             class="m-2 searchBy"
             placeholder="Search by"
             size="large"
           >
-            <el-option
-              class="options"
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+            <label for="searchType">
+              <el-option
+                class="options"
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </label>
           </el-select>
           <div class="cursor-pointer mx-2 rounded-full">
             <li
@@ -194,28 +197,19 @@
 </template>
 
 <script setup>
-import { useLoadingStore } from "@/store";
+import { useLoadingStore, useSocketStore } from "@/store";
 import axios from "axios";
 import { io } from "socket.io-client";
 
+let useSocket;
 const isLoading = useLoadingStore();
 let socket = null;
-const searchBy = () => {
-  axios
-    .get("http://localhost:4000/groups/group/search", {
-      params: search,
-    })
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-  if (!search.searchType) {
-    search.searchType = "name";
+const searchBy = (data) => {
+  if (data == "changeSearchType") {
+    isLoading.search.search = "";
   }
-  socket.emit("searchBy", search);
+  isLoading.store.isSearching = true;
+  useSocket?.getAllData();
 };
 
 const search = reactive({
@@ -248,6 +242,7 @@ const options = [
 ];
 
 onMounted(() => {
+  useSocket = useSocketStore();
   isMount.value = true;
   const token = localStorage.getItem("token");
   console.log(token);

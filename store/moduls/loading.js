@@ -9,6 +9,7 @@ export const useLoadingStore = defineStore("loading", () => {
     loadingTypes: [],
     allData: "",
     pageName: "",
+    isSearching: false,
   });
 
   const search = reactive({
@@ -35,20 +36,5 @@ export const useLoadingStore = defineStore("loading", () => {
     return store.loadingTypes?.includes(type);
   }
 
-  function searchBy() {
-    if (!search.searchType) {
-      search.searchType = "name";
-    }
-    axios
-      .post(baseUrl + "/api/groups/search", search)
-      .then((res) => {
-        console.log(res);
-        store.allData = res.data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  return { store, search, addLoading, removeLoading, isLoadingType, searchBy };
+  return { store, search, addLoading, removeLoading, isLoadingType };
 });

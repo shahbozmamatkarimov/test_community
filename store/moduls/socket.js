@@ -35,16 +35,22 @@ export const useSocketStore = defineStore("socket", () => {
 
   // getAll
   const getAllData = () => {
+    if (isLoading.store.isSearching) {
+      isLoading.store.isSearching = false;
+      store.pagination = 1;
+    }
+    if (!isLoading.search.searchType) {
+      isLoading.search.searchType = "name";
+    }
     isLoading.addLoading("getAllData");
-    socket.emit("getAll/" + isLoading.store.pageName, store.pagination);
+    socket.emit("getAll/" + isLoading.store.pageName, {
+      page: store.pagination,
+      data: isLoading.search,
+    });
   };
 
-  
   // create
   const createData = () => {
-    // for (let i = 200; i< 400; i++){
-    //   socket.emit("create/" + isLoading.store.pageName, {name: i, description: i});
-    // }
     isLoading.addLoading("modal");
     socket.emit("create/" + isLoading.store.pageName, useGroup.group);
   };
@@ -71,8 +77,13 @@ export const useSocketStore = defineStore("socket", () => {
   // delete
   const deleteData = () => {
     isLoading.addLoading("modal");
-    socket.emit("delete/" + isLoading.store.pageName, 262);
+    socket.emit("delete/" + isLoading.store.pageName, useGroup.store.id);
   };
+
+  // socket listener
+  socket.on("listener", (res) => {
+    getAllData();
+  });
 
   // getAll listener
   socket.on(isLoading.store.pageName, (res) => {
@@ -88,6 +99,7 @@ export const useSocketStore = defineStore("socket", () => {
     isLoading.removeLoading("modal");
     if (res.data.status === 400) return showError(res.data.error);
     modal.create = false;
+    getAllData();
   });
 
   // get by id listener
@@ -103,13 +115,19 @@ export const useSocketStore = defineStore("socket", () => {
     isLoading.removeLoading("modal");
     if (res.data.status === 404) return showError(res.data.error);
     modal.create = false;
+    getAllData();
   });
 
   // delete listener
   socket.on("deleted", (res) => {
     isLoading.removeLoading("modal");
-    if (res.data.status === 404) return showError(res.data.error);
+    if (res.data.status === 404) {
+      showError(res.data.error);
+      return;
+    }
+
     modal.delete = false;
+    getAllData();
   });
 
   return {
