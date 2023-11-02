@@ -182,7 +182,7 @@
           <div class="flex items-center pt-2.5">
             <img
               class="w-6 h-6 mr-0.5 object-cover rounded-full"
-              src="@/assets/example/user.svg"
+              src="@/assets/navbar/user.svg"
               alt="Jese image"
             />
             <p class="text-sm leading-4 font-medium ml-2">
