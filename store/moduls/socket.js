@@ -11,7 +11,6 @@ export const useSocketStore = defineStore("socket", () => {
   const baseUrl = runtime.public.baseURL;
   const isLoading = useLoadingStore();
   const token = localStorage.getItem("token");
-
   // use vue stores
   const useGroup = useGroupStore();
   // end vue stores
@@ -89,9 +88,9 @@ export const useSocketStore = defineStore("socket", () => {
   socket.on(isLoading.store.pageName, (res) => {
     isLoading.removeLoading("getAllData");
     console.log(res);
-    if (res.data.status === 404) return showError(res.data.error);
-    store.pageData = res.data.pagination;
-    isLoading.store.allData = res.data.records;
+    if (res.data?.status === 404) return showError(res.data?.error);
+    store.pageData = res.data?.pagination;
+    isLoading.store.allData = res.data?.records;
   });
 
   // created listener

@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   //   ],
   // },
   css: ["~/assets/main.scss"],
-  plugins: [{ src: "~/plugins/socket.js", ssr: false }],
+  // plugins: [{ src: "~/plugins/socket.js", ssr: false }],
   postcss: {
     plugins: {
       tailwindcss: {},

@@ -183,7 +183,7 @@
           :class="
             useSocket?.store.pagination ==
               useSocket?.store?.pageData?.total_pages ||
-            useSocket?.store.pageData.total_count === 0
+            useSocket?.store.pageData?.total_count === 0
               ? 'opacity-50 pointer-events-none'
               : ''
           "

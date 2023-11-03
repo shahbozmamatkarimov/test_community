@@ -467,20 +467,20 @@
 <script setup>
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000");
+// const socket = io("http://localhost:4000");
 
 const message = ref("");
 
 const sendMessage = () => {
-  socket.emit("newMessage", message.value);
+  // socket.emit("newMessage", message.value);
   message.value = "";
 };
 
 onMounted(() => {
   
-  socket.on("onMessage", (data) => {
-    console.log("Received new message:", data);
-    // Handle the received message data
-  });
+  // socket.on("onMessage", (data) => {
+  //   console.log("Received new message:", data);
+  //   // Handle the received message data
+  // });
 });
 </script>

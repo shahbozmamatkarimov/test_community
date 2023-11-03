@@ -11,20 +11,20 @@
 import { ref, onMounted } from "vue";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:4000");
+// const socket = io("http://localhost:4000");
 const messages = ref([]);
 
 const newMessage = () => {
-  socket.emit("newMessage", messages.value);
+  // socket.emit("newMessage", messages.value);
 }
 
 onMounted(() => {
-  socket.on("onMessage", (message) => {
-    messages.value.push(message);
-  });
+  // socket.on("onMessage", (message) => {
+  //   messages.value.push(message);
+  // });
 });
 
 const sendMessage = () => {
-  socket.emit("message", { text: "Hello, Socket.IO!" });
+  // socket.emit("message", { text: "Hello, Socket.IO!" });
 };
 </script>
