@@ -14,7 +14,7 @@ export const useSocketStore = defineStore("socket", () => {
   // use vue stores
   const useGroup = useGroupStore();
   // end vue stores
-
+  console.log(baseUrl);
   const socket = io(baseUrl, {
     auth: {
       token: "Bearer " + token,
