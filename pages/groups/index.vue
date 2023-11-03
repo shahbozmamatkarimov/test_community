@@ -52,7 +52,7 @@
                     </tr>
                   </thead>
                   <tbody
-                    v-if="store.is_Loading"
+                    v-if="isLoading.isLoadingType('getAllData')"
                     class="bg-gray-800 pointer-events-none"
                   >
                     <tr
@@ -109,7 +109,7 @@
                   </tbody>
                 </table>
                 <div
-                  v-if="!store.is_Loading && !isLoading.store.allData?.length"
+                  v-if="!isLoading.isLoadingType('getAllData') && !isLoading.store.allData?.length"
                   class="flex flex-col space-y-5 items-center justify-center font-medium mt-0.5 h-80 bg-gray-800"
                 >
                   <p>Guruh mavjud emas</p>
@@ -355,6 +355,7 @@ let useSocket;
 const isLoading = useLoadingStore();
 const useGroup = useGroupStore();
 isLoading.store.pageName = "groups";
+isLoading.addLoading("getAllData");
 
 const store = reactive({
   allGroups: "",

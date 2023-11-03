@@ -19,14 +19,13 @@ export default defineNuxtConfig({
   // io: {
   //   sockets: [
   //     {
-  //       name: "tags",
-  //       url: "http://localhost:4000",
+  //       url: "https://testzone-xc93.onrender.com",
   //       default: true,
   //     },
   //   ],
   // },
   css: ["~/assets/main.scss"],
-  plugins: [{ src: "~/plugins/socket.js", ssr: false }],
+  // plugins: [{ src: "~/plugins/socket.js", ssr: false }],
   postcss: {
     plugins: {
       tailwindcss: {},
