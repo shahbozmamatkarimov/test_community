@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Figtree:wght@500&display=swap");
 @import "./styles/elementplus.scss";
+@import "./styles/sidebar.scss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -38,4 +39,23 @@ input {
 
 .searchBy input {
   box-shadow: none !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+// pagination media
+@media (max-width: 550px) {
+  .nextButton {
+    display: none;
+  }
+}
+
+@media (max-width: 420px){
+.nextMainButton {
+  padding: 8px;
+}
 }

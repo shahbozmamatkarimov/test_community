@@ -1,7 +1,7 @@
 <template>
   <main class="bg-gray-900 min-h-[100px] py-2">
     <nav
-      class="flex justify-between items-center px-10 py-2 bg-gray-800 rounded-lg font-medium relative z-50"
+      class="flex justify-between items-center min-h-[64px] lg:px-10 px-5 py-2 bg-gray-800 rounded-lg font-medium relative z-50"
     >
       <div>
         <h1
@@ -14,30 +14,32 @@
       <ul class="flex items-center gap-[13px]">
         <li
           @click="store.searchInput = !store.searchInput"
-          class="flex justify-center cursor-pointer items-center rounded-full w-12 h-12 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
+          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 w-10 h-10 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
         >
           <img src="@/assets/navbar/search.svg" alt="" />
         </li>
         <li
           @click="store.notificationModal = true"
-          class="flex justify-center cursor-pointer items-center rounded-full w-12 h-12 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
+          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 w-10 h-10 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
         >
           <img src="@/assets/navbar/bell.svg" alt="" />
         </li>
         <li
           @click="$router.push('/profile')"
-          class="flex items-center w-40 space-x-[13px] cursor-pointer"
+          class="flex items-center lg:w-40 w-32 space-x-[13px] cursor-pointer"
         >
           <div
-            class="bg-gray-200 rounded-full overflow-hidden min-w-[46px] max-w-[46px] min-h-[46px] max-h-[46px]"
+            class="bg-gray-200 rounded-full overflow-hidden lg:h-[46px] lg:min-w-[46px] h-[38px] min-w-[38px]"
           >
             <img
               class="h-full w-full object-cover"
-              src="@/assets/navbar/user.svg"
+              src="@/assets/nodata/user_placeholder.png"
               alt=""
             />
           </div>
-          <div class="w-40 leading-[19px] text-md">
+          <div
+            class="lg:w-24 w-16 lg:leading-6 leading-5 lg:text-[16px] text-xs"
+          >
             <h1 class="truncate">Jack</h1>
             <p class="truncate">Johnson</p>
           </div>
@@ -205,11 +207,11 @@ let useSocket;
 const isLoading = useLoadingStore();
 let socket = null;
 const searchBy = (data) => {
-  if (data == "changeSearchType") {
+  if (data == "changeSearchType" && isLoading.search.searchType == "id") {
     isLoading.search.search = "";
   }
   isLoading.store.isSearching = true;
-  useSocket?.getAllData();
+  useSocket?.getAllData("searching");
 };
 
 const search = reactive({

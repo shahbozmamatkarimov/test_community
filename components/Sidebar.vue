@@ -4,7 +4,7 @@
   >
     <!-- Component Start -->
     <div
-      class="sm:flex hidden space-x-6 flex-col items-center w-52 p-2 m-2 h-full overflow-hidden text-gray-400 bg-gray-800 rounded"
+      class="md:flex hidden space-x-6 flex-col items-center w-52 p-2 m-2 h-full overflow-hidden text-gray-400 bg-gray-800 rounded"
     >
       <a class="flex items-center w-full px-3 mt-3" href="#">
         <svg
@@ -24,104 +24,12 @@
           class="flex flex-col items-center w-full mt-3 border-t border-gray-700"
         >
           <router-link
-            to="/"
+            v-for="i in header"
+            :to="i.link"
             class="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300"
           >
-            <svg
-              class="w-6 h-6 stroke-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            <p class="ml-2 text-sm font-medium">Dasboard</p>
-          </router-link>
-          <router-link
-            to="/groups"
-            class="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300"
-          >
-            <svg
-              class="w-6 h-6 stroke-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <span class="ml-2 text-sm font-medium">Guruhlar</span>
-          </router-link>
-          <router-link
-            to="/students"
-            class="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300"
-          >
-            <svg
-              class="w-6 h-6 stroke-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <p class="ml-2 text-sm font-medium">O'quvchilar</p>
-          </router-link>
-          <router-link
-            to="/tests"
-            class="flex items-center w-full h-12 px-3 mt-2 rounded"
-          >
-            <svg
-              class="w-6 h-6 stroke-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <p class="ml-2 text-sm font-medium">Testlar</p>
-          </router-link>
-          <router-link
-            to="/results"
-            class="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300"
-          >
-            <svg
-              class="w-6 h-6 stroke-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
-              />
-            </svg>
-            <p class="ml-2 text-sm font-medium">Natijalar</p>
+            <img class="w-6 h-6 stroke-current" :src="i.icon" alt="" />
+            <p class="ml-2 text-sm font-medium">{{ i.title }}</p>
           </router-link>
         </ul>
         <div
@@ -211,39 +119,12 @@
       </a>
     </div>
     <!-- Component End  -->
-
-    <nav
-      class="sm:hidden bg-gray-800 p-4 fixed bottom-0 left-0 border w-full z-50"
-    >
-      <ul
-        class="flex justify-around rounded-lg p-3 bg-gray-900 text-2xl text-white/50"
-      >
-        <li
-          class="flex justify-center items-center rounded-lg border h-10 w-10"
-        >
-          <i class="bx bxs-home"></i>
-        </li>
-        <li
-          class="flex justify-center items-center rounded-lg border h-10 w-10"
-        >
-          <i class="bx bxs-home"></i>
-        </li>
-        <li
-          class="flex justify-center items-center rounded-lg border h-10 w-10"
-        >
-          <i class="bx bxs-home"></i>
-        </li>
-        <li
-          class="flex justify-center items-center rounded-lg border h-10 w-10"
-        >
-          <i class="bx bxs-home"></i>
-        </li>
-      </ul>
-    </nav>
   </aside>
 </template>
 
-<script setup></script>
+<script setup>
+import { header } from "@/constants/sidebar.js";
+</script>
 
 <style lang="scss" scoped>
 .router-link-exact-active {

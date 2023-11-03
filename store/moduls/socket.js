@@ -14,7 +14,6 @@ export const useSocketStore = defineStore("socket", () => {
   // use vue stores
   const useGroup = useGroupStore();
   // end vue stores
-  console.log(baseUrl);
   const socket = io(baseUrl, {
     auth: {
       token: "Bearer " + token,
@@ -22,6 +21,7 @@ export const useSocketStore = defineStore("socket", () => {
   });
 
   const store = reactive({
+    isListener: true,
     pagination: 1,
     pageData: "",
   });
@@ -33,7 +33,11 @@ export const useSocketStore = defineStore("socket", () => {
   });
 
   // getAll
-  const getAllData = () => {
+  const getAllData = (isSearching) => {
+    if (store.isListener || isSearching === "searching") {
+      isLoading.addLoading("getAllData");
+    }
+    store.isListener = false;
     if (isLoading.store.isSearching) {
       isLoading.store.isSearching = false;
       store.pagination = 1;
@@ -41,7 +45,6 @@ export const useSocketStore = defineStore("socket", () => {
     if (!isLoading.search.searchType) {
       isLoading.search.searchType = "name";
     }
-    isLoading.addLoading("getAllData");
     socket.emit("getAll/" + isLoading.store.pageName, {
       page: store.pagination,
       data: isLoading.search,
@@ -50,22 +53,24 @@ export const useSocketStore = defineStore("socket", () => {
 
   // create
   const createData = () => {
+    store.isListener = true;
     isLoading.addLoading("modal");
     socket.emit("create/" + isLoading.store.pageName, useGroup.group);
   };
 
   // get by id
   const getDataById = (id) => {
+    store.isListener = true;
     isLoading.addLoading("modal");
     useGroup.store.id = id;
     modal.create = true;
     modal.edit = true;
-    console.log(id);
     socket.emit("getById/" + isLoading.store.pageName, id);
   };
 
   // update
   const updateData = () => {
+    store.isListener = true;
     isLoading.addLoading("modal");
     socket.emit("update/" + isLoading.store.pageName, {
       id: useGroup.store.id,
@@ -75,6 +80,7 @@ export const useSocketStore = defineStore("socket", () => {
 
   // delete
   const deleteData = () => {
+    store.isListener = true;
     isLoading.addLoading("modal");
     socket.emit("delete/" + isLoading.store.pageName, useGroup.store.id);
   };
@@ -87,8 +93,7 @@ export const useSocketStore = defineStore("socket", () => {
   // getAll listener
   socket.on(isLoading.store.pageName, (res) => {
     isLoading.removeLoading("getAllData");
-    console.log(res);
-    if (res.data?.status === 404) return showError(res.data?.error);
+    if (res.status === 404) return showError(res.error);
     store.pageData = res.data?.pagination;
     isLoading.store.allData = res.data?.records;
   });
@@ -96,15 +101,14 @@ export const useSocketStore = defineStore("socket", () => {
   // created listener
   socket.on("created", (res) => {
     isLoading.removeLoading("modal");
-    if (res.data.status === 400) return showError(res.data.error);
+    if (res.status === 400) return showError("Bunday guruh mavjud!");
     modal.create = false;
-    getAllData();
   });
 
   // get by id listener
   socket.on("getById", (res) => {
     isLoading.removeLoading("modal");
-    if (res.data.status === 404) return showError(res.data.error);
+    if (res.status === 404) return showError(res.data.error);
     useGroup.group.name = res.data?.name;
     useGroup.group.description = res.data?.description;
   });
@@ -112,21 +116,19 @@ export const useSocketStore = defineStore("socket", () => {
   // upated listener
   socket.on("updated", (res) => {
     isLoading.removeLoading("modal");
-    if (res.data.status === 404) return showError(res.data.error);
+    if (res.status === 404) return showError("Bunday guruh mavjud!");
     modal.create = false;
-    getAllData();
   });
 
   // delete listener
   socket.on("deleted", (res) => {
     isLoading.removeLoading("modal");
-    if (res.data.status === 404) {
-      showError(res.data.error);
+    if (res.status === 404) {
+      showError("Guruh topilmadi!");
       return;
     }
 
     modal.delete = false;
-    getAllData();
   });
 
   return {

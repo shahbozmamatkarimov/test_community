@@ -32,6 +32,7 @@ export const useNotification = () => {
     ElMessage({
       showClose: true,
       message: messageContent,
+      grouping: true,
       type: "error",
     });
   };

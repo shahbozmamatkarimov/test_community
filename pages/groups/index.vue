@@ -20,35 +20,29 @@
             <div
               class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
             >
-              <div class="shadow overflow-hidden sm:rounded-lg">
+              <div class="shadow overflow-hidden rounded-lg">
                 <table class="min-w-full text-sm">
                   <thead class="bg-blue-600 text-xs uppercase font-medium">
                     <tr>
                       <th
                         scope="col"
-                        class="px-3 py-3 text-left tracking-wider"
+                        class="px-4 py-4 text-left tracking-wider"
                       >
                         №
                       </th>
                       <th
                         scope="col"
-                        class="px-3 py-3 text-left tracking-wider"
+                        class="px-4 py-4 text-left tracking-wider"
                       >
                         Nomi
                       </th>
                       <th
                         scope="col"
-                        class="px-2 text-start py-3 tracking-wider"
+                        class="px-4 text-start py-4 tracking-wider"
                       >
                         Tavfsif
                       </th>
-                      <th
-                        scope="col"
-                        class="px-2 py-3 whitespace-nowrap tracking-wider"
-                      >
-                        O'quvchilar
-                      </th>
-                      <th scope="col" class="px-2 py-3"></th>
+                      <th scope="col" class="px-4 py-4 min-w-[40px]"></th>
                     </tr>
                   </thead>
                   <tbody
@@ -56,13 +50,13 @@
                     class="bg-gray-800 pointer-events-none"
                   >
                     <tr
-                      v-for="i in 5"
+                      v-for="i in 10"
                       :key="i.id"
                       :class="i % 2 == 0 ? 'bg-gray-800' : 'bg-black'"
                       class="bg-opacity-20 animate-pulse"
                     >
                       <td
-                        v-for="i in 5"
+                        v-for="i in 4"
                         :key="i"
                         class="px-4 h-[62px] py-4"
                       ></td>
@@ -77,20 +71,14 @@
                     >
                       <td class="px-4 py-4">#{{ i.id }}</td>
                       <td
-                        class="px-2 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start w-40 whitespace-nowrap"
                       >
                         <p class="font-medium truncate w-40">{{ i.name }}</p>
                       </td>
-                      <td class="px-2 py-4 whitespace-nowrap">
+                      <td class="px-4 py-4 whitespace-nowrap">
                         {{ i.description }}
                       </td>
-                      <td class="px-2 py-4 text-center whitespace-nowrap">
-                        <button
-                          @click="$router.push('/groups/' + i.id)"
-                          class="bx bx-show bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
-                        ></button>
-                      </td>
-                      <td class="px-2 py-4 space-x-2 whitespace-nowrap">
+                      <td class="flex items-center justify-center mx-2 px-4 py-4 space-x-2 whitespace-nowrap">
                         <button
                           @click="() => useSocket.getDataById(i.id)"
                           class="bx bx-pencil bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
@@ -109,7 +97,10 @@
                   </tbody>
                 </table>
                 <div
-                  v-if="!isLoading.isLoadingType('getAllData') && !isLoading.store.allData?.length"
+                  v-if="
+                    !isLoading.isLoadingType('getAllData') &&
+                    !isLoading.store.allData?.length
+                  "
                   class="flex flex-col space-y-5 items-center justify-center font-medium mt-0.5 h-80 bg-gray-800"
                 >
                   <p>Guruh mavjud emas</p>
@@ -127,8 +118,10 @@
         <!-- Component End  -->
       </div>
     </section>
-
-    <nav class="flex justify-between py-5">
+    <nav
+      v-if="isLoading.store.allData?.length"
+      class="flex justify-between items-center py-5"
+    >
       <div>
         <button
           v-show="useSocket?.store.pageData?.total_pages > 10"
@@ -138,10 +131,10 @@
               ? ''
               : 'pointer-events-none opacity-50 bg-blue-400'
           "
-          class="flex items-center gap-2 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
+          class="flex items-center nextMainButton gap-2 active:bg-transparent active:border-white duration-150 border h-8 border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
         >
           <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
-          Previous
+          <span class="nextButton">Previous</span>
         </button>
       </div>
       <ul class="flex">
@@ -152,17 +145,18 @@
               : ''
           "
         >
-          <a
+          <button
             @click="() => pageNext('minus')"
             class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 hover:border-blue-600 active:bg-blue-600 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
             href="#"
             aria-label="Previous"
           >
             <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
-          </a>
+          </button>
         </li>
-        <li v-for="i in 10">
-          <a
+        <!-- {{ useSocket?.store.pageData }} -->
+        <li v-for="i in 5">
+          <button
             @click="() => pageNext(i + store.paginationStep, 'next')"
             v-if="
               i + store.paginationStep <=
@@ -177,7 +171,7 @@
             href="#"
           >
             {{ i + store.paginationStep }}
-          </a>
+          </button>
         </li>
         <li
           :class="
@@ -188,40 +182,40 @@
               : ''
           "
         >
-          <a
+          <button
             @click="() => pageNext('plus')"
             class="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 hover:border-blue-600 active:bg-blue-600 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
             href="#"
             aria-label="Next"
           >
             <img src="@/assets/navbar/arrow.svg" alt="" />
-          </a>
+          </button>
         </li>
       </ul>
       <div>
         <button
-          v-show="useSocket?.store.pageData?.total_pages > 10"
+          v-show="useSocket?.store.pageData?.total_pages > 5"
           @click="() => pageNext('plusTen')"
           :class="
             store.paginationStep <
-            Math.floor(useSocket?.store.pageData?.total_pages) - 10
+            Math.floor(useSocket?.store.pageData?.total_pages) - 5
               ? ''
               : 'pointer-events-none opacity-50 bg-blue-400'
           "
-          class="flex items-center gap-2 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
+          class="flex items-center nextMainButton gap-2 h-8 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
         >
-          Next
+          <span class="nextButton">Next</span>
           <img src="@/assets/navbar/arrow.svg" alt="" />
         </button>
       </div>
     </nav>
-
     <!------------------------- edit contact ------------------------------->
     <el-dialog
       v-if="isMount"
       v-model="useSocket.modal.create"
       style="border-radius: 16px"
-      class="max-w-fit rounded-2xl p-10 min-w-[500px] mx-auto h-[240]"
+      width="500"
+      class="rounded-2xl p-10 min-w-[400px] h-[240]"
       align-center
       close-icon="false"
     >
@@ -303,7 +297,7 @@
       v-model="useSocket.modal.delete"
       width="500"
       style="border-radius: 16px"
-      class="max-w-fit rounded-2xl p-10 min-w-[420px] mx-auto"
+      class="max-w-fit rounded-2xl p-10 min-w-[400px] mx-auto"
       align-center
       close-icon="false"
     >
@@ -369,6 +363,7 @@ const store = reactive({
   is_Loading: false,
 
   paginationStep: 0,
+  lastPage: "",
 });
 
 const form = reactive({
@@ -386,43 +381,35 @@ function handleSubmit() {
 
 function pageNext(page, next) {
   console.log(useSocket.store.pagination);
-  console.log(store.paginationStep + 10);
+  console.log(store.paginationStep + 5);
   if (
     (page == "minusTen" ||
       (useSocket.store.pagination == store.paginationStep + 1 &&
         page == "minus")) &&
     store.paginationStep !== 0
   ) {
-    store.paginationStep -= 10;
+    store.paginationStep -= 5;
     console.log(store.paginationStep);
-    useSocket.store.pagination = store.paginationStep + 10;
+    useSocket.store.pagination = store.paginationStep + 5;
   } else if (
     (page == "plusTen" ||
-      (useSocket.store.pagination == store.paginationStep + 10 &&
+      (useSocket.store.pagination == store.paginationStep + 5 &&
         page == "plus")) &&
-    store.paginationStep < Math.floor(useSocket.store.pageData.total_pages) - 10
+    store.paginationStep < Math.floor(useSocket.store.pageData.total_pages) - 5
   ) {
-    store.paginationStep += 10;
+    store.paginationStep += 5;
     useSocket.store.pagination = store.paginationStep + 1;
   } else if (page == "plus") {
     useSocket.store.pagination += 1;
-    useSocket.getAllData();
   } else if (page == "minus") {
     useSocket.store.pagination -= 1;
-    useSocket.getAllData();
   } else if (next == "next") {
     useSocket.store.pagination = page;
-    useSocket.getAllData();
   }
-}
-
-function paginationStep(page) {
-  console.log(useSocket.store.pageData.total_pages);
-  console.log(page);
+  useSocket.getAllData();
 }
 
 const deleteGroup = () => {
-  console.log("object");
   useSocket.deleteData(store.deleteId);
 };
 

@@ -161,7 +161,7 @@
             class="mb-10 sm:mb-0 mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           >
             <div
-              @click="() => (store.modalCreate = true)"
+              @click="useSocket.modal.create = true"
               class="group bg-gray-900/30 py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <a
@@ -869,12 +869,116 @@
         </div>
       </div>
     </section>
+
+    <!------------------------- edit contact ------------------------------->
+    <el-dialog
+      v-if="isMount"
+      v-model="useSocket.modal.create"
+      style="border-radius: 16px"
+      width="500"
+      class="rounded-2xl p-10 min-w-[400px] h-[240]"
+      align-center
+      close-icon="false"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h1
+          v-if="!store.edit"
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <i class="bx bxs-group"></i>
+          Guruh qo'shish
+        </h1>
+        <h1
+          v-else="!store.edit"
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <i class="bx bxs-group"></i>
+          Guruhni tahrirlash
+        </h1>
+        <img
+          @click="useSocket.modal.create = false"
+          class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
+      </div>
+      <form
+        :class="
+          isLoading.isLoadingType('modal')
+            ? 'pointer-events-none animate-pulse'
+            : ''
+        "
+        @submit.prevent="handleSubmit"
+      >
+        <div class="mt-8">
+          <div>
+            <div class="space-y-3">
+              <div class="grid gap-3">
+                <input
+                  type="text"
+                  class="w-full"
+                  placeholder="Guruh nomi"
+                  required
+                />
+                <input type="text" class="w-full" placeholder="Guruh tavsifi" />
+                <el-select
+                  v-model="store.lawyers_id"
+                  filterable
+                  class="min-w-[420px]"
+                  placeholder="Select lawyer(s)"
+                >
+                  <el-option
+                    v-for="(item, index) in options"
+                    @click="() => selectCategory(item.value)"
+                    :key="item.value"
+                    :label="item.label
+                    "
+                    :value="index"
+                  />
+                </el-select>
+                <div>
+                  <el-date-picker
+                    prefix-icon="false"
+                    type="date"
+                    class="max-w-[180px] min-h-[46px] border-0 rounded-[10px] bg-[#F4F3F9]"
+                    placeholder="Select date"
+                    format="YYYY/MM/DD"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          v-if="useSocket.modal.edit"
+          :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Guruhni tahrirlash
+          <Loading />
+        </button>
+        <button
+          v-else
+          :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Guruhni qo'shish
+          <Loading />
+        </button>
+      </form>
+    </el-dialog>
   </main>
 </template>
 
 <script setup>
+import { useSocketStore, useLoadingStore } from "@/store";
 import { useNotification } from "@/composables/notification";
 
+let useSocket = null;
+const isLoading = useLoadingStore();
+const isMount = ref(false);
 const { showLoading, showSuccess, showWarning, showError, destroy } =
   useNotification();
 
@@ -884,7 +988,7 @@ const baseURL = runtimeConfig.public.baseURL;
 // 2020-03-31 yil, kun , oy
 const store = reactive({
   allProducts: "",
-  modalCreate: false,
+  modalCreate: true,
   modalDelete: false,
   token: "",
   deleteId: "",
@@ -895,6 +999,29 @@ const store = reactive({
   is_Loading: false,
   options: [],
 });
+
+const options = [
+  {
+    value: 'Option1',
+    label: 'Option1',
+  },
+  {
+    value: 'Option2',
+    label: 'Option2',
+  },
+  {
+    value: 'Option3',
+    label: 'Option3',
+  },
+  {
+    value: 'Option4',
+    label: 'Option4',
+  },
+  {
+    value: 'Option5',
+    label: 'Option5',
+  },
+]
 
 const createModal = reactive({
   username: "",
@@ -1159,9 +1286,8 @@ function getDays(startDate) {
 }
 
 onMounted(() => {
-  store.token = localStorage.getItem("token");
-  getAllGroups();
-  // getAllStudents();
+  useSocket = useSocketStore();
+  isMount.value = true;
 });
 </script>
 
