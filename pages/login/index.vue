@@ -91,6 +91,10 @@
 </template>
 
 <script setup>
+
+const runtime = useRuntimeConfig();
+  const baseUrl = runtime.public.baseURL;
+
 definePageMeta({
   layout: false,
 });
@@ -103,7 +107,7 @@ const form = reactive({
 });
 
 const handleSubmit = () => {
-  fetch("http://localhost:4000/api/admin/login", {
+  fetch(baseUrl + "/api/admin/login", {
     method: "POST",
     body: JSON.stringify(form),
     headers: {

@@ -1,14 +1,14 @@
 <template>
   <main>
-    <section class="sm:flex overflow-hidden overflow-y-auto max-h-screen w-full justify-center items-center min-h-screen">
+    <section
+      class="sm:flex overflow-hidden overflow-y-auto max-h-screen w-full justify-center items-center min-h-screen"
+    >
       <div>
         <div
           class="sm:flex w-full min-h-full sm:mx-10 mx-0 bg-gray-800 text-white rounded-lg flex-col justify-center px-6 py-12 lg:px-8"
         >
           <div class="flex items-center sm:mx-auto w-full max-w-2xl">
-            <h2
-              class="text-center text-2xl font-bold tracking-tight"
-            >
+            <h2 class="text-center text-2xl font-bold tracking-tight">
               Register to your account
             </h2>
           </div>
@@ -134,6 +134,9 @@
 </template>
 
 <script setup>
+const runtime = useRuntimeConfig();
+const baseUrl = runtime.public.baseURL;
+
 definePageMeta({
   layout: "custom",
 });
@@ -149,7 +152,7 @@ const form = reactive({
 });
 
 const handleSubmit = () => {
-  fetch("http://localhost:4000/api/admin/register", {
+  fetch(baseUrl + "/api/admin/register", {
     method: "POST",
     body: JSON.stringify(form),
     headers: {
@@ -159,7 +162,7 @@ const handleSubmit = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-      if (res.message === "Admin ro'yxatdan muvaffaqiyatli o'tdi"){
+      if (res.message === "Admin ro'yxatdan muvaffaqiyatli o'tdi") {
         router.push("/login");
       }
     })

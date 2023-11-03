@@ -993,8 +993,8 @@ const getAllGroups = () => {
       destroy();
       // store.allProducts = res;
       console.log(res[0]);
-      createModal.group_id = res[0].id
-      getOneGroup(createModal.group_id)
+      createModal.group_id = res[0].id;
+      getOneGroup(createModal.group_id);
       store.options = [];
 
       for (let i = 0; i < res.length; i++) {
@@ -1065,7 +1065,7 @@ const getOneGroup = (id) => {
 };
 
 const editStudent = () => {
-  fetch(`http://localhost:4000/api/student/update/${store.editId}`, {
+  fetch(baseUrl + `/api/student/update/${store.editId}`, {
     method: "PATCH",
     headers: {
       Accept: "application/json",
@@ -1090,7 +1090,7 @@ const editStudent = () => {
 };
 
 const deleteStudent = () => {
-  fetch(`http://localhost:4000/api/student/${store.deleteId}`, {
+  fetch(baseURL + `/api/student/${store.deleteId}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",

@@ -784,7 +784,7 @@ const editTest = () => {
 };
 
 const deleteStudent = () => {
-  fetch(`http://localhost:4000/api/tests/${store.deleteId}`, {
+  fetch(baseURL + `/api/tests/${store.deleteId}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
