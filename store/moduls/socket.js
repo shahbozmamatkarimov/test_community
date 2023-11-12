@@ -22,32 +22,30 @@ export const useSocketStore = defineStore("socket", () => {
 
   const store = reactive({
     isListener: true,
-    pagination: 1,
-    pageData: "",
-  });
-
-  const modal = reactive({
-    create: false,
-    edit: false,
-    delete: false,
   });
 
   // getAll
   const getAllData = (isSearching) => {
+    if (isSearching == "searchByName"){
+      isLoading.search.searchType.groups = "name";
+    }
     if (store.isListener || isSearching === "searching") {
-      isLoading.addLoading("getAllData");
+      isLoading.addLoading("getAllData/groups");
     }
     store.isListener = false;
     if (isLoading.store.isSearching) {
       isLoading.store.isSearching = false;
-      store.pagination = 1;
+      isLoading.store.pagination.groups = 1;
     }
     if (!isLoading.search.searchType) {
-      isLoading.search.searchType = "name";
+      isLoading.search.searchType.groups = "name";
     }
-    socket.emit("getAll/" + isLoading.store.pageName, {
-      page: store.pagination,
-      data: isLoading.search,
+    socket.emit("getAll/groups", {
+      page: isLoading.store.pagination.groups,
+      data: {
+        search: isLoading.search.search.groups,
+        searchType: isLoading.search.searchType.groups
+      },
     });
   };
 
@@ -63,8 +61,8 @@ export const useSocketStore = defineStore("socket", () => {
     store.isListener = true;
     isLoading.addLoading("modal");
     useGroup.store.id = id;
-    modal.create = true;
-    modal.edit = true;
+    isLoading.modal.create = true;
+    isLoading.modal.edit = true;
     socket.emit("getById/" + isLoading.store.pageName, id);
   };
 
@@ -91,18 +89,18 @@ export const useSocketStore = defineStore("socket", () => {
   });
 
   // getAll listener
-  socket.on(isLoading.store.pageName, (res) => {
-    isLoading.removeLoading("getAllData");
+  socket.on("groups", (res) => {
+    isLoading.removeLoading("getAllData/groups");
     if (res.status === 404) return showError(res.error);
-    store.pageData = res.data?.pagination;
-    isLoading.store.allData = res.data?.records;
+    isLoading.store.pageData.groups = res.data?.pagination;
+    isLoading.store.allData.groups = res.data?.records;
   });
 
   // created listener
   socket.on("created", (res) => {
     isLoading.removeLoading("modal");
     if (res.status === 400) return showError("Bunday guruh mavjud!");
-    modal.create = false;
+    isLoading.modal.create = false;
   });
 
   // get by id listener
@@ -117,7 +115,7 @@ export const useSocketStore = defineStore("socket", () => {
   socket.on("updated", (res) => {
     isLoading.removeLoading("modal");
     if (res.status === 404) return showError("Bunday guruh mavjud!");
-    modal.create = false;
+    isLoading.modal.create = false;
   });
 
   // delete listener
@@ -128,12 +126,11 @@ export const useSocketStore = defineStore("socket", () => {
       return;
     }
 
-    modal.delete = false;
+    isLoading.modal.delete = false;
   });
 
   return {
     store,
-    modal,
     createData,
     getAllData,
     getDataById,

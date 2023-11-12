@@ -6,15 +6,30 @@ export const useLoadingStore = defineStore("loading", () => {
   const baseUrl = runtime.public.baseURL;
 
   const store = reactive({
+    searchOptions: [],
     loadingTypes: [],
-    allData: "",
+    allData: {},
     pageName: "",
     isSearching: false,
+    pagination: { groups: 1, students: 1 },
+    pageData: {},
+    calendarModal: false,
   });
 
+  const modal = reactive({
+    create: false,
+    edit: false,
+    delete: false,
+  });
+
+  const searchDate = reactive({
+    start_date: "",
+    end_date: "",
+  })
+
   const search = reactive({
-    search: "",
-    searchType: "name",
+    search: {},
+    searchType: {},
   });
 
   function addLoading(type) {
@@ -32,9 +47,8 @@ export const useLoadingStore = defineStore("loading", () => {
   }
 
   function isLoadingType(type) {
-    console.log(store.loadingTypes?.includes(type));
     return store.loadingTypes?.includes(type);
   }
 
-  return { store, search, addLoading, removeLoading, isLoadingType };
+  return { store, modal, searchDate, search, addLoading, removeLoading, isLoadingType };
 });

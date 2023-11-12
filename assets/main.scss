@@ -54,8 +54,18 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
-@media (max-width: 420px){
-.nextMainButton {
-  padding: 8px;
+@media (max-width: 420px) {
+  .nextMainButton {
+    padding: 8px;
+  }
 }
+
+.uploadedExcel {
+  .el-upload-dragger {
+    display: none;
+  }
+
+  .uploadExcelImage {
+    display: block;
+  }
 }

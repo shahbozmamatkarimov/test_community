@@ -29,7 +29,7 @@
           class="flex items-center lg:w-40 w-32 space-x-[13px] cursor-pointer"
         >
           <div
-            class="bg-gray-200 rounded-full overflow-hidden lg:h-[46px] lg:min-w-[46px] h-[38px] min-w-[38px]"
+            class="bg-gray-200 rounded-full overflow-hidden lg:h-[40px] lg:min-w-[40px] h-[38px] min-w-[38px]"
           >
             <img
               class="h-full w-full object-cover"
@@ -81,14 +81,19 @@
           </div>
           <input
             @input="searchBy"
-            v-model="isLoading.search.search"
+            v-model="isLoading.search.search[isLoading.store.pageName]"
             id="searchType"
             class="font-bold rounded-full w-full h-10 pl-4 bg-transparent ring-1 ring-white leading-tight focus:outline-none focus:shadow-outline lg:text-sm text-xs"
-            :type="isLoading.search.searchType == 'id' ? 'number' : 'text'"
+            :type="
+              isLoading.search.searchType[isLoading.store.pageName] == 'id' ||
+              isLoading.search.searchType[isLoading.store.pageName] == 'student_id'
+                ? 'number'
+                : 'text'
+            "
             placeholder="Search..."
           />
           <el-select
-            v-model="isLoading.search.searchType"
+            v-model="isLoading.search.searchType[isLoading.store.pageName]"
             @change="() => searchBy('changeSearchType')"
             class="m-2 searchBy"
             placeholder="Search by"
@@ -97,7 +102,7 @@
             <label for="searchType">
               <el-option
                 class="options"
-                v-for="item in options"
+                v-for="item in isLoading.store.searchOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -145,6 +150,105 @@
       <button @click="store.logoutModal = false" class="w-full text-[#027DFC]">
         Discard
       </button>
+    </el-dialog>
+
+    <!------------------------- search by date modal ------------------------------->
+    <el-dialog
+      v-if="isMount"
+      v-model="isLoading.store.calendarModal"
+      style="border-radius: 16px"
+      width="500"
+      class="rounded-2xl p-10 min-w-[350px] h-[240]"
+      align-center
+      close-icon="false"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h1
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <i class="bx bxs-group"></i>
+          Kalendar bo'yicha qidirish
+        </h1>
+        <img
+          @click="isLoading.store.calendarModal = false"
+          class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
+      </div>
+      <form
+        :class="
+          isLoading.isLoadingType('modal')
+            ? 'pointer-events-none animate-pulse'
+            : ''
+        "
+        @submit.prevent="handleSearchSubmit"
+      >
+        <div class="mt-8">
+          <div>
+            <div class="space-y-3">
+              <div class="grid gap-3">
+                <h1>Boshlanish sanasi</h1>
+                <div v-if="!searchDate.start_date" classs="min-w-full">
+                  <el-date-picker
+                    id="start-date"
+                    v-model="isLoading.searchDate.start_date"
+                    type="date"
+                    class="min-w-full -mb-3 min-h-[40px] bg-transparent border-0"
+                    placeholder="Sanani tanlang"
+                    format="YYYY/MM/DD"
+                    required
+                  />
+                </div>
+                <el-checkbox
+                  v-if="!searchDate.end_date"
+                  v-model="searchDate.start_date"
+                  ><p class="text-black ml-1 text-[16px]">
+                    Bugungi sana
+                  </p></el-checkbox
+                >
+                <h1 :class="searchDate.end_date ? 'mt-4' : ''">
+                  Tugash sanasi
+                </h1>
+                <div v-if="!searchDate.end_date" classs="min-w-full">
+                  <el-date-picker
+                    id="start-date"
+                    v-model="isLoading.searchDate.end_date"
+                    type="date"
+                    class="min-w-full -mb-3 min-h-[40px] bg-transparent border-0"
+                    placeholder="Sanani tanlang"
+                    format="YYYY/MM/DD"
+                    required
+                  />
+                </div>
+                <el-checkbox
+                  v-if="!searchDate.start_date"
+                  v-model="searchDate.end_date"
+                  ><p class="text-black ml-1 text-[16px]">
+                    Bugungi sana
+                  </p></el-checkbox
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+          class="h-[40px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          Kalendar bo'yicha qidirish
+          <Loading />
+        </button>
+        <button
+          @click="isLoading.store.calendarModal = false"
+          type="button"
+          class="h-[40px] overflow-hidden w-full active:bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+        >
+          Bekor qilish
+          <Loading />
+        </button>
+      </form>
     </el-dialog>
 
     <!-- notifications -->
@@ -199,27 +303,77 @@
 </template>
 
 <script setup>
-import { useLoadingStore, useSocketStore } from "@/store";
+import { useLoadingStore, useSocketStore, useStudentStore, useTestStore } from "@/store";
+import { useNotification } from "@/composables/notification";
 import axios from "axios";
 import { io } from "socket.io-client";
 
+const { showError } = useNotification();
 let useSocket;
+let useStudent;
+let useTests;
+const isMount = ref(false);
 const isLoading = useLoadingStore();
-let socket = null;
-const searchBy = (data) => {
-  if (data == "changeSearchType" && isLoading.search.searchType == "id") {
-    isLoading.search.search = "";
-  }
-  isLoading.store.isSearching = true;
-  useSocket?.getAllData("searching");
-};
 
-const search = reactive({
-  search: "",
-  searchType: "",
+const searchDate = reactive({
+  start_date: false,
+  end_date: false,
 });
 
-const isMount = ref(false);
+const searchBy = (data) => {
+  if (isLoading.search.searchType[isLoading.store.pageName] == "calendar") {
+    isLoading.store.calendarModal = true;
+    return;
+  }
+  if (
+    data == "changeSearchType" &&
+    (isLoading.search.searchType[isLoading.store.pageName] == "id" ||
+      isLoading.search.searchType[isLoading.store.pageName] == "student_id")
+  ) {
+    isLoading.search.search[isLoading.store.pageName] = "";
+  }
+  isLoading.store.isSearching = true;
+
+  if (isLoading.store.pageName == "groups") {
+    useSocket?.getAllData("searching");
+  } else if (isLoading.store.pageName == "students") {
+    useStudent?.getAllData("searching");
+  }else if (isLoading.store.pageName == "tests") {
+    useTests?.getAllData("searching");
+  }
+};
+
+function handleSearchSubmit() {
+  if (searchDate.start_date) {
+    isLoading.searchDate.start_date = new Date();
+  }
+  if (searchDate.end_date) {
+    isLoading.searchDate.end_date = new Date();
+  }
+  if (!isLoading.searchDate.start_date && !isLoading.searchDate.end_date) {
+    return showError(
+      "Iltimos, boshlanish yoki tugash sanalaridan birini kiriting!"
+    );
+  }
+  if (isLoading.searchDate.start_date && isLoading.searchDate.end_date) {
+    const startDate = new Date(isLoading.searchDate.start_date).getTime();
+    const endDate = new Date(isLoading.searchDate.end_date).getTime();
+    if (startDate > endDate) {
+      return showError(
+        "Boshlanish sanasi tugash sanasidan kichik bo'lishi kerak!"
+      );
+    }
+  }
+
+  isLoading.search.search[isLoading.store.pageName] = isLoading.searchDate;
+  if (isLoading.store.pageName == "groups") {
+    useSocket?.getAllData("searching");
+  } else if (isLoading.store.pageName == "students") {
+    useStudent?.getAllData("searching");
+  }else if (isLoading.store.pageName == "tests") {
+    useTests?.getAllData("searching");
+  }
+}
 
 const store = reactive({
   logoutModal: false,
@@ -228,36 +382,11 @@ const store = reactive({
   searchType: "",
 });
 
-const options = [
-  {
-    value: "id",
-    label: "id",
-  },
-  {
-    value: "name",
-    label: "ismi",
-  },
-  {
-    value: "description",
-    label: "tavsifi",
-  },
-];
-
 onMounted(() => {
   useSocket = useSocketStore();
+  useStudent = useStudentStore();
+  useTests = useTestStore();
   isMount.value = true;
-  const token = localStorage.getItem("token");
-  console.log(token);
-  // socket = io("http://localhost:4000", {
-  //   auth: {
-  //     token: "Bearer " + token,
-  //   },
-  // });
-
-  // Listen for the 'groups' event and handle the received data
-  // socket.on("search", (data) => {
-  //   console.log("Groups:", data);
-  // });
 });
 </script>
 

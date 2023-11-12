@@ -29,8 +29,8 @@ export const useRegisterStore = defineStore("register", () => {
         localStorage.setItem("verify_otp", res.data?.data);
         store.status = 200;
         if (type == "change_email") {
-          useProfile.modal.editEmailModal = false;
-          useProfile.modal.editEmail2Modal = true;
+          isLoading.modal.editEmailModal = false;
+          isLoading.modal.editEmail2Modal = true;
         }
       })
       .catch(function (error) {
@@ -60,7 +60,7 @@ export const useRegisterStore = defineStore("register", () => {
         console.log(res);
         store.status = 200;
         if (res.data.data && type == "change_email") {
-          useProfile.modal.editEmail2Modal = false;
+          isLoading.modal.editEmail2Modal = false;
         } else {
           store.status = 400;
         }

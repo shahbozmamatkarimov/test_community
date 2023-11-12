@@ -105,17 +105,15 @@
         <div class="flex-1 px-2 sm:px-0">
           <div class="flex justify-between items-center">
             <h3 class="text-3xl font-extralight text-white/50">Groups</h3>
-            <a-select
+            <el-select
               class="max-w-fit mt-1"
-              id="group"
               loading
               show-search
               placeholder="Guruhni tanlang"
-              :options="store.options"
               :filter-option="filterOption"
               @change="handleChange"
               required
-            ></a-select>
+            ></el-select>
             <div class="inline-flex items-center space-x-2">
               <a
                 class="bg-gray-900 text-white/50 p-2 rounded-lg hover:text-white smooth-hover"
@@ -161,7 +159,11 @@
             class="mb-10 sm:mb-0 mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           >
             <div
-              @click="useSocket.modal.create = true"
+              v-if="
+                isLoading.store.pagination.students == 1 &&
+                !isLoading.search.search.students
+              "
+              @click="createStudent"
               class="group bg-gray-900/30 py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <a
@@ -186,11 +188,13 @@
               <button
                 class="text-white/50 group-hover:text-white group-hover:smooth-hover text-center"
               >
-                Create group
+                O'quvchi qo'shish
               </button>
             </div>
             <div
-              v-if="store.is_Loading"
+              v-if="isLoading.isLoadingType('getAllData/students')"
+              v-for="i in 10"
+              :key="i"
               class="relative animate-pulse group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <img
@@ -212,8 +216,8 @@
               </p>
             </div>
             <div
-              v-else
-              v-for="i in store.allProducts"
+              v-if="isLoading.store.allData?.students?.length"
+              v-for="i in isLoading.store.allData?.students"
               :key="i.id"
               class="relative userInfo group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
@@ -258,20 +262,25 @@
                 <i
                   @click="
                     () => {
-                      store.modalDelete = true;
-                      store.deleteId = i.id;
+                      isLoading.modal.delete = true;
+                      useStudent.store.id = i.id;
                     }
                   "
                   class="p-2 hover:bg-gray-600 rounded-l-md bx bx-trash"
                 ></i
                 ><i
-                  @click="() => getOneStudent(i.id)"
+                  @click="() => useStudent.getDataById(i.id, 'getGroup')"
                   class="p-2 hover:bg-gray-600 rounded-r-md bx bx-pencil"
                 ></i>
               </p>
             </div>
+            <div
+              v-else-if="!isLoading.isLoadingType('getAllData/students')"
+              class="min-w-full col-span-4"
+            >
+              <Nodata>O'quvchi</Nodata>
+            </div>
           </div>
-
           <div
             class="relative hidden overflow-x-auto shadow-md sm:rounded-lg border-t min-h-[80vh]"
           >
@@ -644,259 +653,35 @@
         </div>
       </div>
     </section>
+    <Pagination />
 
-    <!-- Modal -->
-    <section
-      v-if="store.modalCreate"
-      class="flex justify-center bg-[#ffffff23] top-0 left-0 min-w-full items-center absolute z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 min-h-screen"
-    >
-      <div class="relative w-full max-w-sm max-h-full">
-        <form
-          @submit.prevent="handleSubmit"
-          class="relative bg-gray-900 rounded-lg shadow dark:bg-gray-700"
-        >
-          <div
-            class="flex items-start justify-between py-4 px-6 border-b rounded-t border-gray-600"
-          >
-            <h3 class="text-xl font-semibold text-white/50">Add a student</h3>
-            <button
-              @click="closeModal"
-              type="button"
-              class="text-white/50 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-            >
-              <i class="bx bx-x text-2xl"></i>
-            </button>
-          </div>
-          <!-- Modal body -->
-          <div class="p-6 space-y-6 text-white/50">
-            <div class="relative z-0 w-full mb-6 group">
-              <input
-                v-model="createModal.username"
-                type="text"
-                id="floating_first_name"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="floating_first_name"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Username</label
-              >
-            </div>
-            <div
-              @click="() => (createModal.password = '')"
-              v-if="store.edit"
-              class="flex gap-2"
-            >
-              <input
-                v-model="store.changePassword"
-                type="checkbox"
-                id="passChange"
-                class="block py-2 w-5 h-5 text-sm bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-              />
-              <label for="passChange" class="text-sm cursor-pointer"
-                >Passwordni o'zgartirish</label
-              >
-            </div>
-            <div class="relative z-0 w-full mb-5 group">
-              <label for="group" class="text-sm cursor-pointer"
-                >Guruhni tanlang</label
-              >
-              <a-select
-                class="w-full mt-1"
-                id="group"
-                loading
-                show-search
-                placeholder="Guruhni tanlang"
-                :options="store.options"
-                :filter-option="filterOption"
-                @change="handleChange"
-                required
-              ></a-select>
-            </div>
-            <div v-if="!store.edit" class="relative z-0 w-full mb-6 group">
-              <input
-                v-model="createModal.password"
-                type="password"
-                @focus="() => (createModal.password = '')"
-                autocomplete="off"
-                id="floating_password"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="floating_password"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Password</label
-              >
-            </div>
-            <div
-              v-else
-              v-show="store.changePassword"
-              class="relative z-0 w-full mb-6 group"
-            >
-              <input
-                v-model="createModal.password"
-                type="password"
-                @focus="() => (createModal.password = '')"
-                autocomplete="off"
-                id="floating_password"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-              />
-              <label
-                for="floating_password"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Password</label
-              >
-            </div>
-            <div class="flex gap-2">
-              <input
-                v-model="store.current_time"
-                type="checkbox"
-                id="today"
-                class="block py-2 w-5 h-5 text-sm bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-              />
-              <label for="today" class="text-sm cursor-pointer"
-                >Bugungi sana</label
-              >
-            </div>
-            <div
-              v-if="!store.current_time"
-              class="relative z-0 w-full mb-6 group"
-            >
-              <input
-                v-model="createModal.start_date"
-                type="date"
-                id="start_date"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="start_date"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Start date</label
-              >
-            </div>
-            <div class="relative z-0 w-full mb-6 group">
-              <input
-                v-model="createModal.student_id"
-                type="number"
-                max="999"
-                autocomplete="off"
-                id="studentId"
-                class="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                for="studentId"
-                class="peer-focus:font-medium absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Student ID</label
-              >
-            </div>
-          </div>
-          <!-- Modal footer -->
-          <div
-            class="flex items-center justify-end p-6 space-x-2 rounded-b dark:border-gray-600"
-          >
-            <button
-              @click="closeModal"
-              type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-1.5 text-center"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="text-gray-500 bg-white hover:bg-gray-100 focus:outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-1.5 hover:text-gray-900 focus:z-10"
-            >
-              Create
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- Delete Modal -->
-    <section
-      v-show="store.modalDelete"
-      class="flex justify-center bg-[#ffffff23] top-0 left-0 min-w-full items-center absolute z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 min-h-screen"
-    >
-      <div class="relative w-full max-w-sm max-h-full">
-        <div class="relative bg-gray-900 rounded-lg shadow dark:bg-gray-700">
-          <div
-            class="flex items-start justify-between py-4 px-6 border-b rounded-t border-gray-600"
-          >
-            <h3 class="text-xl font-semibold text-white/50">O'chirish</h3>
-            <button
-              @click="() => (store.modalDelete = false)"
-              type="button"
-              class="text-white/50 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
-            >
-              <i class="bx bx-x text-2xl"></i>
-            </button>
-          </div>
-          <!-- Modal body -->
-          <div class="p-6 space-y-6 text-white/50">
-            <h1 class="text-2xl text-center">
-              Siz ushbu o'quvchini o'chirishni xohlaysizmi?
-            </h1>
-          </div>
-          <!-- Modal footer -->
-          <div
-            class="flex items-center justify-center p-6 space-x-2 rounded-b dark:border-gray-600"
-          >
-            <button
-              @click="() => (store.modalDelete = false)"
-              type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-1.5 text-center"
-            >
-              Yo'q
-            </button>
-            <button
-              @click="() => deleteStudent()"
-              class="text-gray-500 bg-white hover:bg-red-500 focus:outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-1.5 hover:text-gray-900 focus:z-10"
-            >
-              Ha
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!------------------------- edit contact ------------------------------->
+    <!------------------------- create and edit student ------------------------------->
     <el-dialog
       v-if="isMount"
-      v-model="useSocket.modal.create"
+      v-model="isLoading.modal.create"
       style="border-radius: 16px"
       width="500"
-      class="rounded-2xl p-10 min-w-[400px] h-[240]"
+      class="rounded-2xl p-10 min-w-[350px] h-[240]"
       align-center
       close-icon="false"
     >
       <div class="flex justify-between items-center w-full">
         <h1
-          v-if="!store.edit"
+          v-if="!isLoading?.modal.edit"
           class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
         >
           <i class="bx bxs-group"></i>
-          Guruh qo'shish
+          O'quvchi qo'shish
         </h1>
         <h1
-          v-else="!store.edit"
+          v-else
           class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
         >
           <i class="bx bxs-group"></i>
-          Guruhni tahrirlash
+          O'quvchini tahrirlash
         </h1>
         <img
-          @click="useSocket.modal.create = false"
+          @click="isLoading.modal.create = false"
           class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
           src="@/assets/svg/x.svg"
           alt="x"
@@ -915,132 +700,222 @@
             <div class="space-y-3">
               <div class="grid gap-3">
                 <input
+                  v-model="useStudent.create.username"
                   type="text"
                   class="w-full"
-                  placeholder="Guruh nomi"
+                  placeholder="F.I.O"
                   required
                 />
-                <input type="text" class="w-full" placeholder="Guruh tavsifi" />
-                <el-select
-                  v-model="store.lawyers_id"
-                  filterable
-                  class="min-w-[420px]"
-                  placeholder="Select lawyer(s)"
-                >
-                  <el-option
-                    v-for="(item, index) in options"
-                    @click="() => selectCategory(item.value)"
-                    :key="item.value"
-                    :label="item.label
-                    "
-                    :value="index"
-                  />
-                </el-select>
-                <div>
-                  <el-date-picker
-                    prefix-icon="false"
-                    type="date"
-                    class="max-w-[180px] min-h-[46px] border-0 rounded-[10px] bg-[#F4F3F9]"
-                    placeholder="Select date"
-                    format="YYYY/MM/DD"
+                <div v-if="!isLoading.modal.edit">
+                  <input
+                    v-model="useStudent.create.password"
+                    type="text"
+                    class="w-full"
+                    placeholder="Parolni kiriting"
+                    required
                   />
                 </div>
+                <div
+                  v-else
+                  v-if="useStudent.store.isChangePassword"
+                  class="flex justify-between items-center gap-2"
+                >
+                  <input
+                    v-model="useStudent.create.password"
+                    type="text"
+                    class="w-full"
+                    placeholder="Parolni kiriting"
+                    required
+                  />
+                  <img
+                    v-if="isLoading.modal.edit"
+                    @click="useStudent.store.isChangePassword = false"
+                    class="hover:bg-[#027DFC1A] p-1 min-w-[20px] max-h-[20px] rounded-full border cursor-pointer"
+                    src="@/assets/svg/x.svg"
+                    alt="x"
+                  />
+                </div>
+                <div
+                  v-if="
+                    !useStudent.store.isChangePassword && isLoading.modal.edit
+                  "
+                  class="flex justify-between items-center px-4 h-10 rounded-full border"
+                >
+                  <h1>Parolni o'zgartirish</h1>
+                  <button
+                    @click="useStudent.store.isChangePassword = true"
+                    type="button"
+                    class="bx bx-edit"
+                  ></button>
+                </div>
+                <div
+                  v-if="isLoading.modal.edit && useStudent.store.isChangeGroup"
+                  class="flex justify-between items-center px-4 h-10 rounded-full border"
+                >
+                  <h1>{{ useStudent.store.groupInfo.name }}</h1>
+                  <button
+                    @click="useStudent.store.isChangeGroup = false"
+                    type="button"
+                    class="bx bx-edit"
+                  ></button>
+                </div>
+                <div
+                  v-if="!useStudent.store.isChangeGroup"
+                  class="flex justify-between items-center gap-2"
+                >
+                  <el-select
+                    class="w-full"
+                    id="selectgroup"
+                    @input="(e) => inputSelectGroup(e)"
+                    v-model="useStudent.create.group_id"
+                    filterable
+                    placeholder="Guruhni tanlang"
+                    required
+                  >
+                    <el-option
+                      v-for="(item, index) in isLoading.store.allData?.groups"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                    <SelectPagination />
+                  </el-select>
+                  <img
+                    v-if="isLoading.modal.edit"
+                    @click="useStudent.store.isChangeGroup = true"
+                    class="hover:bg-[#027DFC1A] p-1 min-w-[20px] max-h-[20px] rounded-full border cursor-pointer"
+                    src="@/assets/svg/x.svg"
+                    alt="x"
+                  />
+                </div>
+                <input
+                  v-model="useStudent.create.student_id"
+                  type="number"
+                  class="w-full max-h-[40px]"
+                  placeholder="O'quvchi id sini kiriting"
+                  required
+                />
+                <div v-if="!useStudent.store.isTodayDate" classs="min-w-full">
+                  <el-date-picker
+                    id="startdate"
+                    v-model="useStudent.create.start_date"
+                    type="date"
+                    class="min-w-full -mb-3 min-h-[40px] bg-transparent border-0"
+                    placeholder="Sanani tanlang"
+                    format="YYYY/MM/DD"
+                    required
+                  />
+                </div>
+                <el-checkbox v-model="useStudent.store.isTodayDate"
+                  ><p class="text-black ml-1 text-[16px]">
+                    Bugungi sana
+                  </p></el-checkbox
+                >
               </div>
             </div>
           </div>
         </div>
         <button
-          v-if="useSocket.modal.edit"
+          v-if="isLoading.modal.edit"
           :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
-          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          class="h-[40px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
           v-loading="isLoading.isLoadingType('modal')"
         >
-          Guruhni tahrirlash
+          O'quvchini tahrirlash
           <Loading />
         </button>
         <button
           v-else
           :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
-          class="h-[46px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
+          class="h-[40px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
           v-loading="isLoading.isLoadingType('modal')"
         >
-          Guruhni qo'shish
+          O'quvchini qo'shish
           <Loading />
         </button>
       </form>
+    </el-dialog>
+
+    <!---------------- delete group ----------------------->
+    <el-dialog
+      v-if="isMount"
+      v-model="isLoading.modal.delete"
+      width="500"
+      style="border-radius: 16px"
+      class="max-w-fit rounded-2xl p-10 min-w-[400px] mx-auto"
+      align-center
+      close-icon="false"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h1
+          class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
+        >
+          <img
+            class="w-6 h-6 !fill-blue-600"
+            src="@/assets/svg/delete.svg"
+            alt=""
+          />
+          O'quvchini o'chirish
+        </h1>
+        <img
+          @click="isLoading.modal.delete = false"
+          class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
+      </div>
+      <p class="mt-12 text-[16px] leading-[19px]">
+        Haqiqatan ham bu o'quvchini o'chirib tashlamoqchimisiz?
+      </p>
+      <div>
+        <button
+          @click="useStudent.deleteData()"
+          class="bg-[#027DFC] h-[40px] rounded-full overflow-hidden text-white mt-10 w-full"
+          v-loading="isLoading.isLoadingType('modal')"
+        >
+          O'quvchini o'chirish
+        </button>
+        <button
+          @click="isLoading.modal.delete = false"
+          class="h-[40px] rounded-[10px] mt-4 w-full"
+        >
+          Bekor qilish
+        </button>
+      </div>
     </el-dialog>
   </main>
 </template>
 
 <script setup>
-import { useSocketStore, useLoadingStore } from "@/store";
+import { useLoadingStore, useStudentStore, useSocketStore } from "@/store";
 import { useNotification } from "@/composables/notification";
 
+let useStudent = null;
 let useSocket = null;
 const isLoading = useLoadingStore();
 const isMount = ref(false);
-const { showLoading, showSuccess, showWarning, showError, destroy } =
-  useNotification();
-
+isLoading.addLoading("getAllData/students");
+isLoading.search.searchType.students = "student_id";
+isLoading.search.search.students = "";
+const { showError } = useNotification();
 const runtimeConfig = useRuntimeConfig();
 const baseURL = runtimeConfig.public.baseURL;
+isLoading.store.pageName = "students";
 
-// 2020-03-31 yil, kun , oy
-const store = reactive({
-  allProducts: "",
-  modalCreate: true,
-  modalDelete: false,
-  token: "",
-  deleteId: "",
-  edit: false,
-  editId: "",
-  current_time: false,
-  changePassword: false,
-  is_Loading: false,
-  options: [],
-});
-
-const options = [
+isLoading.store.searchOptions = [
   {
-    value: 'Option1',
-    label: 'Option1',
+    value: "student_id",
+    label: "id",
   },
   {
-    value: 'Option2',
-    label: 'Option2',
+    value: "username",
+    label: "username  ",
   },
   {
-    value: 'Option3',
-    label: 'Option3',
+    value: "calendar",
+    label: "kalendar",
   },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
-]
-
-const createModal = reactive({
-  username: "",
-  password: "",
-  start_date: "",
-  student_id: "",
-  group_id: "",
-});
-
-const closeModal = () => {
-  createModal.username = "";
-  createModal.password = "";
-  createModal.start_date = "";
-  createModal.group_id = "";
-  createModal.student_id = false;
-  store.modalCreate = false;
-  store.current_time = false;
-  store.edit = false;
-};
+];
 
 const handleChange = (value) => {
   createModal.group_id = value;
@@ -1052,190 +927,29 @@ const filterOption = (input, option) => {
 };
 
 const handleSubmit = () => {
-  if (!createModal.group_id) {
-    showWarning("Iltimos, guruhni tanlang!");
-    return;
+  if (!useStudent.create.group_id) {
+    if (isLoading.modal.edit && !useStudent.store.isChangeGroup) {
+      showError("Iltimos, guruhni tanlang!");
+      return document.getElementById("selectgroup").focus();
+    } else if (isLoading.modal.edit && useStudent.store.isChangeGroup) {
+      useStudent.create.group_id = useStudent.store.groupInfo?.id;
+    } else if (!isLoading.modal.edit) {
+      showError("Iltimos, guruhni tanlang!");
+      return document.getElementById("selectgroup").focus();
+    }
+  } else if (!useStudent.create.start_date && !useStudent.store.isTodayDate) {
+    showError("Iltimos, sanani tanlang!");
+    return document.getElementById("startdate").focus();
+  } else if (useStudent.store.isTodayDate) {
+    useStudent.create.start_date = new Date();
   }
-  if (store.current_time) {
-    createModal.start_date = new Date();
+
+  if (!isLoading.modal.edit) {
+    console.log("create student");
+    useStudent.createData();
+  } else {
+    useStudent.updateData();
   }
-  if (store.edit === true) {
-    editStudent();
-    return;
-  }
-  fetch(baseURL + "/student/create", {
-    method: "POST",
-    body: JSON.stringify(createModal),
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.message === "O'quvchi ro'yxatga kiritildi") {
-        closeModal();
-        // getAllStudents();
-        getOneGroup(createModal.group_id);
-      } else {
-        showError(res.message);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("error");
-    });
-};
-
-// const getAllStudents = () => {
-//   showLoading("Ma'lumotlar yuklanmoqda...");
-//   fetch(baseURL + "/student")
-//     .then((res) => res.json())
-//     .then((res) => {
-//       console.log(res);
-//       if (res.length) {
-//         destroy();
-//         showSuccess("Ma'lumotlar yuklandi");
-//       }
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       showError("Ma'lumotlar topilmadi");
-//       store.is_Loading = false;
-//     });
-// };
-
-const getAllGroups = () => {
-  showLoading("Guruhlar yuklanmoqda...");
-  fetch(baseURL + "/groups", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      destroy();
-      // store.allProducts = res;
-      console.log(res[0]);
-      createModal.group_id = res[0].id;
-      getOneGroup(createModal.group_id);
-      store.options = [];
-
-      for (let i = 0; i < res.length; i++) {
-        let values = {};
-        values.value = res[i].id;
-        values.label = res[i].name;
-        store.options.push(values);
-      }
-
-      document.querySelector(
-        ".ant-select-arrow"
-      ).innerHTML = `<span class="ant-select-arrow" unselectable="on" aria-hidden="true" style="user-select: none;"><span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix"><svg focusable="false" class="" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path></svg></span><!----></span>`;
-      showSuccess("Guruhlar yuklandi");
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Ma'lumotlar topilmadi");
-    });
-};
-
-const getOneStudent = (id) => {
-  store.is_Loading = true;
-  fetch(baseURL + `/student/${id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      createModal.username = res.username;
-      createModal.start_date = res.start_date.slice(0, 10);
-      createModal.student_id = res.student_id;
-      store.editId = res.id;
-      store.edit = true;
-      store.modalCreate = true;
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Ma'lumotlar topilmadi");
-    });
-};
-
-const getOneGroup = (id) => {
-  store.is_Loading = true;
-
-  fetch(baseURL + `/groups/${id}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      store.allProducts = res.students;
-      store.is_Loading = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      store.is_Loading = false;
-      showError("Ma'lumotlar topilmadi");
-    });
-};
-
-const editStudent = () => {
-  fetch(baseUrl + `/api/student/update/${store.editId}`, {
-    method: "PATCH",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-    body: JSON.stringify(createModal),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.message == "Ma'lumotlar o'zgartirildi") {
-        closeModal();
-        store.edit = false;
-        // getAllStudents();
-        getOneGroup(createModal.group_id);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("Iltimos ma'lumotlarni to'g'ri tartibda kiriting!");
-    });
-};
-
-const deleteStudent = () => {
-  fetch(baseURL + `/api/student/${store.deleteId}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + store.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      showError("O'chirildi");
-      getOneGroup(createModal.group_id);
-      // getAllStudents();
-      store.modalDelete = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      showError("O'quvchi topilmadi");
-    });
 };
 
 function addMonth(startDate) {
@@ -1285,8 +999,33 @@ function getDays(startDate) {
   }
 }
 
+function createStudent() {
+  useStudent.store.isTodayDate = false;
+  isLoading.modal.create = true;
+  isLoading.modal.edit = false;
+  useStudent.store.isChangeGroup = false;
+}
+
+function inputSelectGroup(e) {
+  console.log(e.target.value);
+  isLoading.search.search.groups = e.target.value;
+  isLoading.store.isSearching = true;
+  useSocket?.getAllData("searching");
+}
+
+watch(
+  () => isLoading.store.calendarModal,
+  () => {
+    if (isLoading.store.calendarModal == false) {
+      isLoading.search.searchType.students = "student_id";
+    }
+  }
+);
+
 onMounted(() => {
+  useStudent = useStudentStore();
   useSocket = useSocketStore();
+  useStudent.getAllData();
   isMount.value = true;
 });
 </script>
