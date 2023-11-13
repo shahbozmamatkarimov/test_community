@@ -11,7 +11,7 @@ export const useLoadingStore = defineStore("loading", () => {
     allData: {},
     pageName: "",
     isSearching: false,
-    pagination: { groups: 1, students: 1 },
+    pagination: { groups: 1, students: 1, tests: 1 },
     pageData: {},
     calendarModal: false,
   });

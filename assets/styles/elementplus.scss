@@ -1,13 +1,18 @@
 // input round
-.el-select .el-input__wrapper {
+.el-textarea__inner, .el-select .el-input__wrapper {
     border-radius: 50px;
-    background: transparent;
+    background: transparent !important;
     box-shadow: 0.1px 0.1px 0.1px 1px white !important;
     height: 40px;
 
     * {
         color: rgb(156 163 175) !important;
     }
+    resize: none !important;
+}
+
+.el-textarea__inner {
+    border-radius: 8px !important;
 }
 
 // el-dialog background
@@ -65,3 +70,26 @@
 .el-dialog__body {
     padding: 0 !important;
 }
+
+// switcher
+.el-switch__core {
+    height: 18px !important;
+    min-width: 32px !important;
+    border-radius: 30px !important;
+    border: 1px solid #E2E1E6 !important;
+    padding: 1px;
+    background: transparent !important;
+  
+    * {
+      background-color: #C5C4C7 !important;
+    }
+  }
+  
+  .el-switch.is-checked .el-switch__core {
+    border-color: #027DFC !important;
+    background: #027DFC !important;
+  
+    * {
+      background-color: #FFFFFF !important;
+    }
+  }

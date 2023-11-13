@@ -31,6 +31,7 @@ export const useTestStore = defineStore("test", () => {
 
   const create = reactive({
     title: "",
+    description: "",
     test_count: "",
     min_ball: "",
     start_time: "",
@@ -38,7 +39,6 @@ export const useTestStore = defineStore("test", () => {
     is_time: false,
     is_message: false,
     variants: "",
-    answers: "",
     group_id: "",
   });
 
@@ -58,6 +58,7 @@ export const useTestStore = defineStore("test", () => {
     if (!isLoading.search.searchType) {
       isLoading.search.searchType.tests = "name";
     }
+    console.log(isLoading.store.pagination.tests);
     socket.emit("getAll/tests", {
       page: isLoading.store.pagination.tests,
       data: {
@@ -86,51 +87,12 @@ export const useTestStore = defineStore("test", () => {
     store.jsonData = jsonData;
   };
 
-  const uploadTestFile = () => {
+  function uploadFile() {
     isLoading.addLoading("modal");
     store.isListener = true;
-    let formData;
     store.uploadedFiles = [];
-    formData = new FormData();
-    formData.append("image", store.files[0]?.raw);
-    axios
-      .post(baseUrl + "/api/testfile/upload/" + store.id, formData, {
-        headers: {
-          authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
-      .then(async (res) => {
-        console.log(res);
-        store.uploadedFiles.push(res.data.data);
-        store.uploadModal = false;
-        store.uploadedFilesModal = true;
-        isLoading.removeLoading("modal");
-        store.uploadedFilesModal = true;
-        readExcelFileFromServer(res.data.data?.file);
-      })
-      .catch((err) => {
-        console.log(err);
-        isLoading.removeLoading("modal");
-        store.uploadModal = false;
-      });
-  };
-
-  // upload_files
-  const uploadFile = () => {
-    isLoading.addLoading("modal");
-    store.isListener = true;
-    let formData;
-    store.uploadedFiles = [];
-    for (let i of store.files) {
-      console.log(i.raw);
-      formData = new FormData();
-      formData.append("image", i.raw);
-      uploadFileToServer(formData);
-    }
-    store.uploadedFilesModal = true;
-  };
-
-  function uploadFileToServer(formData) {
+    const formData = new FormData();
+    formData.append("image", store.files[0].raw);
     axios
       .post(baseUrl + "/api/image/upload/" + store.id, formData, {
         headers: {
@@ -140,16 +102,16 @@ export const useTestStore = defineStore("test", () => {
       .then((res) => {
         console.log(res);
         store.uploadedFiles.push(res.data.data);
-        if (store.uploadedFiles?.length == store.files?.length) {
-          store.uploadModal = false;
-          store.uploadedFilesModal = true;
-          isLoading.removeLoading("modal");
-        }
+        store.uploadModal = false;
+        store.uploadedFilesModal = false;
+        isLoading.removeLoading("modal");
       })
       .catch((err) => {
         console.log(err);
+        showError("Fayl yuklashda xatolik!")
         isLoading.removeLoading("modal");
         store.uploadModal = false;
+        store.uploadedFilesModal = false;
       });
   }
 
@@ -170,6 +132,13 @@ export const useTestStore = defineStore("test", () => {
     socket.emit("update/tests", {
       id: store.id,
       test: create,
+    });
+  };
+
+   // update
+   const updateStatus = (id, type, status) => {
+    socket.emit("updateStatus/tests", {
+      id, type, status
     });
   };
 
@@ -196,10 +165,11 @@ export const useTestStore = defineStore("test", () => {
 
   // created listener
   socket.on("created/tests", (res) => {
-    isLoading.removeLoading("modal");
     console.log(res);
-    if (res.status === 400) return showError("Bunday test mavjud!");
+    if (res.status === 400) return showError("Iltimos, ma'lumotlarni to'g'ri kiriting!");
     isLoading.modal.create = false;
+    store.id = res.data.id;
+    uploadFile();
   });
 
   // get by id listener
@@ -233,13 +203,12 @@ export const useTestStore = defineStore("test", () => {
   return {
     store,
     create,
-    uploadFile,
     createData,
     getAllData,
     getDataById,
     updateData,
     deleteData,
-    uploadTestFile,
-    readExcelFileFromServer,
+    uploadFile,
+    updateStatus,
   };
 });

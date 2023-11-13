@@ -90,6 +90,7 @@ export const useSocketStore = defineStore("socket", () => {
 
   // getAll listener
   socket.on("groups", (res) => {
+    console.log(res);
     isLoading.removeLoading("getAllData/groups");
     if (res.status === 404) return showError(res.error);
     isLoading.store.pageData.groups = res.data?.pagination;
