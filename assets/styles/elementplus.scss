@@ -93,3 +93,18 @@
       background-color: #FFFFFF !important;
     }
   }
+
+// test group selector
+.el-select .el-select-tags-wrapper {
+    display: none !important;
+}
+
+.el-select__tags * {
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 10px !important;
+}
+
+.option:hover {
+    background: #000 !important;
+}

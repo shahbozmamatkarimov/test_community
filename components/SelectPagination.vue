@@ -17,7 +17,7 @@
         <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
       </button>
     </div>
-    <ul class="flex">
+    <ul class="flex" v-if="isLoading.store.pageData?.groups?.total_pages != 0">
       <li
         :class="
           isLoading.store.pagination.groups === 1
@@ -125,6 +125,7 @@ function pageNext(page, next) {
   } else if (next == "next") {
     isLoading.store.pagination.groups = page;
   }
+  isLoading.addLoading("getAllData/groups");
   useSocket.getAllData();
 }
 

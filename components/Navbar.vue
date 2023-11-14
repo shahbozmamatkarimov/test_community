@@ -13,6 +13,7 @@
       </div>
       <ul class="flex items-center gap-[13px]">
         <li
+          v-if="$router.currentRoute.value.fullPath !== '/test'"
           @click="store.searchInput = !store.searchInput"
           class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 w-10 h-10 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
         >
@@ -86,7 +87,8 @@
             class="font-bold rounded-full w-full h-10 pl-4 bg-transparent ring-1 ring-white leading-tight focus:outline-none focus:shadow-outline lg:text-sm text-xs"
             :type="
               isLoading.search.searchType[isLoading.store.pageName] == 'id' ||
-              isLoading.search.searchType[isLoading.store.pageName] == 'student_id'
+              isLoading.search.searchType[isLoading.store.pageName] ==
+                'student_id'
                 ? 'number'
                 : 'text'
             "
@@ -303,7 +305,12 @@
 </template>
 
 <script setup>
-import { useLoadingStore, useSocketStore, useStudentStore, useTestStore } from "@/store";
+import {
+  useLoadingStore,
+  useSocketStore,
+  useStudentStore,
+  useTestStore,
+} from "@/store";
 import { useNotification } from "@/composables/notification";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -338,7 +345,7 @@ const searchBy = (data) => {
     useSocket?.getAllData("searching");
   } else if (isLoading.store.pageName == "students") {
     useStudent?.getAllData("searching");
-  }else if (isLoading.store.pageName == "tests") {
+  } else if (isLoading.store.pageName == "tests") {
     useTests?.getAllData("searching");
   }
 };
@@ -370,7 +377,7 @@ function handleSearchSubmit() {
     useSocket?.getAllData("searching");
   } else if (isLoading.store.pageName == "students") {
     useStudent?.getAllData("searching");
-  }else if (isLoading.store.pageName == "tests") {
+  } else if (isLoading.store.pageName == "tests") {
     useTests?.getAllData("searching");
   }
 }

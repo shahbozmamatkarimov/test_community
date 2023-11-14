@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      title: "florify",
+      title: "Ilm-Nur",
       link: [
         {
           rel: "stylesheet",

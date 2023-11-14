@@ -26,7 +26,7 @@ export const useSocketStore = defineStore("socket", () => {
 
   // getAll
   const getAllData = (isSearching) => {
-    if (isSearching == "searchByName"){
+    if (isSearching == "searchByName") {
       isLoading.search.searchType.groups = "name";
     }
     if (store.isListener || isSearching === "searching") {
@@ -44,7 +44,7 @@ export const useSocketStore = defineStore("socket", () => {
       page: isLoading.store.pagination.groups,
       data: {
         search: isLoading.search.search.groups,
-        searchType: isLoading.search.searchType.groups
+        searchType: isLoading.search.searchType.groups,
       },
     });
   };

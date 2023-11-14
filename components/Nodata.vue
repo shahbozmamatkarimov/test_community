@@ -5,7 +5,7 @@
     <p><slot></slot> mavjud emas</p>
     <button
       @click="isLoading.modal.create = true"
-      class="bg-blue-600 py-1 px-3 rounded-lg"
+      class="bg-[#027DFC] py-1 px-3 rounded-lg"
     >
       <i class="bx bx-plus"></i> <slot></slot> qo'shish
     </button>

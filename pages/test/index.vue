@@ -1,197 +1,282 @@
 <template>
-  <main>
+  <main class="-mb-5">
     <div class="flex gap-5">
-      <section class="min-w-[400px] pt-7 bg-gray-800 rounded-lg">
-        <div class="min-h-[calc(100vh_-_585px)]">
-          <h1
-            class="text-2xl z-20 sticky -top-5 p-5 pb-3 -mt-5 leading-7 font-medium"
-          >
-            Guruhlar <span>2</span>
-          </h1>
-          <div
-            @click="() => getGroupTests(i.id)"
-            v-for="(i, index) in isLoading.store.allData?.groups"
-            :key="i"
-            :class="
-              isLoading.search.search.tests == i.id
-                ? 'bg-gray-900 hover:bg-gray-900'
-                : ''
-            "
-            class="hover:bg-[#027DFC1A] cursor-pointer p-5 rounded-xl"
-          >
-            <div class="flex justify-between">
-              <div class="flex w-[100%] leading-4">
-                <img
-                  v-if="checkDate(i.tests[0]?.createdAt)"
-                  class="mr-1 inline"
-                  src="@/assets/svg/check.svg"
-                  alt=""
-                />
-                <p
-                  v-else
-                  class="min-h-[16px] min-w-[16px] max-h-[16px] max-w-[16px] border leading-4 inline-block -mb-1 mr-1 border-[#027DFC] rounded-full"
-                ></p>
-                <p
-                  class="text-[#027DFC] font-medium leading-4 text-sm w-full whitespace-nowrap truncate"
-                >
-                  <span class="!text-[#027DFC]">#{{ i.id }}:</span>
-                  <span class="pl-1">{{ i.name }}</span>
-                </p>
-                <p v-if="checkDate(i.tests[0]?.createdAt)">Bugun</p>
-              </div>
-            </div>
-            <div
-              v-if="i.tests?.length"
-              class="flex justify-between items-center text-sm leading-[14px] mt-3"
+      <section
+        :class="isLoading.store.isOpenSidebar ? 'hideSidebar' : ''"
+        class="groupList min-w-[400px] pt-7 bg-gray-800 rounded-lg"
+      >
+        <div>
+          <div class="flex justify-between px-4">
+            <h1
+              class="text-2xl z-20 sticky -top-5 py-4 -mt-7 leading-7 font-medium"
             >
-              <div class="flex gap-[6px]">
-                <p>
-                  {{ getData(i.tests[0]?.start_time) }}
-                  <i class="bx bx-arrow-back rotate-180"></i>
-                  {{ getData(i.tests[0]?.end_time) }}
-                </p>
-                <img
-                  v-if="useCases?.store.caseTaskId == i.id"
-                  src="@/assets/svg/arrow.svg"
-                  alt=""
-                />
-              </div>
-              <div v-for="i in checkStatus(i.tests[0])">
-                <button
-                  v-if="i == 'PENDING'"
-                  class="bg-[#D6D5DA] rounded-[14px] !text-[#000] px-[23.5px] py-[6px] leading-[14px]"
-                >
-                  PENDING
-                </button>
-                <button
-                  v-else-if="i == 'IN_PROGRESS'"
-                  class="bg-[#F2E1BA] rounded-[14px] !text-[#EEB627] px-[23.5px] py-[6px] leading-[14px]"
-                >
-                  IN_PROGRESS
-                </button>
-                <button
-                  v-else="i == 'FINISHED'"
-                  class="bg-[#C9E7C4] rounded-[14px] !text-[#63CC49] px-[23.5px] py-[6px] leading-[14px]"
-                >
-                  FINISHED
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="w-full">
-        <div
-          v-if="!isLoading?.isLoadingType('caseNote')"
-          class="bg-gray-800 rounded-lg pb-12 p-5 space-y-[10px]"
-        >
-          <div class="flex items-center justify-between pb-1">
-            <h1>
-              Testlar
-              <span class="text-[#027DFC]">1</span>
+              Guruhlar
             </h1>
-            <button
-              @click="
-                isLoading.modal.create = true;
-                isLoading.modal.edit = false;
-              "
-              class="h-[46px] text-white px-14 z-10 rounded-[10px] bg-[#027DFC]"
-            >
-              + Test qo'shish
-            </button>
+            <input
+              @input="(e) => inputSelectGroup(e)"
+              class="-mt-3 px-3 h-7"
+              type="search"
+              placeholder="Qidirish..."
+            />
           </div>
           <div
-            v-for="i in isLoading.store.allData.tests"
-            :key="i"
-            class="bg-gray-900 rounded-xl p-5"
+            v-if="isLoading.isLoadingType('getAllData/groups')"
+            class="animate-pulse h-[calc(100vh_-_170px)] overflow-y-auto"
           >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-[10px]">
-                <img
-                  class="min-h-[30px] max-h-[30px] min-w-[30px] max-w-[30px] object-cover rounded-full"
-                  src="@/assets/images/excel.png"
-                  alt=""
-                />
-                <p class="font-medium">{{ i.title }}</p>
+            <p
+              v-for="i in 10"
+              class="h-14 border-b border-gray-800 bg-gray-900 rounded-xl"
+            ></p>
+          </div>
+          <div
+            v-else-if="!isLoading.store.allData?.groups?.length"
+            class="flex items-center justify-center h-[calc(100vh_-_183px)]"
+          >
+            <Nodata @click="$router.push('/groups')">Guruh</Nodata>
+          </div>
+          <div
+            v-else
+            class="h-[calc(100vh_-_212px)] max-h-fit overflow-hidden overflow-y-auto"
+          >
+            <div
+              @click="() => getGroupTests(i.id)"
+              v-for="(i, index) in isLoading.store.allData?.groups"
+              :key="i"
+              :class="
+                isLoading.search.search.tests == i.id
+                  ? 'bg-gray-900 hover:bg-gray-900'
+                  : ''
+              "
+              class="hover:bg-[#027DFC1A] cursor-pointer p-5 rounded-xl"
+            >
+              <div class="flex justify-between">
+                <div class="flex w-[100%] leading-4">
+                  <img
+                    v-if="checkDate(i.tests[0]?.createdAt)"
+                    class="mr-1 inline"
+                    src="@/assets/svg/check.svg"
+                    alt=""
+                  />
+                  <p
+                    v-else
+                    class="min-h-[16px] min-w-[16px] max-h-[16px] max-w-[16px] border leading-4 inline-block -mb-1 mr-1 border-[#027DFC] rounded-full"
+                  ></p>
+                  <p
+                    class="text-[#027DFC] font-medium leading-4 text-sm w-full whitespace-nowrap truncate"
+                  >
+                    <span class="!text-[#027DFC]">#{{ i.id }}:</span>
+                    <span class="pl-1">{{ i.name }}</span>
+                  </p>
+                  <p class="flex items-start"><i class='bx bx-message-rounded'></i><span class="text-xs -mt-0.5">101</span></p>
+                </div>
               </div>
-              <p class="space-x-2">
-                <i
-                  @click="() => useTests.getDataById(i.id)"
-                  class="bx bx-edit cursor-pointer"
-                ></i>
-                <i
-                  @click="
-                    () => {
-                      isLoading.modal.delete = true;
-                      useTests.store.id = i.id;
-                    }
-                  "
-                  class="bx bx-trash cursor-pointer"
-                ></i>
-              </p>
-            </div>
-            <ul class="list-disc ml-7 text-sm leading-[19px]">
-              <li v-if="i.description">
-                <pre class="max-w-[80%] pt-2 whitespace-pre-wrap">{{
-                  i.description
-                }}</pre>
-              </li>
-              <li>
-                Vaqt tugagach qabul qilinmasin
-                <el-switch
-                  @click="useTests.updateStatus(i.id, 'is_time', i.is_time)"
-                  v-model="i.is_time"
-                  class="ml-2"
-                  style="
-                    --el-switch-on-color: #027dfc;
-                    --el-switch-off-color: #027dfc;
-                  "
-                />
-              </li>
-              <li>
-                Menga xabar berilsin
-                <el-switch
-                  @click="
-                    useTests.updateStatus(i.id, 'is_message', i.is_message)
-                  "
-                  v-model="i.is_message"
-                  class="ml-2"
-                  style="
-                    --el-switch-on-color: #027dfc;
-                    --el-switch-off-color: #027dfc;
-                  "
-                />
-              </li>
-              <li class="flex justify-between items-center pt-5">
-                <p>
-                  {{ getData(i.start_time) }}
-                  <i class="bx bx-arrow-back rotate-180"></i>
-                  {{ getData(i.end_time) }}
-                </p>
-                <div v-for="i in checkStatus(i)">
+              <div
+                v-if="i.tests?.length"
+                class="flex justify-between items-center text-sm leading-[14px] mt-3"
+              >
+                <div class="flex gap-[6px]">
+                  <p>
+                    {{ getData(i.tests[0]?.start_time) }}
+                    <i class="bx bx-arrow-back rotate-180"></i>
+                    {{ getData(i.tests[0]?.end_time) }}
+                  </p>
+                </div>
+                <div v-for="i in checkStatus(i.tests[0])">
                   <button
                     v-if="i == 'PENDING'"
-                    class="bg-[#D6D5DA] rounded-[14px] !text-[#000] px-[23.5px] py-[6px] leading-[14px]"
+                    class="bg-[#D6D5DA] rounded-[14px] text-xs !text-[#000] px-5 py-[6px] leading-[14px]"
                   >
                     PENDING
                   </button>
                   <button
                     v-else-if="i == 'IN_PROGRESS'"
-                    class="bg-[#F2E1BA] rounded-[14px] !text-[#EEB627] px-[23.5px] py-[6px] leading-[14px]"
+                    class="bg-[#F2E1BA] rounded-[14px] text-xs !text-[#EEB627] px-5 py-[6px] leading-[14px]"
                   >
                     IN_PROGRESS
                   </button>
                   <button
                     v-else="i == 'FINISHED'"
-                    class="bg-[#C9E7C4] rounded-[14px] !text-[#63CC49] px-[23.5px] py-[6px] leading-[14px]"
+                    class="bg-[#C9E7C4] rounded-[14px] text-xs !text-[#63CC49] px-5 py-[6px] leading-[14px]"
                   >
                     FINISHED
                   </button>
-                  </div>
-              </li>
-            </ul>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+        <SelectPagination
+          v-show="!isLoading.isLoadingType('getAllData/groups')"
+          class="my-1"
+        />
+      </section>
+
+      <section class="w-full">
+        <div
+          v-if="!isLoading.search.search.tests"
+          class="bg-gray-800 flex items-center justify-center rounded-lg h-[calc(100vh_-_108px)]"
+        >
+          <p class="bg-gray-700 rounded-full px-5">
+            Testlarni ko'rish uchun biror guruhni tanlang
+          </p>
+        </div>
+        <div
+          v-else
+          v-if="!isLoading?.isLoadingType('caseNote')"
+          class="bg-gray-800 rounded-lg px-5 space-y-[10px]"
+        >
+          <div
+            class="flex items-end justify-between md:gap-10 gap-5 pb-2 pt-2.5"
+          >
+            <button
+              @click="isLoading.store.isOpenSidebar = false"
+              class="flex gap-2 items-center backButton"
+            >
+              <img
+                class="mb-0.5 lg:block hidden"
+                src="@/assets/svg/back.svg"
+                alt=""
+              />
+              <i
+                class="bx bx-menu-alt-left text-2xl lg:hidden md:ml-0 md:-mr-5 -mr-2"
+              ></i>
+              <p class="font-medium lg:block hidden">Guruhlar</p>
+            </button>
+            <h1 class="sm:text-2xl text-lg leading-7 font-medium">Testlar</h1>
+            <input
+              @input="(e) => inputSelectGroup(e, 'test_search')"
+              class="px-3 h-7 w-full"
+              type="search"
+              placeholder="Qidirish..."
+            />
+            <button
+              @click="
+                isLoading.modal.create = true;
+                isLoading.modal.edit = false;
+              "
+              class="bg-[#027DFC] py-1.5 px-5 -mb-1 text-sm whitespace-nowrap rounded-lg"
+            >
+              <i class="bx bx-plus add_test_plus"></i> <slot></slot>
+              <span class="add_test">Test qo'shish</span>
+            </button>
+          </div>
+          <div
+            v-if="isLoading.isLoadingType('getAllData/tests')"
+            class="space-y-[10px] animate-pulse h-[calc(100vh_-_167px)] overflow-y-auto"
+          >
+            <div v-for="i in 3" class="h-[195px] bg-gray-900 rounded-xl"></div>
+          </div>
+          <div
+            v-else-if="!isLoading.store.allData.tests?.length"
+            class="flex items-center justify-center h-[calc(100vh_-_168px)]"
+          >
+            <Nodata>Test</Nodata>
+          </div>
+          <div
+            v-else
+            class="h-[calc(100vh_-_222px)] max-h-fit space-y-[10px] overflow-hidden overflow-y-auto"
+          >
+            <div
+              v-for="i in isLoading.store.allData.tests"
+              :key="i"
+              class="bg-gray-900 rounded-xl p-5"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-[10px]">
+                  <div
+                    @click="() => getFileInfo(i.id)"
+                    class="flex items-center gap-[10px] cursor-pointer hover:scale-105 duration-300"
+                  >
+                    <img
+                      class="min-h-[30px] max-h-[30px] min-w-[30px] max-w-[30px] object-cover rounded-full"
+                      src="@/assets/images/excel.png"
+                      alt=""
+                    />
+                    <p class="font-medium hover:underline">{{ i.title }}</p>
+                  </div>
+                </div>
+                <p class="space-x-2">
+                  <i
+                    @click="() => useTests.getDataById(i.id)"
+                    class="bx bx-edit cursor-pointer"
+                  ></i>
+                  <i
+                    @click="
+                      () => {
+                        isLoading.modal.delete = true;
+                        useTests.store.id = i.id;
+                      }
+                    "
+                    class="bx bx-trash cursor-pointer"
+                  ></i>
+                </p>
+              </div>
+              <ul class="list-disc ml-7 text-sm leading-[19px]">
+                <li v-if="i.description">
+                  <pre class="max-w-[80%] pt-2 whitespace-pre-wrap">{{
+                    i.description
+                  }}</pre>
+                </li>
+                <li class="-mb-3">
+                  Vaqt tugagach qabul qilinmasin
+                  <el-switch
+                    @click="useTests.updateStatus(i.id, 'is_time', i.is_time)"
+                    v-model="i.is_time"
+                    class="ml-2"
+                    style="
+                      --el-switch-on-color: #027dfc;
+                      --el-switch-off-color: #027dfc;
+                    "
+                  />
+                </li>
+                <li>
+                  Menga xabar berilsin
+                  <el-switch
+                    @click="
+                      useTests.updateStatus(i.id, 'is_message', i.is_message)
+                    "
+                    v-model="i.is_message"
+                    class="ml-2"
+                    style="
+                      --el-switch-on-color: #027dfc;
+                      --el-switch-off-color: #027dfc;
+                    "
+                  />
+                </li>
+                <li class="flex justify-between items-center pt-5">
+                  <p>
+                    {{ getData(i.start_time) }}
+                    <i class="bx bx-arrow-back rotate-180"></i>
+                    {{ getData(i.end_time) }}
+                  </p>
+                  <div v-for="i in checkStatus(i)">
+                    <button
+                      v-if="i == 'PENDING'"
+                      class="bg-[#D6D5DA] rounded-[14px] text-xs !text-[#000] px-5 py-[6px] leading-[14px]"
+                    >
+                      PENDING
+                    </button>
+                    <button
+                      v-else-if="i == 'IN_PROGRESS'"
+                      class="bg-[#F2E1BA] rounded-[14px] text-xs !text-[#EEB627] px-5 py-[6px] leading-[14px]"
+                    >
+                      IN_PROGRESS
+                    </button>
+                    <button
+                      v-else="i == 'FINISHED'"
+                      class="bg-[#C9E7C4] rounded-[14px] text-xs !text-[#63CC49] px-5 py-[6px] leading-[14px]"
+                    >
+                      FINISHED
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <Pagination
+            v-show="!isLoading.isLoadingType('getAllData/tests')"
+            class="h-11 mb-1"
+          />
         </div>
       </section>
     </div>
@@ -215,7 +300,7 @@
           Test qo'shish
         </h1>
         <h1
-          v-else="!store.edit"
+          v-else
           class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
         >
           <i class="bx bxs-group"></i>
@@ -253,15 +338,17 @@
                   <p class="-ml-7">%</p>
                 </div>
                 <el-select
-                  class="w-full"
-                  id="selectgroup"
-                  @input="(e) => inputSelectGroup(e)"
+                  v-if="!store.sendAllGroups && !isLoading.modal.edit"
                   v-model="useTests.create.group_id"
+                  @input="(e) => inputSelectGroup(e)"
+                  multiple
                   filterable
+                  :class="store.sendAllGroups ? 'opacity-50' : ''"
+                  class="w-full test_select_group"
                   placeholder="Guruhni tanlang"
-                  required
                 >
                   <el-option
+                    class="options"
                     v-for="(item, index) in isLoading.store.allData?.groups"
                     :key="item.id"
                     :label="item.name"
@@ -269,7 +356,41 @@
                   />
                   <SelectPagination />
                 </el-select>
-                <el-checkbox class="-mt-3" v-model="store.deleteId"
+                <div v-else v-if="!isLoading.modal.edit">
+                  <input
+                    type="text"
+                    disabled
+                    class="w-full opacity-25 !bg-gray-600"
+                  />
+                </div>
+                <div
+                  v-if="!store.sendAllGroups"
+                  class="flex flex-wrap justify-start"
+                >
+                  <div v-for="item in isLoading.store.allData?.groups">
+                    <div v-for="(i, index) in useTests.create.group_id">
+                      <div
+                        v-if="item.id == i"
+                        class="flex items-center justify-between border mr-2 rounded-full py-0.5 px-2"
+                      >
+                        <p>
+                          {{ item.name }}
+                        </p>
+                        <img
+                          @click="useTests.create.group_id?.splice(index, 1)"
+                          class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] rounded-full p-1"
+                          src="@/assets/svg/deleteX.svg"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <el-checkbox
+                  v-if="!isLoading.modal.edit"
+                  class="-mt-3"
+                  @click="handleSendAllGroups"
+                  v-model="store.sendAllGroups"
                   ><p class="text-black ml-1 text-[16px]">
                     Barcha guruhlar uchun
                   </p></el-checkbox
@@ -294,12 +415,18 @@
                     required
                   />
                 </div>
-                <el-checkbox class="-mt-3" v-model="useTests.create.is_time"
+                <el-checkbox
+                  class="-mt-3"
+                  @click="useTests.create.is_message = false"
+                  v-model="useTests.create.is_time"
                   ><p class="text-black ml-1 text-[16px]">
                     Vaqt tugagach test qabul qilinmasin
                   </p></el-checkbox
                 >
-                <el-checkbox class="-mt-6" v-model="useTests.create.is_message"
+                <el-checkbox
+                  class="-mt-6"
+                  @click="useTests.create.is_time = false"
+                  v-model="useTests.create.is_message"
                   ><p class="text-black ml-1 text-[16px]">
                     Menga xabar berilsin
                   </p></el-checkbox
@@ -508,7 +635,19 @@
           alt="x"
         />
       </div>
-      <div class="h-[81vh] -mb-[1vh] overflow-hidden overflow-y-auto space-y-2">
+      <div
+        v-if="isLoading.isLoadingType('getFileInfo')"
+        class="h-[81vh] mx-16 -mb-[1vh] overflow-hidden overflow-y-auto space-y-2"
+      >
+        <div
+          v-for="i in 3"
+          class="h-[220px] rounded-2xl animate-pulse bg-gray-900 border"
+        ></div>
+      </div>
+      <div
+        v-else
+        class="h-[81vh] -mb-[1vh] overflow-hidden overflow-y-auto space-y-2"
+      >
         <div
           v-for="(i, index) in useTests.store.jsonData"
           class="mx-16 border p-5 rounded-2xl"
@@ -526,7 +665,10 @@
         </div>
       </div>
 
-      <div class="flex justify-between items-center py-4 px-16">
+      <div
+        v-if="!store.getFileInfo"
+        class="flex justify-between items-center py-4 px-16"
+      >
         <button
           @click="useTests.store.uploadedFilesModal = false"
           class="h-[40px] rounded-full border whitespace-nowrap px-5"
@@ -559,16 +701,20 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { useSocketStore, useTestStore, useLoadingStore } from "@/store";
 import * as XLSX from "xlsx";
 
+const runtime = useRuntimeConfig();
+const baseUrl = runtime.public.baseURL;
 let useSocket;
 let useTests;
 const isLoading = useLoadingStore();
 const isMount = ref(false);
 isLoading.store.pageName = "tests";
-isLoading.search.searchType.tests = "id";
+isLoading.search.searchType.tests = "";
 isLoading.search.search.tests = "";
+isLoading.addLoading("getAllData/groups");
 
 const store = reactive({
   edit: false,
@@ -581,6 +727,8 @@ const store = reactive({
   jsonData: [],
   isConfirm: false,
   groupTestStep: 1,
+  sendAllGroups: false,
+  getFileInfo: false,
 });
 
 const statusColors = {
@@ -596,6 +744,26 @@ function getData(date) {
     data.getMonth() + 1 > 9 ? data.getMonth() + 1 : "0" + (data.getMonth() + 1);
   const year = String(data.getFullYear());
   return day + "." + month + "." + year;
+}
+
+function inputSelectGroup(e, isSearch) {
+  isLoading.store.isSearching = true;
+  console.log(e.target.value, isSearch);
+  if (isSearch === "test_search") {
+    isLoading.search.searchType.tests = e.target.value;
+    useTests.getAllData("searching");
+  } else {
+    isLoading.search.search.groups = e.target.value.trim();
+    useSocket?.getAllData("searchByName");
+  }
+}
+
+function handleSendAllGroups() {
+  if (store.sendAllGroups) {
+    useTests.creae.group_id = "All";
+  } else {
+    useTests.creae.group_id = [];
+  }
 }
 
 function checkStatus(test) {
@@ -614,11 +782,35 @@ function checkStatus(test) {
   }
 }
 
+function getFileInfo(id) {
+  console.log(id);
+  isLoading.addLoading("getFileInfo");
+  axios
+    .post(baseUrl + "/api/tests/file/" + id, null, {
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+    .then((res) => {
+      console.log(res);
+      useTests.store.uploadedFilesModal = true;
+      store.getFileInfo = true;
+      useTests.readExcelFileFromServer(res.data.data);
+    })
+    .catch((err) => {
+      isLoading.removeLoading("getFileInfo");
+      console.log(err);
+    });
+}
+
 function getGroupTests(id) {
-  isLoading.search.searchType.tests = "group_id";
+  isLoading.store.isOpenSidebar = true;
+  isLoading.store.pagination.tests = 1;
+  isLoading.store.paginationStep = 0;
   isLoading.search.search.tests = +id;
   console.log(isLoading.search.search.tests, isLoading.search.searchType.tests);
   useTests.getAllData("searching");
+  useTests.create.group_id = [id];
 }
 
 function localExcelPreview() {
@@ -659,25 +851,26 @@ function removefile() {
 
 // api
 function handleSubmit() {
-  if (!useTests.store.files?.length) {
+  store.getFileInfo = false;
+  if (isLoading.modal.edit) {
+    useTests.updateData();
+  } else if (!useTests.store.files?.length) {
     useTests.store.uploadModal = true;
   } else if (!store.isConfirm) {
     localExcelPreview();
     useTests.store.uploadedFilesModal = true;
     store.isConfirm = true;
-  } else if (isLoading.modal.edit) {
-    useTests.updateData();
   } else {
-    console.log("object");
     useTests.createData();
   }
 }
 
 onMounted(() => {
+  isLoading.search.search.tests = "";
   useSocket = useSocketStore();
   useTests = useTestStore();
   isMount.value = true;
-  useSocket.getAllData();
+  useSocket.getAllData("searching");
 });
 </script>
 

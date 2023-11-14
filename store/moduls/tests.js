@@ -44,9 +44,6 @@ export const useTestStore = defineStore("test", () => {
 
   // getAll
   const getAllData = (isSearching) => {
-    if (isSearching == "searchByName") {
-      isLoading.search.searchType.tests = "name";
-    }
     if (store.isListener || isSearching === "searching") {
       isLoading.addLoading("getAllData/tests");
     }
@@ -55,15 +52,12 @@ export const useTestStore = defineStore("test", () => {
       isLoading.store.isSearching = false;
       isLoading.store.pagination.tests = 1;
     }
-    if (!isLoading.search.searchType) {
-      isLoading.search.searchType.tests = "name";
-    }
-    console.log(isLoading.store.pagination.tests);
+    console.log(isLoading.search.search.tests);
     socket.emit("getAll/tests", {
       page: isLoading.store.pagination.tests,
       data: {
         search: isLoading.search.search.tests,
-        searchType: isLoading.search.searchType.tests,
+        searchType: isLoading.search.searchType.tests?.trim(),
       },
     });
   };
@@ -85,6 +79,7 @@ export const useTestStore = defineStore("test", () => {
       workbook.Sheets[workbook.SheetNames[0]]
     );
     store.jsonData = jsonData;
+    isLoading.removeLoading("getFileInfo");
   };
 
   function uploadFile() {
@@ -93,8 +88,9 @@ export const useTestStore = defineStore("test", () => {
     store.uploadedFiles = [];
     const formData = new FormData();
     formData.append("image", store.files[0].raw);
+    formData.append("test_ids", store.id);
     axios
-      .post(baseUrl + "/api/image/upload/" + store.id, formData, {
+      .post(baseUrl + "/api/image/upload", formData, {
         headers: {
           authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -108,7 +104,7 @@ export const useTestStore = defineStore("test", () => {
       })
       .catch((err) => {
         console.log(err);
-        showError("Fayl yuklashda xatolik!")
+        showError("Fayl yuklashda xatolik!");
         isLoading.removeLoading("modal");
         store.uploadModal = false;
         store.uploadedFilesModal = false;
@@ -135,10 +131,12 @@ export const useTestStore = defineStore("test", () => {
     });
   };
 
-   // update
-   const updateStatus = (id, type, status) => {
+  // update
+  const updateStatus = (id, type, status) => {
     socket.emit("updateStatus/tests", {
-      id, type, status
+      id,
+      type,
+      status,
     });
   };
 
@@ -166,9 +164,16 @@ export const useTestStore = defineStore("test", () => {
   // created listener
   socket.on("created/tests", (res) => {
     console.log(res);
-    if (res.status === 400) return showError("Iltimos, ma'lumotlarni to'g'ri kiriting!");
+    if (res.status === 400) {
+      isLoading.removeLoading("modal");
+      isLoading.modal.create = true;
+      store.uploadModal = false;
+      store.uploadedFilesModal = false;
+      return showError("Iltimos, ma'lumotlarni to'g'ri kiriting!");
+    }
     isLoading.modal.create = false;
-    store.id = res.data.id;
+    console.log(res.data);
+    store.id = res.data;
     uploadFile();
   });
 
@@ -180,6 +185,7 @@ export const useTestStore = defineStore("test", () => {
       console.log(i);
       create[i] = res.data[i];
     }
+    create.group_id = [res.data.id];
   });
 
   // upated listener
@@ -210,5 +216,6 @@ export const useTestStore = defineStore("test", () => {
     deleteData,
     uploadFile,
     updateStatus,
+    readExcelFileFromServer,
   };
 });

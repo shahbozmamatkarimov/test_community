@@ -14,6 +14,8 @@ export const useLoadingStore = defineStore("loading", () => {
     pagination: { groups: 1, students: 1, tests: 1 },
     pageData: {},
     calendarModal: false,
+    paginationStep: "",
+    isOpenSidebar: false,
   });
 
   const modal = reactive({

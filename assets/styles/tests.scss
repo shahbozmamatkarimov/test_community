@@ -1,0 +1,27 @@
+@media (max-width: 1120px) {
+    .groupList {
+        min-width: 100% !important;
+    }
+    .hideSidebar {
+        display: none;
+    }
+}
+
+@media (min-width: 1120px) {
+    .groupList {
+        min-width: 400px !important;
+    }
+
+    .backButton {
+        display: none !important;
+    }
+}
+
+@media (max-width: 460px) {
+    .add_test {
+        display: none;
+    }
+    .add_test_plus {
+        font-size: 18px;
+    }
+}
