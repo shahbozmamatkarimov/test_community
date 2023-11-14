@@ -703,7 +703,7 @@
 <script setup>
 import axios from "axios";
 import { useSocketStore, useTestStore, useLoadingStore } from "@/store";
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx/xlsx.mjs';
 
 const runtime = useRuntimeConfig();
 const baseUrl = runtime.public.baseURL;

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLoadingStore } from "./loading";
 import { io } from "socket.io-client";
 import { useNotification } from "@/composables/notification";
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx/xlsx.mjs';
 
 export const useTestStore = defineStore("test", () => {
   const { showError } = useNotification();
