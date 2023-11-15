@@ -116,6 +116,7 @@
           v-if="!isLoading.search.search.tests"
           class="bg-gray-800 flex items-center justify-center rounded-lg h-[calc(100vh_-_108px)]"
         >
+        {{ isEmptyTests() }}
           <p class="bg-gray-700 rounded-full px-5">
             Testlarni ko'rish uchun biror guruhni tanlang
           </p>
@@ -715,6 +716,7 @@ isLoading.store.pageName = "tests";
 isLoading.search.searchType.tests = "";
 isLoading.search.search.tests = "";
 isLoading.addLoading("getAllData/groups");
+isLoading.search.searchType.groups = "name";
 
 const store = reactive({
   edit: false,
@@ -753,6 +755,7 @@ function inputSelectGroup(e, isSearch) {
     isLoading.search.searchType.tests = e.target.value;
     useTests.getAllData("searching");
   } else {
+    isLoading.addLoading("getAllData/groups");
     isLoading.search.search.groups = e.target.value.trim();
     useSocket?.getAllData("searchByName");
   }
@@ -780,6 +783,10 @@ function checkStatus(test) {
   } else {
     return ["PENDING"];
   }
+}
+
+function isEmptyTests() {
+  isLoading.store.isOpenSidebar = false;
 }
 
 function getFileInfo(id) {

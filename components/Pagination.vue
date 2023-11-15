@@ -17,7 +17,7 @@
         class="flex items-center nextMainButton gap-2 active:bg-transparent active:border-white duration-150 border h-8 border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
       >
         <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
-        <span v-if="$router.currentRoute.value.fullPath != '/test'" class="nextButton">Previous</span>
+        <span v-if="$router.currentRoute.value.fullPath != '/tests'" class="nextButton">Previous</span>
       </button>
     </div>
     <ul class="flex">
@@ -92,7 +92,7 @@
         "
         class="flex items-center nextMainButton gap-2 h-8 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
       >
-        <span v-if="$router.currentRoute.value.fullPath != '/test'" class="nextButton">Next</span>
+        <span v-if="$router.currentRoute.value.fullPath != '/tests'" class="nextButton">Next</span>
         <img src="@/assets/navbar/arrow.svg" alt="" />
       </button>
     </div>

@@ -6,31 +6,31 @@
       <div>
         <h1
           v-show="$router.currentRoute.value.fullPath"
-          class="leading-[38px] text-[32px] capitalize"
+          class="leading-[38px] md:text-[32px] sm:text-[24px] text-[20px] capitalize"
         >
           {{ $router.currentRoute.value?.name }}
         </h1>
       </div>
       <ul class="flex items-center gap-[13px]">
         <li
-          v-if="$router.currentRoute.value.fullPath !== '/test'"
+          v-if="$router.currentRoute.value.fullPath !== '/tests'"
           @click="store.searchInput = !store.searchInput"
-          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 w-10 h-10 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
+          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 sm:w-10 sm:h-10 w-8 h-8 max-w-fit lg:min-w-[48px] sm:min-w-[40px] min-w-[32px] bg-[#027DFC1A] hover:bg-[#027ffc3a]"
         >
           <img src="@/assets/navbar/search.svg" alt="" />
         </li>
         <li
           @click="store.notificationModal = true"
-          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 w-10 h-10 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
+          class="flex justify-center cursor-pointer items-center rounded-full lg:w-12 lg:h-12 sm:w-10 sm:h-10 w-8 h-8 bg-[#027DFC1A] hover:bg-[#027ffc3a]"
         >
           <img src="@/assets/navbar/bell.svg" alt="" />
         </li>
         <li
           @click="$router.push('/profile')"
-          class="flex items-center lg:w-40 w-32 space-x-[13px] cursor-pointer"
+          class="flex items-center lg:w-40 md:w-32 space-x-[13px] cursor-pointer"
         >
           <div
-            class="bg-gray-200 rounded-full overflow-hidden lg:h-[40px] lg:min-w-[40px] h-[38px] min-w-[38px]"
+            class="bg-gray-200 rounded-full overflow-hidden sm:w-10 sm:h-10 w-8 h-8 sm:min-w-[40px] min-w-[32px] max-w-fit"
           >
             <img
               class="h-full w-full object-cover"
@@ -39,7 +39,7 @@
             />
           </div>
           <div
-            class="lg:w-24 w-16 lg:leading-6 leading-5 lg:text-[16px] text-xs"
+            class="sm:block hidden lg:w-24 w-16 lg:leading-6 leading-5 lg:text-[16px] text-xs"
           >
             <h1 class="truncate">Jack</h1>
             <p class="truncate">Johnson</p>
@@ -55,6 +55,7 @@
     </nav>
 
     <section
+      v-if="$router.currentRoute.value.fullPath !== '/tests'"
       :class="store.searchInput ? 'h-full' : 'h-0'"
       class="overflow-hidden duration-100"
     >

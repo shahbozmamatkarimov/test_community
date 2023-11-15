@@ -124,6 +124,14 @@
 
 <script setup>
 import { header } from "@/constants/sidebar.js";
+
+let test = {
+  title: "Test",
+  description: "Test description",
+  products: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+}
+test.products = test.products.splice(16)
+console.log(test.products);
 </script>
 
 <style lang="scss" scoped>

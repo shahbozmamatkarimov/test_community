@@ -44,6 +44,9 @@ export const useTestStore = defineStore("test", () => {
 
   // getAll
   const getAllData = (isSearching) => {
+    if (!isLoading.search.search.tests) {
+      return;
+    }
     if (store.isListener || isSearching === "searching") {
       isLoading.addLoading("getAllData/tests");
     }
