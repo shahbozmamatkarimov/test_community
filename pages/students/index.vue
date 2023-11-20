@@ -102,19 +102,31 @@
           </div>
         </div>
         <!-- Content -->
-        <div class="flex-1 px-2 sm:px-0">
-          <div class="flex justify-between items-center">
-            <h3 class="text-3xl font-extralight text-white/50">Groups</h3>
+        <div class="flex-1 px-2 sm:px-0 min-h-[calc(100vh_-_305px)]">
+          <div
+            class="flex optional1 items-end justify-between lg:gap-10 gap-5 pb-2 pt-2.5"
+          >
             <el-select
-              class="max-w-fit mt-1"
+              class="max-w-[150px] min-w-[150px] mt-1"
               loading
               show-search
-              placeholder="Guruhni tanlang"
+              placeholder="Guruh"
               :filter-option="filterOption"
               @change="handleChange"
               required
             ></el-select>
-            <div class="inline-flex items-center space-x-2">
+            <button
+              @click="
+                isLoading.modal.create = true;
+                isLoading.modal.edit = false;
+              "
+              class="bg-[#027DFC] px-5 sm:h-10 h-7 text-sm whitespace-nowrap rounded-full"
+            >
+              <i class="bx bx-plus add_test_plus"></i> <slot></slot>
+              <span class="add_test">O'quvchi qo'shish</span>
+            </button>
+          </div>
+          <!-- <div class="inline-flex items-center space-x-2">
               <a
                 class="bg-gray-900 text-white/50 p-2 rounded-lg hover:text-white smooth-hover"
                 href="#"
@@ -153,44 +165,10 @@
                   />
                 </svg>
               </a>
-            </div>
-          </div>
+            </div> -->
           <div
-            class="mb-10 sm:mb-0 mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+            class="students mb-10 sm:mb-0 mt-10 grid gap-4 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
           >
-            <div
-              v-if="
-                isLoading.store.pagination.students == 1 &&
-                !isLoading.search.search.students
-              "
-              @click="createStudent"
-              class="group bg-gray-900/30 py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
-            >
-              <a
-                class="bg-gray-900/70 text-white/50 group-hover:text-white group-hover:smooth-hover flex w-20 h-20 rounded-full items-center justify-center"
-                href="#"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </a>
-              <button
-                class="text-white/50 group-hover:text-white group-hover:smooth-hover text-center"
-              >
-                O'quvchi qo'shish
-              </button>
-            </div>
             <div
               v-if="isLoading.isLoadingType('getAllData/students')"
               v-for="i in 10"
@@ -219,7 +197,7 @@
               v-if="isLoading.store.allData?.students?.length"
               v-for="i in isLoading.store.allData?.students"
               :key="i.id"
-              class="relative userInfo group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
+              class="relative userInfo group bg-gray-900 py-20 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
             >
               <img
                 v-if="i.image"
@@ -233,18 +211,27 @@
                 src="@/assets/images/userplaceholder.png"
                 :alt="i?.username"
               />
-              <h4 class="text-white text-2xl font-bold capitalize text-center">
-                {{ i?.username }}
-              </h4>
-              <p class="text-white/50">80 ball</p>
-              <p class="absolute bottom-5 text-green-500">
+              <div class="w-[90%] overflow-hidden">
+                <h4
+                  class="text-white md:text-[16px] sm:text-sm text-xs line-clamp-2 w-full break-words font-bold capitalize text-center"
+                >
+                  {{ i?.username }}
+                </h4>
+              </div>
+              <div class="flex items-center gap-4">
+                <img class="h-6 w-6" src="@/assets/svg/phone.svg" alt="" />
+                <img class="h-6 w-6" src="@/assets/svg/telegram.svg" alt="" />
+              </div>
+              <p
+                class="flex flex-wrap items-center justify-center line-clamp-2 md:text-[16px] sm:text-sm text-xs absolute bottom-5 text-green-500"
+              >
                 <span class="bg-gray-800 rounded-lg px-2 py-1">{{
                   addMonth(i.start_date)
                 }}</span
                 ><span
-                  class="bg-red-500 ml-2 text-white rounded-lg px-2 py-1"
+                  class="bg-red-500 ml-2 whitespace-nowrap text-white rounded-lg px-2 py-1"
                   v-if="getDays(i?.start_date)"
-                  >{{ getDays(i?.start_date) }}</span
+                  >{{ getDays(i?.start_date) }} kun</span
                 >
               </p>
               <p
@@ -255,27 +242,49 @@
                   class="ml-2 w-2 h-2 block bg-red-500 rounded-full group-hover:animate-pulse"
                 ></span>
               </p>
-
-              <p
-                class="absolute hidden top-0 actions right-2 text-white bg-gray-800 rounded-lg space-x-2"
+              <el-dropdown
+                placement="bottom-end"
+                class="!absolute top-2 right-4 dropdown"
               >
-                <i
-                  @click="
-                    () => {
-                      isLoading.modal.delete = true;
-                      useStudent.store.id = i.id;
-                    }
-                  "
-                  class="p-2 hover:bg-gray-600 rounded-l-md bx bx-trash"
-                ></i
-                ><i
-                  @click="() => useStudent.getDataById(i.id, 'getGroup')"
-                  class="p-2 hover:bg-gray-600 rounded-r-md bx bx-pencil"
-                ></i>
-              </p>
+                <img
+                  class="cursor-pointer -mt-1"
+                  src="@/assets/svg/threedot.svg"
+                  alt=""
+                />
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      @click="() => useStudent.getDataById(i.id, 'getGroup')"
+                    >
+                      <i class="bx bx-edit"></i>Tahrirlash
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="
+                        () => {
+                          isLoading.modal.delete = true;
+                          useStudent.store.id = i.id;
+                        }
+                      "
+                    >
+                      <i class="bx bx-trash"></i>O'chirish
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <img
+                        class="object-contain"
+                        src="@/assets/svg/blockuser.svg"
+                        alt=""
+                      />
+                      Bloklash
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
             <div
-              v-else-if="!isLoading.isLoadingType('getAllData/students')"
+              v-else-if="
+                !isLoading.isLoadingType('getAllData/students') &&
+                isLoading.search.search?.length
+              "
               class="min-w-full col-span-4"
             >
               <Nodata>O'quvchi</Nodata>
@@ -760,7 +769,9 @@
                   ></button>
                 </div>
                 <div
-                  v-if="!useStudent.store.isChangeGroup"
+                  v-if="
+                    !useStudent.store.isChangeGroup || !isLoading.modal.edit
+                  "
                   class="flex justify-between items-center gap-2"
                 >
                   <el-select
@@ -964,12 +975,20 @@ function addMonth(startDate) {
   let year = String(new Date(date)?.getFullYear());
   date =
     (day.length == 2 ? day : "0" + day) +
-    "-" +
+    "." +
     (month.length == 2 ? month : "0" + month) +
-    "-" +
+    "." +
     year;
   return date;
 }
+
+let test = {
+  title: "Test",
+  description: "Test description",
+  products: [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  ],
+};
 
 function getDays(startDate) {
   let date = startDate;
@@ -1004,13 +1023,6 @@ function createStudent() {
   isLoading.modal.create = true;
   isLoading.modal.edit = false;
   useStudent.store.isChangeGroup = false;
-}
-
-function inputSelectGroup(e) {
-  console.log(e.target.value);
-  isLoading.search.search.groups = e.target.value;
-  isLoading.store.isSearching = true;
-  useSocket?.getAllData("searching");
 }
 
 watch(

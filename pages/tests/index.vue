@@ -67,7 +67,7 @@
                     <span class="!text-[#027DFC]">#{{ i.id }}:</span>
                     <span class="pl-1">{{ i.name }}</span>
                   </p>
-                  <p class="flex items-start"><i class='bx bx-message-rounded'></i><span class="text-xs -mt-0.5">101</span></p>
+                  <p class="flex items-start"><i class='bx bx-message-rounded'></i><span class="text-[10px] -mt-0.5">21</span></p>
                 </div>
               </div>
               <div
@@ -155,9 +155,9 @@
                 isLoading.modal.create = true;
                 isLoading.modal.edit = false;
               "
-              class="bg-[#027DFC] py-1.5 px-5 -mb-1 text-sm whitespace-nowrap rounded-lg"
+              class="bg-[#027DFC] py-1.5 px-5 -mb-1 text-sm whitespace-nowrap rounded-full"
             >
-              <i class="bx bx-plus add_test_plus"></i> <slot></slot>
+              <i class="bx bx-plus add_test_plus"></i>
               <span class="add_test">Test qo'shish</span>
             </button>
           </div>
@@ -810,7 +810,11 @@ function getFileInfo(id) {
     });
 }
 
+let old_id = "";
 function getGroupTests(id) {
+  if (old_id == id) {
+    return;
+  }
   isLoading.store.isOpenSidebar = true;
   isLoading.store.pagination.tests = 1;
   isLoading.store.paginationStep = 0;
@@ -818,6 +822,7 @@ function getGroupTests(id) {
   console.log(isLoading.search.search.tests, isLoading.search.searchType.tests);
   useTests.getAllData("searching");
   useTests.create.group_id = [id];
+  old_id = id;
 }
 
 function localExcelPreview() {
