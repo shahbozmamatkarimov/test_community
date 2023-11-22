@@ -67,7 +67,10 @@
                     <span class="!text-[#027DFC]">#{{ i.id }}:</span>
                     <span class="pl-1">{{ i.name }}</span>
                   </p>
-                  <p class="flex items-start"><i class='bx bx-message-rounded'></i><span class="text-[10px] -mt-0.5">21</span></p>
+                  <p class="flex items-start">
+                    <i class="bx bx-message-rounded"></i
+                    ><span class="text-[10px] -mt-0.5">21</span>
+                  </p>
                 </div>
               </div>
               <div
@@ -116,7 +119,7 @@
           v-if="!isLoading.search.search.tests"
           class="bg-gray-800 flex items-center justify-center rounded-lg h-[calc(100vh_-_108px)]"
         >
-        {{ isEmptyTests() }}
+          {{ isEmptyTests() }}
           <p class="bg-gray-700 rounded-full px-5">
             Testlarni ko'rish uchun biror guruhni tanlang
           </p>
@@ -185,7 +188,7 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-[10px]">
                   <div
-                    @click="() => getFileInfo(i.id)"
+                    @click="() => getFileInfo(i.image[0]?.file, i.title)"
                     class="flex items-center gap-[10px] cursor-pointer hover:scale-105 duration-300"
                   >
                     <img
@@ -646,7 +649,7 @@
         ></div>
       </div>
       <div
-        v-else
+        v-else-if="!store.getFileInfo"
         class="h-[81vh] -mb-[1vh] overflow-hidden overflow-y-auto space-y-2"
       >
         <div
@@ -656,13 +659,36 @@
           <h1 class="pb-2 text-2xl">{{ index + 1 }}. {{ i.Test }}</h1>
           <el-radio-group
             class="flex flex-col !items-start space-y-1"
-            v-model="radio"
+            @change="(e) => addToAnswers(e, index)"
+            v-model="useTests.store.answers[index]"
           >
-            <el-radio :label="3">A. {{ i.A }}</el-radio>
-            <el-radio :label="6">B. {{ i.B }}</el-radio>
-            <el-radio :label="9">C. {{ i.C }}</el-radio>
-            <el-radio :label="9">D. {{ i.D }}</el-radio>
+            <el-radio label="A">A. {{ i.A }}</el-radio>
+            <el-radio label="B">B. {{ i.B }}</el-radio>
+            <el-radio label="C">C. {{ i.C }}</el-radio>
+            <el-radio label="D">D. {{ i.D }}</el-radio>
           </el-radio-group>
+        </div>
+      </div>
+
+      <div v-else class="h-[81vh] duration-1000 overflow-hidden max-w-[calc(100vw_-_140px)] mx-16 w-full">
+        <div id="mainSlider" class="flex h-[81vh] min-w-[calc(100vw_-_140px)] duration-500 -mb-[1vh]">
+          <div
+            v-for="(i, index) in useTests.store.jsonData"
+            class="min-h-[calc(100vh_-_137px)] min-w-[calc(100vw_-_140px)] border p-5 rounded-2xl"
+          >
+            <h1 class="pb-2 text-2xl">{{ index + 1 }}. {{ i.question }}</h1>
+            <el-radio-group
+              class="flex flex-col !items-start space-y-1"
+              @change="(e) => addToAnswers(e, index)"
+              v-model="useTests.store.answers[index]"
+            >
+              <el-radio
+                v-for="(answer, index) in i.answers"
+                :label="answers[index]"
+                >{{ answers[index] }}. {{ answer }}</el-radio
+              >
+            </el-radio-group>
+          </div>
         </div>
       </div>
 
@@ -697,6 +723,37 @@
           </button>
         </div>
       </div>
+      <div
+        v-else
+        class="flex justify-between items-center z-10 relative py-4 px-16"
+      >
+        <button
+          @click="useTests.store.uploadedFilesModal = false"
+          class="h-[40px] rounded-full border whitespace-nowrap px-5"
+        >
+          Bekor qilish
+        </button>
+        <div class="flex gap-5">
+          <button
+            @click="nextTest('before')"
+            :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+            class="h-[40px] overflow-hidden px-5 bg-[#027DFC] hover:bg-red-600 text-sm leading-4 font-medium text-white rounded-full"
+            v-loading="isLoading.isLoadingType('modal')"
+          >
+            Oldingi
+            <Loading />
+          </button>
+          <button
+            @click="nextTest('next')"
+            :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+            class="h-[40px] overflow-hidden px-5 bg-[#027DFC] text-sm leading-4 font-medium text-white rounded-full"
+            v-loading="isLoading.isLoadingType('modal')"
+          >
+            Keyingi
+            <Loading />
+          </button>
+        </div>
+      </div>
     </el-dialog>
   </main>
 </template>
@@ -704,7 +761,7 @@
 <script setup>
 import axios from "axios";
 import { useSocketStore, useTestStore, useLoadingStore } from "@/store";
-import * as XLSX from 'xlsx/xlsx.mjs';
+import * as XLSX from "xlsx/xlsx.mjs";
 
 const runtime = useRuntimeConfig();
 const baseUrl = runtime.public.baseURL;
@@ -717,6 +774,35 @@ isLoading.search.searchType.tests = "";
 isLoading.search.search.tests = "";
 isLoading.addLoading("getAllData/groups");
 isLoading.search.searchType.groups = "name";
+
+const answers = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
 
 const store = reactive({
   edit: false,
@@ -731,6 +817,7 @@ const store = reactive({
   groupTestStep: 1,
   sendAllGroups: false,
   getFileInfo: false,
+  testStep: 1,
 });
 
 const statusColors = {
@@ -738,6 +825,11 @@ const statusColors = {
   IN_PROGRESS: ["#F2E1BA", "#EEB627"],
   FINISHED: ["#C9E7C4", "#63CC49"],
 };
+
+function addToAnswers(e, index) {
+  console.log(e, index);
+  useTests.store.answers[index] = e;
+}
 
 function getData(date) {
   let data = new Date(date);
@@ -789,20 +881,40 @@ function isEmptyTests() {
   isLoading.store.isOpenSidebar = false;
 }
 
-function getFileInfo(id) {
-  console.log(id);
+function nextTest(next) {
+  if (next == "next") {
+    store.testStep += 1;
+  } else {
+    store.testStep -= 1;
+  }
+  document.getElementById("mainSlider").style.transform = `translateX(-${
+    store.testStep * 100 - 100
+  }%)`;
+}
+
+function getFileInfo(file, title) {
+  useTests.create.title = title;
   isLoading.addLoading("getFileInfo");
+  useTests.store.uploadedFilesModal = true;
   axios
-    .post(baseUrl + "/api/tests/file/" + id, null, {
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("token"),
+    .post(
+      baseUrl + "/api/image/file",
+      {
+        file_name: file,
+        student_id: "e85da92e-8ad8-4aab-8bef-7735825fd554",
       },
-    })
+      {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    )
     .then((res) => {
       console.log(res);
-      useTests.store.uploadedFilesModal = true;
       store.getFileInfo = true;
-      useTests.readExcelFileFromServer(res.data.data);
+      // useTests.readExcelFileFromServer(res.data.data);
+      useTests.store.jsonData = res.data.data;
+      isLoading.removeLoading("getFileInfo");
     })
     .catch((err) => {
       isLoading.removeLoading("getFileInfo");
@@ -812,10 +924,10 @@ function getFileInfo(id) {
 
 let old_id = "";
 function getGroupTests(id) {
+  isLoading.store.isOpenSidebar = true;
   if (old_id == id) {
     return;
   }
-  isLoading.store.isOpenSidebar = true;
   isLoading.store.pagination.tests = 1;
   isLoading.store.paginationStep = 0;
   isLoading.search.search.tests = +id;

@@ -27,6 +27,7 @@ export const useTestStore = defineStore("test", () => {
     uploadedFilesModal: false,
     uploadedFiles: [],
     jsonData: [],
+    answers: {},
   });
 
   const create = reactive({

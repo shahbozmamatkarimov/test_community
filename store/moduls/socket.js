@@ -4,6 +4,7 @@ import { useLoadingStore } from "./loading";
 import { io } from "socket.io-client";
 import { useNotification } from "@/composables/notification";
 import { useGroupStore } from "@/store";
+import { routerKey } from "../../.nuxt/vue-router-stub";
 
 export const useSocketStore = defineStore("socket", () => {
   const { showError, showSuccess } = useNotification();
@@ -128,6 +129,11 @@ export const useSocketStore = defineStore("socket", () => {
     }
 
     isLoading.modal.delete = false;
+  });
+
+  socket.on("errorMessage", (res) => {
+    navigateTo("/login");
+    console.log(res);
   });
 
   return {
