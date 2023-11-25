@@ -188,7 +188,7 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-[10px]">
                   <div
-                    @click="() => getFileInfo(i.image[0]?.file, i.title)"
+                    @click="() => getFileInfo(i.id, i.image[0]?.file, i.title)"
                     class="flex items-center gap-[10px] cursor-pointer hover:scale-105 duration-300"
                   >
                     <img
@@ -659,8 +659,7 @@
           <h1 class="pb-2 text-2xl">{{ index + 1 }}. {{ i.Test }}</h1>
           <el-radio-group
             class="flex flex-col !items-start space-y-1"
-            @change="(e) => addToAnswers(e, index)"
-            v-model="useTests.store.answers[index]"
+            v-model="Objects.keys(useTests.store.answers)[index]"
           >
             <el-radio label="A">A. {{ i.A }}</el-radio>
             <el-radio label="B">B. {{ i.B }}</el-radio>
@@ -670,16 +669,22 @@
         </div>
       </div>
 
-      <div v-else class="h-[81vh] duration-1000 overflow-hidden max-w-[calc(100vw_-_140px)] mx-16 w-full">
-        <div id="mainSlider" class="flex h-[81vh] min-w-[calc(100vw_-_140px)] duration-500 -mb-[1vh]">
+      <div
+        v-else
+        class="h-[80vh] relative duration-1000 overflow-hidden max-w-[calc(100vw_-_140px)] mx-16 w-full"
+      >
+        <div
+          id="mainSlider"
+          class="flex h-[80vh] min-w-[calc(100vw_-_140px)] duration-500 -mb-[1vh]"
+        >
           <div
             v-for="(i, index) in useTests.store.jsonData"
-            class="min-h-[calc(100vh_-_137px)] min-w-[calc(100vw_-_140px)] border p-5 rounded-2xl"
+            @change="() => setAnswer(index)"
+            class="min-h-[calc(100vh_-_147px)] min-w-[calc(100vw_-_140px)] border p-5 rounded-2xl"
           >
             <h1 class="pb-2 text-2xl">{{ index + 1 }}. {{ i.question }}</h1>
             <el-radio-group
               class="flex flex-col !items-start space-y-1"
-              @change="(e) => addToAnswers(e, index)"
               v-model="useTests.store.answers[index]"
             >
               <el-radio
@@ -690,6 +695,17 @@
             </el-radio-group>
           </div>
         </div>
+      </div>
+      <div
+        class="max-h-[calc(100vh_-_140px)] py-3 space-y-2 overflow-hidden overflow-y-auto fixed w-16 right-1 -top-2 bottom-0 my-auto rounded-2xl border"
+      >
+        <p
+          @click="nextTest('next', i + 1)"
+          class="flex items-center justify-center cursor-pointer mx-auto w-10 h-10 border rounded-full"
+          v-for="i in store.skipTests"
+        >
+          {{ i + 1 }}
+        </p>
       </div>
 
       <div
@@ -737,11 +753,11 @@
           <button
             @click="nextTest('before')"
             :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+            v-if="store.testStep > 1"
             class="h-[40px] overflow-hidden px-5 bg-[#027DFC] hover:bg-red-600 text-sm leading-4 font-medium text-white rounded-full"
             v-loading="isLoading.isLoadingType('modal')"
           >
             Oldingi
-            <Loading />
           </button>
           <button
             @click="nextTest('next')"
@@ -750,10 +766,54 @@
             v-loading="isLoading.isLoadingType('modal')"
           >
             Keyingi
+          </button>
+          <!-- store.testStep < useTests.store.jsonData.length -->
+          <button
+            @click="useTests.store.submitAnswerModal = true"
+            v-if="checkSubmit()"
+            :type="isLoading.isLoadingType('modal') ? 'button' : 'submit'"
+            class="h-[40px] overflow-hidden px-5 bg-[#027DFC] text-sm leading-4 font-medium text-white rounded-full"
+            v-loading="isLoading.isLoadingType('modal')"
+          >
+            Yuklash
             <Loading />
           </button>
         </div>
       </div>
+    </el-dialog>
+
+    <!---------------- Submit test answers ----------------------->
+    <el-dialog
+      v-if="isMount"
+      width="500"
+      v-model="useTests.store.submitAnswerModal"
+      style="border-radius: 16px"
+      class="max-w-fit rounded-2xl p-10 min-w-[420px] mx-auto h-[240]"
+      align-center
+      close-icon="false"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h1 class="font-medium text-2xl leading-[29px]">Testni tugatish</h1>
+        <img
+          @click="useTests.store.submitAnswerModal = false"
+          class="h-5 w-5 rounded-lg cursor-pointer"
+          src="@/assets/svg/x.svg"
+          alt="x"
+        />
+      </div>
+      <p class="my-8 leading-[19px]">Siz testni tugatmoqchimisiz?</p>
+      <button
+        @click="useTests.addStudentAnswers()"
+        class="bg-[#027DFC] h-10 rounded-[10px] text-white mb-2 w-full"
+      >
+        Testni tugatish
+      </button>
+      <button
+        @click="useTests.store.submitAnswerModal = false"
+        class="h-10 w-full text-[#027DFC]"
+      >
+        Bekor qilish
+      </button>
     </el-dialog>
   </main>
 </template>
@@ -818,6 +878,7 @@ const store = reactive({
   sendAllGroups: false,
   getFileInfo: false,
   testStep: 1,
+  skipTests: [],
 });
 
 const statusColors = {
@@ -826,9 +887,41 @@ const statusColors = {
   FINISHED: ["#C9E7C4", "#63CC49"],
 };
 
-function addToAnswers(e, index) {
-  console.log(e, index);
-  useTests.store.answers[index] = e;
+function checkSubmit() {
+  console.log(Object.keys(useTests.store.answers)?.length);
+  console.log(Object.keys(Object.keys(useTests.store.jsonData)?.length));
+  console.log("--------------------------------");
+  if (
+    Object.keys(useTests.store.jsonData)?.length ==
+    Object.keys(useTests.store.answers)?.length
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function setAnswer() {
+  let skipTest = [];
+  store.skipTests = [];
+  skipTest = Object.keys(useTests.store.answers);
+  console.log(skipTest);
+  let lastIndex = +skipTest?.pop();
+  skipTest.push(String(lastIndex));
+  if (lastIndex < store.testStep - 1 || !lastIndex) {
+    lastIndex = store.testStep - 1;
+  }
+  console.log(skipTest);
+  for (let i = 0; i < lastIndex; i++) {
+    if (!skipTest.includes(String(i))) {
+      store.skipTests.push(i);
+    }
+  }
+
+  if (store.testStep == useTests.store.jsonData.length) {
+    if (!skipTest.includes(String(store.testStep - 1))) {
+      store.skipTests.push(store.testStep - 1);
+    }
+  }
 }
 
 function getData(date) {
@@ -881,18 +974,26 @@ function isEmptyTests() {
   isLoading.store.isOpenSidebar = false;
 }
 
-function nextTest(next) {
+function nextTest(next, step) {
+  if (step) {
+    store.testStep = step - 1;
+  }
   if (next == "next") {
-    store.testStep += 1;
+    if (store.testStep < useTests.store.jsonData.length) {
+      store.testStep += 1;
+    }
   } else {
-    store.testStep -= 1;
+    if (store.testStep > 0) {
+      store.testStep -= 1;
+    }
   }
   document.getElementById("mainSlider").style.transform = `translateX(-${
     store.testStep * 100 - 100
   }%)`;
+  setAnswer();
 }
 
-function getFileInfo(file, title) {
+function getFileInfo(test_id, file, title) {
   useTests.create.title = title;
   isLoading.addLoading("getFileInfo");
   useTests.store.uploadedFilesModal = true;
@@ -901,7 +1002,8 @@ function getFileInfo(file, title) {
       baseUrl + "/api/image/file",
       {
         file_name: file,
-        student_id: "e85da92e-8ad8-4aab-8bef-7735825fd554",
+        student_id: "1d0637fc-481c-4dcb-8af5-17a9df0b725f",
+        test_id,
       },
       {
         headers: {
@@ -912,8 +1014,8 @@ function getFileInfo(file, title) {
     .then((res) => {
       console.log(res);
       store.getFileInfo = true;
-      // useTests.readExcelFileFromServer(res.data.data);
-      useTests.store.jsonData = res.data.data;
+      useTests.store.jsonData = res.data?.data?.testData;
+      useTests.store.trueAnswerId = res.data?.data?.id;
       isLoading.removeLoading("getFileInfo");
     })
     .catch((err) => {

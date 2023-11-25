@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLoadingStore } from "./loading";
 import { io } from "socket.io-client";
 import { useNotification } from "@/composables/notification";
-import * as XLSX from 'xlsx/xlsx.mjs';
+import * as XLSX from "xlsx/xlsx.mjs";
 
 export const useTestStore = defineStore("test", () => {
   const { showError } = useNotification();
@@ -28,6 +28,8 @@ export const useTestStore = defineStore("test", () => {
     uploadedFiles: [],
     jsonData: [],
     answers: {},
+    trueAnswerId: false,
+    submitAnswerModal: false,
   });
 
   const create = reactive({
@@ -71,6 +73,18 @@ export const useTestStore = defineStore("test", () => {
     store.isListener = true;
     isLoading.addLoading("modal");
     socket.emit("create/tests", create);
+  };
+
+  // add student answers
+  const addStudentAnswers = () => {
+    store.isListener = true;
+    isLoading.addLoading("modal");
+    console.log(store.jsonData);
+    console.log(store.answers);
+    socket.emit("update/send_answers", {
+      id: store.trueAnswerId,
+      answers: Object.values(store.answers).join("")
+    });
   };
 
   const readExcelFileFromServer = async (file) => {
@@ -156,6 +170,14 @@ export const useTestStore = defineStore("test", () => {
     getAllData();
   });
 
+  // added student answers listener
+  socket.on("updated/added_answers", (res) => {
+    console.log(res);
+    isLoading.removeLoading("modal");
+    if (res.status === 404) return showError(res.error);
+  });
+
+
   // getAll listener
   socket.on("tests", (res) => {
     console.log(res);
@@ -214,6 +236,7 @@ export const useTestStore = defineStore("test", () => {
     store,
     create,
     createData,
+    addStudentAnswers,
     getAllData,
     getDataById,
     updateData,
