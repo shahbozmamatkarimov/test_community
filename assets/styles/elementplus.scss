@@ -70,6 +70,15 @@
     }
 }
 
+.el-date-editor {
+    background: transparent !important;
+}
+
+.el-time-spinner__item:hover {
+    background: #027DFC1A !important;
+    border-radius: 60px;
+}
+
 // upload files
 .el-upload-dragger {
     padding: 0 !important;

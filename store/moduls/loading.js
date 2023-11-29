@@ -18,6 +18,8 @@ export const useLoadingStore = defineStore("loading", () => {
     isOpenSidebar: false,
   });
 
+  const user = reactive({})
+
   const modal = reactive({
     create: false,
     edit: false,
@@ -48,9 +50,19 @@ export const useLoadingStore = defineStore("loading", () => {
     }
   }
 
+  function getTime(data) {
+    data = new Date(data);
+    let hour = data.getHours();
+    let minute = data.getMinutes();
+    hour = String(hour).length == 1 ? "0" + hour : hour;
+    minute = String(minute).length == 1 ? "0" + minute : minute;
+    const dateTime = hour + ":" + minute;
+    return dateTime;
+  }
+
   function isLoadingType(type) {
     return store.loadingTypes?.includes(type);
   }
 
-  return { store, modal, searchDate, search, addLoading, removeLoading, isLoadingType };
+  return { user, store, modal, searchDate, search, addLoading, removeLoading, isLoadingType, getTime };
 });

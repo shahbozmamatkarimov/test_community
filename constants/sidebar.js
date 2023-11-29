@@ -13,9 +13,21 @@ export const header = [
   },
   {
     id: 2,
+    title: "Fanlar",
+    link: "/subjects",
+    icon: cart,
+  },
+  {
+    id: 2,
     title: "Guruhlar",
     link: "/groups",
     icon: cart,
+  },
+  {
+    id: 3,
+    title: "O'qituvchilar",
+    link: "/teachers",
+    icon: search,
   },
   {
     id: 3,

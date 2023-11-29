@@ -658,13 +658,15 @@
         >
           <h1 class="pb-2 text-2xl">{{ index + 1 }}. {{ i.Test }}</h1>
           <el-radio-group
+            v-model="for_teacher"
             class="flex flex-col !items-start space-y-1"
-            v-model="Objects.keys(useTests.store.answers)[index]"
           >
-            <el-radio label="A">A. {{ i.A }}</el-radio>
-            <el-radio label="B">B. {{ i.B }}</el-radio>
-            <el-radio label="C">C. {{ i.C }}</el-radio>
-            <el-radio label="D">D. {{ i.D }}</el-radio>
+            <el-radio
+              v-show="i[variant]?.length"
+              v-for="variant in answers"
+              :label="variant"
+              >{{ variant }}. {{ i[variant] }}</el-radio
+            >
           </el-radio-group>
         </div>
       </div>
@@ -697,6 +699,7 @@
         </div>
       </div>
       <div
+        v-if="store.skipTests?.length"
         class="max-h-[calc(100vh_-_140px)] py-3 space-y-2 overflow-hidden overflow-y-auto fixed w-16 right-1 -top-2 bottom-0 my-auto rounded-2xl border"
       >
         <p
@@ -834,6 +837,7 @@ isLoading.search.searchType.tests = "";
 isLoading.search.search.tests = "";
 isLoading.addLoading("getAllData/groups");
 isLoading.search.searchType.groups = "name";
+const for_teacher = "A";
 
 const answers = [
   "A",
@@ -889,7 +893,7 @@ const statusColors = {
 
 function checkSubmit() {
   console.log(Object.keys(useTests.store.answers)?.length);
-  console.log(Object.keys(Object.keys(useTests.store.jsonData)?.length));
+  console.log(Object.keys(useTests.store.jsonData)?.length);
   console.log("--------------------------------");
   if (
     Object.keys(useTests.store.jsonData)?.length ==
@@ -997,6 +1001,9 @@ function getFileInfo(test_id, file, title) {
   useTests.create.title = title;
   isLoading.addLoading("getFileInfo");
   useTests.store.uploadedFilesModal = true;
+  if (isLoading.user.role == "teacher") {
+    return useTests.readExcelFileFromServer(file);
+  }
   axios
     .post(
       baseUrl + "/api/image/file",

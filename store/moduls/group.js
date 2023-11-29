@@ -9,7 +9,20 @@ export const useGroupStore = defineStore("group", () => {
   const group = reactive({
     name: "",
     description: "",
+    weeks: [],
+    startTime: "",
+    subject_id: "",
+    startDate: "",
   });
 
-  return { store, group };
+  const filter = reactive({
+    subject_id: null,
+    weeks: null,
+    startDate: null,
+    startTime: null,
+  });
+
+  const appliedFilter = reactive({});
+
+  return { store, filter, group, appliedFilter };
 });

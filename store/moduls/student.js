@@ -26,6 +26,14 @@ export const useStudentStore = defineStore("student", () => {
     isChangePassword: false,
     groupInfo: "",
     isChangeGroup: false,
+    studentStepFilter: 1,
+    filterByGroup: [],
+    filterByGroupIndex: [],
+  });
+
+  const filter = reactive({
+    type: "",
+    value: "",
   });
 
   const create = reactive({
@@ -53,8 +61,9 @@ export const useStudentStore = defineStore("student", () => {
       page: isLoading.store.pagination.students,
       data: {
         search: isLoading.search.search.students,
-        searchType: isLoading.search.searchType.students
+        searchType: isLoading.search.searchType.students,
       },
+      filter,
     });
   };
 
@@ -171,6 +180,7 @@ export const useStudentStore = defineStore("student", () => {
   return {
     store,
     create,
+    filter,
     createData,
     getAllData,
     getDataById,

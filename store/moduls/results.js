@@ -4,9 +4,10 @@ import { useLoadingStore } from "./loading";
 import { io } from "socket.io-client";
 import { useNotification } from "@/composables/notification";
 import { useGroupStore } from "@/store";
+import { routerKey } from "../../.nuxt/vue-router-stub";
 
-export const useSocketStore = defineStore("socket", () => {
-  const { showError, showSuccess } = useNotification();
+export const useResultsStore = defineStore("results", () => {
+  const { showError } = useNotification();
   const runtime = useRuntimeConfig();
   const baseUrl = runtime.public.baseURL;
   const isLoading = useLoadingStore();
@@ -22,21 +23,15 @@ export const useSocketStore = defineStore("socket", () => {
 
   const store = reactive({
     isListener: true,
-    drawer: false,
   });
 
   // getAll
   const getAllData = (isSearching) => {
-    let startTime;
-    if (useGroup.filter.startTime) {
-      startTime = isLoading.getTime(useGroup.filter.startTime);
-      console.log(useGroup.filter.startTime);
-    }
     if (isSearching == "searchByName") {
       isLoading.search.searchType.groups = "name";
     }
     if (store.isListener || isSearching === "searching") {
-      isLoading.addLoading("getAllData/groups");
+      isLoading.addLoading("getAllData/true_answers");
     }
     store.isListener = false;
     if (isLoading.store.isSearching) {
@@ -46,13 +41,14 @@ export const useSocketStore = defineStore("socket", () => {
     if (!isLoading.search.searchType) {
       isLoading.search.searchType.groups = "name";
     }
-    socket.emit("getAll/groups", {
+    isLoading.search.search.groups = 'id';
+    isLoading.search.searchType.groups = null;
+    socket.emit("getAll/true_answers", {
       page: isLoading.store.pagination.groups,
       data: {
         search: isLoading.search.search.groups,
         searchType: isLoading.search.searchType.groups,
       },
-      filter: {...useGroup.filter, startTime},
     });
   };
 
@@ -60,13 +56,7 @@ export const useSocketStore = defineStore("socket", () => {
   const createData = () => {
     store.isListener = true;
     isLoading.addLoading("modal");
-    const startTime = isLoading.getTime(useGroup.group.startTime);
-    const weeks = useGroup.group.weeks.join(", ");
-    socket.emit("create/" + isLoading.store.pageName, {
-      ...useGroup.group,
-      startTime,
-      weeks,
-    });
+    socket.emit("create/" + isLoading.store.pageName, useGroup.group);
   };
 
   // get by id
@@ -83,11 +73,9 @@ export const useSocketStore = defineStore("socket", () => {
   const updateData = () => {
     store.isListener = true;
     isLoading.addLoading("modal");
-    const weeks = useGroup.group.weeks.join(", ");
-    const startTime = isLoading.getTime(useGroup.group.startTime);
     socket.emit("update/" + isLoading.store.pageName, {
       id: useGroup.store.id,
-      group: {...useGroup.group, weeks, startTime},
+      group: useGroup.group,
     });
   };
 
@@ -99,17 +87,14 @@ export const useSocketStore = defineStore("socket", () => {
   };
 
   // socket listener
-  socket.on("listener", (res) => {
+  socket.on("listener/true_answers", (res) => {
     getAllData();
   });
 
   // getAll listener
-  socket.on("groups", (res) => {
+  socket.on("true_answers", (res) => {
     console.log(res);
-    for (let i of Object.keys(useGroup.filter)){
-      useGroup.appliedFilter[i] = useGroup.filter[i];
-    }
-    isLoading.removeLoading("getAllData/groups");
+    isLoading.removeLoading("getAllData/true_answers");
     if (res.status === 404) return showError(res.error);
     isLoading.store.pageData.groups = res.data?.pagination;
     isLoading.store.allData.groups = res.data?.records;
@@ -118,7 +103,6 @@ export const useSocketStore = defineStore("socket", () => {
   // created listener
   socket.on("created", (res) => {
     isLoading.removeLoading("modal");
-    console.log(res);
     if (res.status === 400) return showError("Bunday guruh mavjud!");
     isLoading.modal.create = false;
   });
@@ -128,22 +112,12 @@ export const useSocketStore = defineStore("socket", () => {
     isLoading.removeLoading("modal");
     if (res.status === 404) return showError(res.data.error);
     useGroup.group.name = res.data?.name;
-    useGroup.group.subject_id = res.data?.subject_id;
     useGroup.group.description = res.data?.description;
-    useGroup.group.weeks = res.data?.weeks?.split(", ");
-    const time = new Date().setHours(
-      res.data?.startTime.slice(0, 2),
-      res.data?.startTime.slice(3, 5),
-      0
-    );
-    useGroup.group.startTime = time;
-    useGroup.group.startDate = res.data?.startDate;
   });
 
   // upated listener
   socket.on("updated", (res) => {
     isLoading.removeLoading("modal");
-    console.log(res);
     if (res.status === 404) return showError("Bunday guruh mavjud!");
     isLoading.modal.create = false;
   });

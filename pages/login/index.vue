@@ -117,8 +117,8 @@ const handleSubmit = () => {
   })
     .then((res) => res.json())
     .then((res) => {
-
-      if (res.mesage === "Tizimga muvaffaqiyatli kirildi") {
+      console.log(res);
+      if (res.status == 200) {
         localStorage.setItem("token", res.access_token);
         router.push("/");
       }

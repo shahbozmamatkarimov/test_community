@@ -3,6 +3,8 @@ import { useSocketStore } from "./moduls/socket";
 import {useGroupStore} from "./moduls/group"
 import { useStudentStore } from "./moduls/student";
 import { useTestStore } from "./moduls/tests";
+import { useResultsStore } from "./moduls/results";
+import { useSubjectsStore } from "./moduls/subjects";
 
 export {
     useLoadingStore,
@@ -10,4 +12,13 @@ export {
     useGroupStore,
     useStudentStore,
     useTestStore,
+    useResultsStore,
+    useSubjectsStore,
 }
+
+// Super admin
+// Admin
+// Operator
+// Admistrator
+// Teacher
+// Student

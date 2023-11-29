@@ -14,7 +14,11 @@
             class="flex items-center flex-row space-x-2 lg:space-x-0 lg:flex-col lg:space-y-2"
           >
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
+              @click="() => todayMonth('all')"
+              :class="
+                useStudent?.store?.studentStepFilter == 1 ? 'bg-[#027DFC1A]' : ''
+              "
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -28,37 +32,44 @@
                 />
               </svg>
             </a>
-            <!-- Active: bg-gray-800 text-white, Not active: text-white/50 -->
             <a
-              class="bg-gray-800 text-white p-4 inline-flex justify-center rouded-lg"
+              @click="() => todayMonth('not_payed')"
+              :class="
+                useStudent?.store?.studentStepFilter == 3 ? 'bg-[#027DFC1A]' : ''
+              "
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 sm:h-6 sm:w-6"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                style="fill: red; transform: ; msfilter: "
               >
                 <path
-                  d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
-                />
+                  d="M15.999 8.5h2c0-2.837-2.755-4.131-5-4.429V2h-2v2.071c-2.245.298-5 1.592-5 4.429 0 2.706 2.666 4.113 5 4.43v4.97c-1.448-.251-3-1.024-3-2.4h-2c0 2.589 2.425 4.119 5 4.436V22h2v-2.07c2.245-.298 5-1.593 5-4.43s-2.755-4.131-5-4.429V6.1c1.33.239 3 .941 3 2.4zm-8 0c0-1.459 1.67-2.161 3-2.4v4.799c-1.371-.253-3-1.002-3-2.399zm8 7c0 1.459-1.67 2.161-3 2.4v-4.8c1.33.239 3 .941 3 2.4z"
+                ></path>
               </svg>
             </a>
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
+              @click="() => todayMonth('payed')"
+              :class="
+                useStudent?.store?.studentStepFilter == 4 ? 'bg-[#027DFC1A]' : ''
+              "
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 sm:h-6 sm:w-6"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                style="fill: green; transform: ; msfilter: "
               >
                 <path
-                  fill-rule="evenodd"
-                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                  clip-rule="evenodd"
-                />
+                  d="M15.999 8.5h2c0-2.837-2.755-4.131-5-4.429V2h-2v2.071c-2.245.298-5 1.592-5 4.429 0 2.706 2.666 4.113 5 4.43v4.97c-1.448-.251-3-1.024-3-2.4h-2c0 2.589 2.425 4.119 5 4.436V22h2v-2.07c2.245-.298 5-1.593 5-4.43s-2.755-4.131-5-4.429V6.1c1.33.239 3 .941 3 2.4zm-8 0c0-1.459 1.67-2.161 3-2.4v4.799c-1.371-.253-3-1.002-3-2.399zm8 7c0 1.459-1.67 2.161-3 2.4v-4.8c1.33.239 3 .941 3 2.4z"
+                ></path>
               </svg>
             </a>
           </nav>
@@ -66,7 +77,7 @@
             class="flex items-center flex-row space-x-2 lg:space-x-0 lg:flex-col lg:space-y-2"
           >
             <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
+              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
             >
               <svg
@@ -82,23 +93,6 @@
                 />
               </svg>
             </a>
-            <a
-              class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-gray-800 hover:text-white smooth-hover"
-              href="#"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 sm:h-6 sm:w-6"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </a>
           </div>
         </div>
         <!-- Content -->
@@ -107,24 +101,52 @@
             class="flex optional1 items-end justify-between lg:gap-10 gap-5 pb-2 pt-2.5"
           >
             <el-select
-              class="max-w-[150px] min-w-[150px] mt-1"
-              loading
-              show-search
-              placeholder="Guruh"
-              :filter-option="filterOption"
-              @change="handleChange"
+              v-if="isMount"
+              class="w-60"
+              id="selectgroup"
+              @input="(e) => inputSelectGroup(e)"
+              v-model="useStudent.store.filterByGroup"
+              filterable
+              multiple
+              placeholder="Guruhni tanlang"
               required
-            ></el-select>
+            >
+              <el-option
+                @click="() => changeGroupIndex(index)"
+                class="options"
+                v-for="(item, index) in isLoading.store.allData?.groups"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+              <SelectPagination />
+            </el-select>
             <button
               @click="
                 isLoading.modal.create = true;
                 isLoading.modal.edit = false;
               "
-              class="bg-[#027DFC] px-5 sm:h-10 h-7 text-sm whitespace-nowrap rounded-full"
+              class="bg-[#027DFC] px-5 sm:h-10 h-7 pt-0.5 text-sm whitespace-nowrap rounded-full"
             >
               <i class="bx bx-plus add_test_plus"></i> <slot></slot>
               <span class="add_test">O'quvchi qo'shish</span>
             </button>
+          </div>
+          <div class="flex flex-wrap mt-2 gap-2">
+            <div
+              v-for="(i, index) in useStudent?.store?.filterByGroupIndex"
+              class="flex border justify-start py-0.5 px-2 rounded-full"
+            >
+              <p>
+                {{ isLoading.store.allData?.groups[i].name }}
+              </p>
+              <img
+                @click="clearFilteredGroups(index)"
+                class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
+                src="@/assets/svg/deleteX.svg"
+                alt=""
+              />
+            </div>
           </div>
           <!-- <div class="inline-flex items-center space-x-2">
               <a
@@ -173,7 +195,7 @@
               v-if="isLoading.isLoadingType('getAllData/students')"
               v-for="i in 10"
               :key="i"
-              class="relative animate-pulse group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
+              class="relative animate-pulse group bg-gray-900 py-10 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-[#027ffc3a] hover:smooth-hover"
             >
               <img
                 class="w-20 h-20 object-cover object-center rounded-full"
@@ -197,7 +219,7 @@
               v-if="isLoading.store.allData?.students?.length"
               v-for="i in isLoading.store.allData?.students"
               :key="i.id"
-              class="relative userInfo group bg-gray-900 py-20 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-gray-700 hover:smooth-hover"
+              class="relative userInfo group bg-gray-900 py-20 sm:py-20 px-4 flex flex-col space-y-2 items-center cursor-pointer rounded-lg hover:bg-[#027ffc3a] hover:smooth-hover"
             >
               <img
                 v-if="i.image"
@@ -281,10 +303,7 @@
               </el-dropdown>
             </div>
             <div
-              v-else-if="
-                !isLoading.isLoadingType('getAllData/students') &&
-                isLoading.search.search?.length
-              "
+              v-else-if="!isLoading.isLoadingType('getAllData/students')"
               class="min-w-full col-span-4"
             >
               <Nodata>O'quvchi</Nodata>
@@ -298,7 +317,7 @@
                 <button
                   id="dropdownActionButton"
                   data-dropdown-toggle="dropdownAction"
-                  class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-[#027ffc3a] dark:hover:border-gray-600 dark:focus:ring-gray-700"
                   type="button"
                 >
                   <span class="sr-only">Action button</span>
@@ -964,22 +983,55 @@ const handleSubmit = () => {
 };
 
 function addMonth(startDate) {
-  let date = new Date(
-    new Date(startDate)?.getFullYear(),
-    new Date(startDate)?.getMonth() + 1,
-    new Date(startDate)?.getDate()
-  );
+  let date = new Date();
+  // new Date(startDate)?.getFullYear(),
+  // new Date(startDate)?.getMonth() + 1,
+  // new Date(startDate)?.getDate()
+  console.log(startDate);
+  startDate = new Date(startDate);
+  date.setFullYear(startDate?.getFullYear());
+  date.setMonth(startDate?.getMonth() + 1);
+  date.setDate(startDate?.getDate());
+  console.log(date);
 
-  let day = String(new Date(date)?.getDate());
-  let month = String(+new Date(date)?.getMonth() + 1);
-  let year = String(new Date(date)?.getFullYear());
-  date =
-    (day.length == 2 ? day : "0" + day) +
-    "." +
-    (month.length == 2 ? month : "0" + month) +
-    "." +
-    year;
-  return date;
+  let day = String(date.getDate()).padStart(2, "0");
+  let month = String(date.getMonth() + 1).padStart(2, "0");
+  let year = new Date(date)?.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+function inputSelectGroup(e, isSearch) {
+  isLoading.store.isSearching = true;
+  console.log(e.target.value, isSearch);
+  if (isSearch === "test_search") {
+    isLoading.search.searchType.tests = e.target.value;
+    useTests.getAllData("searching");
+  } else {
+    isLoading.addLoading("getAllData/groups");
+    isLoading.search.search.groups = e.target.value.trim();
+    useSocket?.getAllData("searchByName");
+  }
+}
+
+function todayMonth(isPayed) {
+  useStudent.store.isListener = true;
+  if (isPayed == "not_payed") {
+    useStudent.filter.type = "lte";
+    useStudent.store.studentStepFilter = 3;
+  } else {
+    useStudent.filter.type = "gte";
+    useStudent.store.studentStepFilter = 4;
+  }
+  const time = new Date();
+  time.setMonth(time.getMonth() - 1);
+  console.log(time);
+  useStudent.filter.value = time;
+  if (isPayed == "all") {
+    useStudent.filter.type = null;
+    useStudent.filter.value = null;
+    useStudent.store.studentStepFilter = 1;
+  }
+  useStudent.getAllData();
 }
 
 let test = {
@@ -1016,6 +1068,27 @@ function getDays(startDate) {
     // return dDisplay + hDisplay + mDisplay + sDisplay;
     return dDisplay?.slice(0, dDisplay.length - 7) - 30;
   }
+}
+
+function changeGroupIndex(index) {
+  const isIndex = useStudent.store.filterByGroupIndex.indexOf(index);
+  console.log(isIndex);
+  if (isIndex == -1) {
+    useStudent.store.filterByGroupIndex.push(index);
+    console.log(index);
+  } else {
+    useStudent.store.filterByGroupIndex.splice(isIndex, 1);
+  }
+  useStudent.filter.groups = useStudent.store.filterByGroup;
+  isLoading.addLoading("getAllData/students");
+  useStudent.getAllData();
+}
+
+function clearFilteredGroups(index) {
+  useStudent?.store?.filterByGroupIndex?.splice(index, 1);
+  useStudent?.store?.filterByGroup?.splice(index, 1);
+  isLoading.addLoading("getAllData/students");
+  useStudent.getAllData();
 }
 
 function createStudent() {
