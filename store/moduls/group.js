@@ -5,6 +5,7 @@ import { useLoadingStore, useSocketStore } from "@/store";
 export const useGroupStore = defineStore("group", () => {
   const store = reactive({
     id: "",
+    teachersList: [],
   });
   const group = reactive({
     name: "",
@@ -13,6 +14,7 @@ export const useGroupStore = defineStore("group", () => {
     startTime: "",
     subject_id: "",
     startDate: "",
+    teacher_id: "",
   });
 
   const filter = reactive({
@@ -20,6 +22,7 @@ export const useGroupStore = defineStore("group", () => {
     weeks: null,
     startDate: null,
     startTime: null,
+    teacher_id: null,
   });
 
   const appliedFilter = reactive({});

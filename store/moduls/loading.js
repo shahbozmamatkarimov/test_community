@@ -16,7 +16,12 @@ export const useLoadingStore = defineStore("loading", () => {
     calendarModal: false,
     paginationStep: "",
     isOpenSidebar: false,
+    isOpen: false,
   });
+
+  const pagination = reactive({
+    pageName: "groups",
+  })
 
   const user = reactive({})
 
@@ -64,5 +69,5 @@ export const useLoadingStore = defineStore("loading", () => {
     return store.loadingTypes?.includes(type);
   }
 
-  return { user, store, modal, searchDate, search, addLoading, removeLoading, isLoadingType, getTime };
+  return { user, store, modal, pagination, searchDate, search, addLoading, removeLoading, isLoadingType, getTime };
 });

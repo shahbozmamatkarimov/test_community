@@ -16,7 +16,9 @@
             <a
               @click="() => todayMonth('all')"
               :class="
-                useStudent?.store?.studentStepFilter == 1 ? 'bg-[#027DFC1A]' : ''
+                useStudent?.store?.studentStepFilter == 1
+                  ? 'bg-[#027DFC1A]'
+                  : ''
               "
               class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
@@ -35,7 +37,9 @@
             <a
               @click="() => todayMonth('not_payed')"
               :class="
-                useStudent?.store?.studentStepFilter == 3 ? 'bg-[#027DFC1A]' : ''
+                useStudent?.store?.studentStepFilter == 3
+                  ? 'bg-[#027DFC1A]'
+                  : ''
               "
               class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
@@ -55,7 +59,9 @@
             <a
               @click="() => todayMonth('payed')"
               :class="
-                useStudent?.store?.studentStepFilter == 4 ? 'bg-[#027DFC1A]' : ''
+                useStudent?.store?.studentStepFilter == 4
+                  ? 'bg-[#027DFC1A]'
+                  : ''
               "
               class="text-white/50 p-4 inline-flex justify-center rounded-lg hover:bg-[#027ffc3a] hover:text-white smooth-hover"
               href="#"
@@ -803,6 +809,7 @@
                     required
                   >
                     <el-option
+                      class="options"
                       v-for="(item, index) in isLoading.store.allData?.groups"
                       :key="item.id"
                       :label="item.name"

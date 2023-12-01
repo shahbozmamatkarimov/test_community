@@ -49,6 +49,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+
+.select-bg {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 500;
+}
+
 // pagination media
 @media (max-width: 550px) {
   .nextButton {

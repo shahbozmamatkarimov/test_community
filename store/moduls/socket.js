@@ -28,9 +28,9 @@ export const useSocketStore = defineStore("socket", () => {
   // getAll
   const getAllData = (isSearching) => {
     let startTime;
-    if (useGroup.filter.startTime) {
-      startTime = isLoading.getTime(useGroup.filter.startTime);
-      console.log(useGroup.filter.startTime);
+    if (useGroup.appliedFilter.startTime) {
+      startTime = isLoading.getTime(useGroup.appliedFilter.startTime);
+      console.log(useGroup.appliedFilter.startTime);
     }
     if (isSearching == "searchByName") {
       isLoading.search.searchType.groups = "name";
@@ -46,13 +46,16 @@ export const useSocketStore = defineStore("socket", () => {
     if (!isLoading.search.searchType) {
       isLoading.search.searchType.groups = "name";
     }
+
+    console.log(isLoading.search.search.groups);
+    console.log(isLoading.search.searchType.groups);
     socket.emit("getAll/groups", {
       page: isLoading.store.pagination.groups,
       data: {
         search: isLoading.search.search.groups,
         searchType: isLoading.search.searchType.groups,
       },
-      filter: {...useGroup.filter, startTime},
+      filter: {...useGroup.appliedFilter, startTime},
     });
   };
 
@@ -105,10 +108,6 @@ export const useSocketStore = defineStore("socket", () => {
 
   // getAll listener
   socket.on("groups", (res) => {
-    console.log(res);
-    for (let i of Object.keys(useGroup.filter)){
-      useGroup.appliedFilter[i] = useGroup.filter[i];
-    }
     isLoading.removeLoading("getAllData/groups");
     if (res.status === 404) return showError(res.error);
     isLoading.store.pageData.groups = res.data?.pagination;
@@ -130,6 +129,7 @@ export const useSocketStore = defineStore("socket", () => {
     useGroup.group.name = res.data?.name;
     useGroup.group.subject_id = res.data?.subject_id;
     useGroup.group.description = res.data?.description;
+    useGroup.group.teacher_id = res.data?.teacher_id;
     useGroup.group.weeks = res.data?.weeks?.split(", ");
     const time = new Date().setHours(
       res.data?.startTime.slice(0, 2),

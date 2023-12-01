@@ -5,91 +5,17 @@
         <!-- Component Start -->
         <div class="flex justify-between text-lg font-medium">
           <h1></h1>
-          <div class="flex gap-2">
-            <button
-              @click="useSocket.store.drawer = true"
-              class="flex justify-center items-center -mt-2 rounded-[10px] hover:bg-[#027ffc3a] bg-[#027DFC1A] w-[40px] h-[40px]"
-            >
-              <img src="@/assets/svg/filter.svg" alt="" />
-            </button>
-            <button
-              @click="
-                isLoading.modal.create = true;
-                isLoading.modal.edit = false;
-              "
-              class="h-[40px] -mt-2 px-[56px] rounded-lg text-sm leading-4 bg-[#027DFC] text-white"
-            >
-              <i class="bx bx-plus"></i> Guruh qo'shish
-            </button>
-          </div>
+          <button
+            @click="
+              isLoading.modal.create = true;
+              isLoading.modal.edit = false;
+            "
+            class="h-[40px] -mt-2 px-[56px] rounded-lg text-sm leading-4 bg-[#027DFC] text-white"
+          >
+            <i class="bx bx-plus"></i> O'qituvchi qo'shish
+          </button>
         </div>
 
-        <!-- filter results -->
-        <div class="flex flex-wrap mt-2 justify-start">
-          <div
-            v-if="isLoading.store.allData.subjects?.length != undefined"
-            v-for="i in isLoading.store.allData.subjects"
-            :key="i.id"
-            v-show="useGroup.appliedFilter.subject_id == i.id"
-          >
-            <div
-              class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-            >
-              <p>
-                {{ i.name }}
-              </p>
-              <img
-                @click="clearFromFilter('subject_id')"
-                class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-                src="@/assets/svg/deleteX.svg"
-                alt=""
-              />
-            </div>
-          </div>
-          <div
-            v-if="useGroup.appliedFilter.weeks?.length"
-            v-for="(i, index) in useGroup.appliedFilter.weeks"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-          >
-            <p>
-              {{ i }}
-            </p>
-            <img
-              @click="clearFromFilter('weeks', index)"
-              class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-              src="@/assets/svg/deleteX.svg"
-              alt=""
-            />
-          </div>
-          <div
-            v-if="useGroup.appliedFilter.startDate"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-          >
-            <p>
-              {{ getData(useGroup.appliedFilter.startDate) }}
-            </p>
-            <img
-              @click="clearFromFilter('startDate')"
-              class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-              src="@/assets/svg/deleteX.svg"
-              alt=""
-            />
-          </div>
-          <div
-            v-if="useGroup.appliedFilter.startTime"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-          >
-            <p>
-              {{ isLoading.getTime(useGroup.appliedFilter.startTime) }}
-            </p>
-            <img
-              @click="clearFromFilter('startTime')"
-              class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-              src="@/assets/svg/deleteX.svg"
-              alt=""
-            />
-          </div>
-        </div>
         <div class="flex flex-col w-full mt-5">
           <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div
@@ -109,43 +35,19 @@
                         scope="col"
                         class="px-4 py-4 text-left tracking-wider"
                       >
-                        Nomi
+                        F.I.SH
                       </th>
                       <th
                         scope="col"
                         class="px-4 py-4 text-left tracking-wider"
                       >
-                        Fani
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-4 py-4 text-left tracking-wider"
-                      >
-                        Kunlari
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-4 py-4 text-left tracking-wider"
-                      >
-                        Sanasi
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-4 py-4 text-left tracking-wider"
-                      >
-                        Vaqti
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-4 text-start py-4 tracking-wider"
-                      >
-                        Tavfsif
+                        Telefon
                       </th>
                       <th scope="col" class="px-4 py-4 min-w-[40px]"></th>
                     </tr>
                   </thead>
                   <tbody
-                    v-if="isLoading.isLoadingType('getAllData/groups')"
+                    v-if="isLoading.isLoadingType('getAllData/teachers')"
                     class="bg-gray-800 pointer-events-none"
                   >
                     <tr
@@ -155,7 +57,7 @@
                       class="bg-opacity-20 animate-pulse"
                     >
                       <td
-                        v-for="i in 8"
+                        v-for="i in 4"
                         :key="i"
                         class="px-4 h-[62px] py-4"
                       ></td>
@@ -163,52 +65,36 @@
                   </tbody>
                   <tbody v-else class="bg-gray-800">
                     <tr
-                      v-for="(i, index) in isLoading.store.allData?.groups"
+                      v-for="(i, index) in isLoading.store.allData?.teachers"
                       :key="i.id"
                       :class="index % 2 == 0 ? 'bg-black' : 'bg-gray-800'"
                       class="bg-opacity-20 hover:bg-[#027ffc3a]"
                     >
-                      <td class="px-4 py-4">#{{ i.id }}</td>
+                      <td class="px-4 py-4">{{ index + 1 }}</td>
                       <td
                         class="px-4 items-center align-start w-40 whitespace-nowrap"
                       >
-                        <p class="font-medium truncate w-40">{{ i.name }}</p>
+                        <p class="font-medium truncate w-40">
+                          {{ i.username }}
+                        </p>
                       </td>
                       <td
                         class="px-4 items-center align-start w-40 whitespace-nowrap"
                       >
-                        {{ i.subjects?.name }}
-                      </td>
-                      <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
-                      >
-                        {{ i.weeks }}
-                      </td>
-                      <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
-                      >
-                        {{ getData(i.startDate) }}
-                      </td>
-                      <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
-                      >
-                        {{ i.startTime }}
-                      </td>
-                      <td class="px-4 py-4 whitespace-nowrap">
-                        {{ i.description }}
+                        +998 {{ i.phone }}
                       </td>
                       <td
                         class="flex items-center justify-center mx-2 px-4 py-4 space-x-2 whitespace-nowrap"
                       >
                         <button
-                          @click="() => useSocket.getDataById(i.id)"
+                          @click="() => useTeacher.getDataById(i.id)"
                           class="bx bx-pencil bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
                         ></button>
                         <button
                           @click="
                             () => {
                               isLoading.modal.delete = true;
-                              useGroup.store.id = i.id;
+                              useTeacher.store.id = i.id;
                             }
                           "
                           class="bx bx-trash bg-gray-700 hover:bg-gray-600 py-2 px-3 rounded-lg"
@@ -219,11 +105,11 @@
                 </table>
                 <div
                   v-if="
-                    !isLoading.isLoadingType('getAllData/groups') &&
-                    !isLoading.store.allData?.groups?.length
+                    !isLoading.isLoadingType('getAllData/teachers') &&
+                    !isLoading.store.allData?.teachers?.length
                   "
                 >
-                  <Nodata>Guruh</Nodata>
+                  <Nodata>O'qituvchi</Nodata>
                 </div>
               </div>
             </div>
@@ -248,15 +134,15 @@
           v-if="!isLoading.modal.edit"
           class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
         >
-          <i class="bx bxs-group"></i>
-          Guruh qo'shish
+          <i class="bx bxs-teacher"></i>
+          O'qituvchi qo'shish
         </h1>
         <h1
           v-else="!store.edit"
           class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
         >
-          <i class="bx bxs-group"></i>
-          Guruhni tahrirlash
+          <i class="bx bxs-teacher"></i>
+          O'qituvchini tahrirlash
         </h1>
         <img
           @click="isLoading.modal.create = false"
@@ -280,92 +166,63 @@
                 <input
                   type="text"
                   class="w-full"
-                  v-model="useGroup.group.name"
-                  placeholder="Guruh nomi"
+                  v-model="useTeacher.create.username"
+                  placeholder="F.I.SH"
                   required
                 />
-                <input
-                  type="text"
-                  v-model="useGroup.group.description"
-                  class="w-full"
-                  placeholder="Guruh tavsifi"
-                />
-                <el-select
-                  class="w-full"
-                  placeholder="Guruh fanini tanlang"
-                  v-model="useGroup.group.subject_id"
-                  filterable
-                  required
-                >
-                  <el-option
-                    class="options"
-                    v-for="item in isLoading.store.allData.subjects"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
+                <div class="flex items-center">
+                  <p class="-mr-[52px] ml-4 leading-5">+998</p>
+                  <input
+                    @input="phoneMask"
+                    id="phoneNumberInput"
+                    type="text"
+                    class="w-full pl-14"
+                    v-model="useTeacher.create.phone"
+                    placeholder="__ ___ __ __"
+                    required
                   />
-                </el-select>
-                <el-select
-                  class="w-full"
-                  placeholder="Hafta kunlarini tanlang"
-                  v-model="useGroup.group.weeks"
-                  @change="handleChange"
-                  multiple
-                  filterable
-                  required
-                >
-                  <el-option
-                    class="options"
-                    v-for="item in weeks"
-                    :key="item.label"
-                    :label="item.label"
-                    :value="item.label"
-                  />
-                </el-select>
-                <div
-                  v-if="useGroup.group.weeks?.length"
-                  class="flex flex-wrap justify-start"
-                >
-                  <div v-for="(item, index) in useGroup.group.weeks">
-                    <div
-                      class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-                    >
-                      <p>
-                        {{ item }}
-                      </p>
-                      <img
-                        @click="useGroup.group.weeks?.splice(index, 1)"
-                        class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] rounded-full p-1"
-                        src="@/assets/svg/deleteX.svg"
-                        alt=""
-                      />
-                    </div>
-                  </div>
                 </div>
-
-                <el-date-picker
-                  id="startdate"
-                  v-model="useGroup.group.startDate"
-                  type="date"
-                  class="min-w-full min-h-[40px] bg-transparent border-0"
-                  placeholder="Boshlanish sanasi"
-                  format="YYYY/MM/DD"
-                  required
-                />
-
-                <div class="relative">
+                <div v-if="!isLoading.modal.edit">
+                  <input
+                    type="text"
+                    class="w-full"
+                    v-model="useTeacher.create.password"
+                    placeholder="Parolni kiriting"
+                    required
+                  />
+                </div>
+                <div
+                  v-else
+                  v-if="useTeacher.store.isChangePassword"
+                  class="flex justify-between items-center gap-2"
+                >
+                  <input
+                    type="text"
+                    class="w-full"
+                    v-model="useTeacher.create.password"
+                    placeholder="Parolni kiriting"
+                    required
+                  />
                   <img
-                    class="absolute opacity-40 z-10 top-[10px] left-3"
-                    src="@/assets/svg/clock.svg"
-                    alt=""
+                    v-if="isLoading.modal.edit"
+                    @click="useTeacher.store.isChangePassword = false"
+                    class="hover:bg-[#027DFC1A] p-1 min-w-[20px] max-h-[20px] rounded-full border cursor-pointer"
+                    src="@/assets/svg/x.svg"
+                    alt="x"
                   />
-                  <el-time-picker
-                    prefix-icon="false"
-                    v-model="useGroup.group.startTime"
-                    class="max-w-[180px] w-full min-h-[40px]"
-                    placeholder="Boshlanish vaqti"
-                    format="HH:mm"
-                  />
+                </div>
+                <div
+                  v-if="
+                    !useTeacher.store.isChangePassword && isLoading.modal.edit
+                  "
+                  class="flex justify-between items-center px-4 h-10 rounded-full border"
+                >
+                  <h1>Parolni o'zgartirish</h1>
+                  <button
+                    @click="useTeacher.store.isChangePassword = true"
+                    type="button"
+                    class="bx bx-edit"
+                  ></button>
                 </div>
               </div>
             </div>
@@ -377,7 +234,7 @@
           class="h-[40px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
           v-loading="isLoading.isLoadingType('modal')"
         >
-          Guruhni tahrirlash
+          O'qituvchini tahrirlash
           <Loading />
         </button>
         <button
@@ -386,13 +243,13 @@
           class="h-[40px] overflow-hidden w-full bg-[#027DFC] mt-8 text-sm leading-4 font-medium text-white rounded-full"
           v-loading="isLoading.isLoadingType('modal')"
         >
-          Guruhni qo'shish
+          O'qituvchini qo'shish
           <Loading />
         </button>
       </form>
     </el-dialog>
 
-    <!---------------- delete group ----------------------->
+    <!---------------- delete teacher ----------------------->
     <el-dialog
       v-if="isMount"
       v-model="isLoading.modal.delete"
@@ -411,7 +268,7 @@
             src="@/assets/svg/delete.svg"
             alt=""
           />
-          Guruhni o'chirish
+          O'qituvchini o'chirish
         </h1>
         <img
           @click="isLoading.modal.delete = false"
@@ -421,15 +278,15 @@
         />
       </div>
       <p class="mt-12 text-[16px] leading-[19px]">
-        Haqiqatan ham bu guruhni o'chirib tashlamoqchimisiz?
+        Haqiqatan ham bu o'qituvchini o'chirib tashlamoqchimisiz?
       </p>
       <div>
         <button
-          @click="useSocket.deleteData()"
+          @click="useTeacher.deleteData()"
           class="bg-[#027DFC] h-[40px] rounded-full overflow-hidden text-white mt-10 w-full"
           v-loading="isLoading.isLoadingType('modal')"
         >
-          Guruhni o'chirish
+          O'qituvchini o'chirish
         </button>
         <button
           @click="isLoading.modal.delete = false"
@@ -439,181 +296,35 @@
         </button>
       </div>
     </el-dialog>
-
-    <!----------------------------------------------- filter --------------------------------------------------->
-    <el-drawer
-      v-if="isMount"
-      class="rounded-l-[40px] !bg-gray-800 min-w-[500px] px-[30px] text-sm"
-      v-model="useSocket.store.drawer"
-      title="I am the title"
-      :with-header="false"
-    >
-      <form @submit.prevent="applyFilter">
-        <div
-          class="flex sticky top-0 h-[34px] items-center pt-[53px] justify-between bg-gray-800"
-        >
-          <h1 class="font-medium text-2xl leading-7">Filters</h1>
-          <img
-            @click="useSocket.store.drawer = false"
-            class="h-8 w-8 rounded-full p-2 hover:bg-[#027ffc3a] bg-[#027DFC1A] cursor-pointer"
-            src="../../assets/svg/x.svg"
-            alt="x"
-          />
-        </div>
-        <div class="h-6 bg-gray-800"></div>
-        <div
-          class="pt-[41px] px-[1px] space-y-10 max-h-[calc(100vh_-_240px)] overflow-hidden overflow-y-auto"
-        >
-          <div class="space-y-3">
-            <h1 class="uppercase font-bold text-[11px]">
-              Fan bo'yicha filtrlash
-            </h1>
-            <el-select
-              class="w-full"
-              placeholder="Guruh fanini tanlang"
-              v-model="useGroup.filter.subject_id"
-              filterable
-              required
-            >
-              <el-option
-                class="options"
-                v-for="item in isLoading.store.allData.subjects"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </div>
-          <div class="space-y-3">
-            <h1 class="uppercase font-bold text-[11px]">
-              Hafta kunlar bo'yicha filtrlash
-            </h1>
-            <el-select
-              class="w-full"
-              placeholder="Hafta kunlarini tanlang"
-              v-model="useGroup.filter.weeks"
-              @change="handleChange"
-              multiple
-              filterable
-              required
-            >
-              <el-option
-                class="options"
-                v-for="item in weeks"
-                :key="item.label"
-                :label="item.label"
-                :value="item.label"
-              />
-            </el-select>
-            <div
-              v-if="useGroup.filter.weeks?.length"
-              class="flex flex-wrap justify-start"
-            >
-              <div v-for="(item, index) in useGroup.filter.weeks">
-                <div
-                  class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
-                >
-                  <p>
-                    {{ item }}
-                  </p>
-                  <img
-                    @click="useGroup.filter.weeks?.splice(index, 1)"
-                    class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] rounded-full p-1"
-                    src="@/assets/svg/deleteX.svg"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="space-y-3">
-            <h1 class="uppercase font-bold text-[11px]">
-              Boshlanish sanasi bo'yicha filtrlash
-            </h1>
-            <el-date-picker
-              id="startdate"
-              v-model="useGroup.filter.startDate"
-              type="date"
-              class="min-w-full min-h-[40px] bg-transparent border-0"
-              placeholder="Boshlanish sanasi"
-              format="YYYY/MM/DD"
-              required
-            />
-          </div>
-          <div class="space-y-3">
-            <h1 class="uppercase font-bold text-[11px]">
-              Boshlanish vaqti bo'yicha filtrlash
-            </h1>
-            <div class="relative">
-              <img
-                class="absolute opacity-40 z-10 top-[10px] left-3"
-                src="@/assets/svg/clock.svg"
-                alt=""
-              />
-              <el-time-picker
-                prefix-icon="false"
-                v-model="useGroup.filter.startTime"
-                class="max-w-[180px] w-full min-h-[40px]"
-                placeholder="Boshlanish vaqti"
-                format="HH:mm"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="absolute bottom-8 w-full bg-gray-800 pr-10 font-medium">
-          <button
-            @click="apply"
-            class="h-[46px] w-[420px] bg-[#027DFC] rounded-[10px]"
-          >
-            Apply filters
-          </button>
-          <button
-            @click="applyFilter('clear')"
-            type="button"
-            class="h-[46px] w-[420px] text-[#027DFC] pt-8"
-          >
-            Clear all filters
-          </button>
-        </div>
-      </form>
-    </el-drawer>
   </main>
 </template>
 
 <script setup>
-import {
-  useLoadingStore,
-  useSocketStore,
-  useGroupStore,
-  useSubjectsStore,
-} from "@/store";
+import { useLoadingStore, useTeacherStore } from "@/store";
 const isMount = ref(false);
 
-let useSocket;
-let useSubjects;
+let useTeacher;
 const isLoading = useLoadingStore();
-const useGroup = useGroupStore();
-isLoading.store.pageName = "groups";
-isLoading.addLoading("getAllData/groups");
-isLoading.search.searchType.groups = "id";
-isLoading.search.search.groups = "";
+isLoading.store.pageName = "teachers";
+isLoading.addLoading("getAllData/teachers");
+isLoading.search.searchType.teachers = "id";
+isLoading.search.search.teachers = "";
 isLoading.store.searchOptions = [
   {
     value: "id",
     label: "id",
   },
   {
-    value: "name",
+    value: "username",
     label: "ismi",
   },
   {
-    value: "description",
-    label: "tavsifi",
+    value: "phone",
+    label: "Telefon raqami",
   },
 ];
 const store = reactive({
-  allGroups: "",
+  allTeachers: "",
   modalCreate: false,
   modalDelete: false,
   token: "",
@@ -662,10 +373,29 @@ const weeks = [
 
 function handleSubmit() {
   if (isLoading.modal.edit) {
-    useSocket.updateData();
+    useTeacher.updateData();
   } else {
-    useSocket.createData();
+    useTeacher.createData();
   }
+}
+function phoneMask() {
+  let phoneNumber = useTeacher.create.phone.replace(/\D/g, "");
+
+  // Define the positions for spaces
+  const spacePositions = [2, 6, 9, 12];
+
+  // Insert spaces at specified positions
+  for (var i = 0; i < spacePositions.length; i++) {
+    if (phoneNumber.length > spacePositions[i]) {
+      phoneNumber =
+        phoneNumber.slice(0, spacePositions[i]) +
+        " " +
+        phoneNumber.slice(spacePositions[i]);
+    }
+  }
+
+  // Update the input value
+  useTeacher.create.phone = phoneNumber.slice(0, 12);
 }
 
 const handleChange = (value) => {
@@ -688,28 +418,33 @@ const handleChange = (value) => {
   }
 };
 
-function applyFilter(isClear) {
-  if (isClear == 'clear') {
-    for (let type of Object.keys(useGroup.appliedFilter)) {
-      useGroup.appliedFilter[type] = null;
-      useGroup.filter[type] = null;
-    }
-  }
-  useSocket.store.drawer = false;
+function inputSelectGroup(e, isSearch) {
   isLoading.store.isSearching = true;
-  useSocket.getAllData('searching');
+  console.log(e.target.value, isSearch);
+  if (isSearch === "test_search") {
+    isLoading.search.searchType.tests = e.target.value;
+    useTests.getAllData("searching");
+  } else {
+    isLoading.addLoading("getAllData/groups");
+    isLoading.search.search.groups = e.target.value.trim();
+    useSocket?.getAllData("searchByName");
+  }
 }
 
-function clearFromFilter(type, index) {
-  if (type == "weeks") {
-    useGroup.appliedFilter[type].splice(index, 1);
-    useGroup.filter[type].splice(index, 1);
+function changeGroupIndex(index) {
+  const isIndex = useTeacher.store.filterByGroupIndex.indexOf(index);
+  console.log(isIndex);
+  if (isIndex == -1) {
+    useTeacher.store.filterByGroupIndex.push(index);
+    console.log(index);
   } else {
-    useGroup.appliedFilter[type] = null;
-    useGroup.filter[type] = null;
+    useTeacher.store.filterByGroupIndex.splice(isIndex, 1);
   }
-  isLoading.store.isSearching = true;
-  useSocket.getAllData('searching');
+}
+
+function clearFilteredGroups(index) {
+  useTeacher?.store?.filterByGroupIndex?.splice(index, 1);
+  useTeacher?.store?.groupIds?.splice(index, 1);
 }
 
 function getData(date) {
@@ -724,41 +459,39 @@ function getData(date) {
 function pageNext(page, next) {
   if (
     (page == "minusTen" ||
-      (useSocket.store.pagination == store.paginationStep + 1 &&
+      (useTeacher.store.pagination == store.paginationStep + 1 &&
         page == "minus")) &&
     store.paginationStep !== 0
   ) {
     store.paginationStep -= 5;
-    useSocket.store.pagination = store.paginationStep + 5;
+    useTeacher.store.pagination = store.paginationStep + 5;
   } else if (
     (page == "plusTen" ||
-      (useSocket.store.pagination == store.paginationStep + 5 &&
+      (useTeacher.store.pagination == store.paginationStep + 5 &&
         page == "plus")) &&
-    store.paginationStep < Math.floor(useSocket.store.pageData.total_pages) - 5
+    store.paginationStep < Math.floor(useTeacher.store.pageData.total_pages) - 5
   ) {
     store.paginationStep += 5;
-    useSocket.store.pagination = store.paginationStep + 1;
+    useTeacher.store.pagination = store.paginationStep + 1;
   } else if (page == "plus") {
-    useSocket.store.pagination += 1;
+    useTeacher.store.pagination += 1;
   } else if (page == "minus") {
-    useSocket.store.pagination -= 1;
+    useTeacher.store.pagination -= 1;
   } else if (next == "next") {
-    useSocket.store.pagination = page;
+    useTeacher.store.pagination = page;
   }
-  useSocket.getAllData();
+  useTeacher.getAllData();
 }
 
-const deleteGroup = () => {
-  useSocket.deleteData(store.deleteId);
+const deleteTeacher = () => {
+  useTeacher.deleteData(store.deleteId);
 };
 
 onMounted(() => {
-  useSubjects = useSubjectsStore();
-  useSocket = useSocketStore();
+  useTeacher = useTeacherStore();
   isMount.value = true;
-  isLoading.store.pagination.groups = 1;
-  useSocket.getAllData();
-  useSubjects.getAllData();
+  isLoading.store.pagination.teachers = 1;
+  useTeacher.getAllData();
 });
 </script>
 

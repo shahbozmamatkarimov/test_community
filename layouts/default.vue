@@ -8,9 +8,19 @@
       <slot />
     </div>
     <MobileSidebar />
+
+    <div
+      class="select-bg"
+      v-if="isLoading.store.isOpen"
+      @click="isLoading.store.isOpen = false"
+    ></div>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { useLoadingStore } from "@/store";
+
+const isLoading = useLoadingStore();
+</script>
 
 <style lang="scss" scoped></style>

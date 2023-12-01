@@ -1,11 +1,11 @@
 <template>
   <nav
-    v-if="isLoading.store.allData.groups"
+    v-if="isLoading.store.allData[`${isLoading.pagination.pageName}`]"
     class="flex justify-between items-center py-1 px-5"
   >
     <div>
       <button
-        v-show="isLoading.store.pageData?.groups?.total_pages > 10"
+        v-show="isLoading.store.pageData[`${isLoading.pagination.pageName}`]?.total_pages > 10"
         @click="() => pageNext('minusTen')"
         :class="
           store.paginationStep !== 0
@@ -17,10 +17,13 @@
         <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
       </button>
     </div>
-    <ul class="flex" v-if="isLoading.store.pageData?.groups?.total_pages != 0">
+    <ul
+      class="flex"
+      v-if="isLoading.store.pageData[`${isLoading.pagination.pageName}`]?.total_pages != 0"
+    >
       <li
         :class="
-          isLoading.store.pagination.groups === 1
+          isLoading.store.pagination[`${isLoading.pagination.pageName}`] === 1
             ? 'opacity-50 pointer-events-none'
             : ''
         "
@@ -39,10 +42,11 @@
           @click="() => pageNext(i + store.paginationStep, 'next')"
           v-if="
             i + store.paginationStep <=
-            isLoading.store?.pageData?.groups?.total_pages
+            isLoading.store?.pageData[`${isLoading.pagination.pageName}`]?.total_pages
           "
           :class="
-            i + store.paginationStep == isLoading.store.pagination.groups
+            i + store.paginationStep ==
+            isLoading.store.pagination[`${isLoading.pagination.pageName}`]
               ? 'bg-blue-600 border-blue-600'
               : 'border border-blue-gray-100 bg-transparent'
           "
@@ -54,9 +58,9 @@
       </li>
       <li
         :class="
-          isLoading.store.pagination.groups ==
-            isLoading.store?.pageData?.groups?.total_pages ||
-          isLoading.store.pageData?.groups?.total_count === 0
+          isLoading.store.pagination[`${isLoading.pagination.pageName}`] ==
+            isLoading.store?.pageData[`${isLoading.pagination.pageName}`]?.total_pages ||
+          isLoading.store.pageData[`${isLoading.pagination.pageName}`]?.total_count === 0
             ? 'opacity-50 pointer-events-none'
             : ''
         "
@@ -73,11 +77,15 @@
     </ul>
     <div>
       <button
-        v-show="isLoading.store.pageData?.groups?.total_pages > 5"
+        v-show="isLoading.store.pageData[`${isLoading.pagination.pageName}`]?.total_pages > 5"
         @click="() => pageNext('plusTen')"
         :class="
           store.paginationStep <
-          Math.floor(isLoading.store.pageData?.groups?.total_pages) - 5
+          Math.floor(
+            isLoading.store.pageData[`${isLoading.pagination.pageName}`]
+              ?.total_pages
+          ) -
+            5
             ? ''
             : 'pointer-events-none opacity-50 bg-blue-400'
         "
@@ -90,9 +98,10 @@
 </template>
 
 <script setup>
-import { useLoadingStore, useSocketStore } from "@/store";
+import { useLoadingStore, useSocketStore, useTeacherStore } from "@/store";
 
 const isLoading = useLoadingStore();
+let useTeacher;
 let useSocket = null;
 
 const store = reactive({
@@ -102,44 +111,63 @@ const store = reactive({
 function pageNext(page, next) {
   if (
     (page == "minusTen" ||
-      (isLoading.store.pagination.groups == store.paginationStep + 1 &&
+      (isLoading.store.pagination[`${isLoading.pagination.pageName}`] ==
+        store.paginationStep + 1 &&
         page == "minus")) &&
     store.paginationStep !== 0
   ) {
     store.paginationStep -= 5;
     console.log(store.paginationStep);
-    isLoading.store.pagination.groups = store.paginationStep + 5;
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] =
+      store.paginationStep + 5;
   } else if (
     (page == "plusTen" ||
-      (isLoading.store.pagination.groups == store.paginationStep + 5 &&
+      (isLoading.store.pagination[`${isLoading.pagination.pageName}`] ==
+        store.paginationStep + 5 &&
         page == "plus")) &&
     store.paginationStep <
-      Math.floor(isLoading.store.pageData?.groups.total_pages) - 5
+      Math.floor(
+        isLoading.store.pageData[`${isLoading.pagination.pageName}`].total_pages
+      ) -
+        5
   ) {
     store.paginationStep += 5;
-    isLoading.store.pagination.groups = store.paginationStep + 1;
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] =
+      store.paginationStep + 1;
   } else if (page == "plus") {
-    isLoading.store.pagination.groups += 1;
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] += 1;
   } else if (page == "minus") {
-    isLoading.store.pagination.groups -= 1;
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] -= 1;
   } else if (next == "next") {
-    isLoading.store.pagination.groups = page;
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] = page;
   }
-  isLoading.addLoading("getAllData/groups");
-  useSocket.getAllData();
+  isLoading.addLoading("getAllData/" + isLoading.pagination.pageName);
+  if (isLoading.pagination.pageName == "teachers") {
+    useTeacher.getAllData();
+  } else {
+    useSocket.getAllData();
+  }
 }
 
 onMounted(() => {
-  isLoading.search.search.groups = "";
-  isLoading.search.searchType.groups = "";
-  useSocket = useSocketStore();
-  useSocket.getAllData("searchByName");
-  isLoading.store.pagination.groups = 1;
+  isLoading.search.search[`${isLoading.pagination.pageName}`] = "";
+  isLoading.search.searchType[`${isLoading.pagination.pageName}`] = "";
+  console.log(isLoading.pagination.pageName);
+  isLoading.store.isSearching = true;
+  if (isLoading.pagination.pageName == "teachers") {
+    useTeacher = useTeacherStore();
+    useTeacher.getAllData();
+    isLoading.store.pagination.teachers = 1;
+  } else {
+    useSocket = useSocketStore();
+    useSocket.getAllData("searchByName");
+    isLoading.store.pagination[`${isLoading.pagination.pageName}`] = 1;
+  }
 });
 
 onUnmounted(() => {
-  isLoading.search.search.groups = "";
-  isLoading.search.searchType.groups = "";
+  isLoading.search.search[`${isLoading.pagination.pageName}`] = "";
+  isLoading.search.searchType[`${isLoading.pagination.pageName}`] = "";
 });
 </script>
 

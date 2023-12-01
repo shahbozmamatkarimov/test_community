@@ -5,6 +5,7 @@ import { useStudentStore } from "./moduls/student";
 import { useTestStore } from "./moduls/tests";
 import { useResultsStore } from "./moduls/results";
 import { useSubjectsStore } from "./moduls/subjects";
+import { useTeacherStore } from "./moduls/teachers";
 
 export {
     useLoadingStore,
@@ -14,6 +15,7 @@ export {
     useTestStore,
     useResultsStore,
     useSubjectsStore,
+    useTeacherStore,
 }
 
 // Super admin

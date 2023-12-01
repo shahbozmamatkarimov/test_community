@@ -30,6 +30,19 @@
     display: none;
 }
 
+.el-popover {
+    padding: 10px !important;
+    padding-bottom: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px !important;
+}
+
+.el-popper__arrow::before, .el-popover {
+    background: rgb(31 41 55) !important;
+}
+
 .el-select-dropdown,
 .el-dropdown-menu {
     background: rgb(31 41 55) !important;

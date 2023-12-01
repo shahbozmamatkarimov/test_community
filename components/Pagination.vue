@@ -100,12 +100,13 @@
 </template>
 
 <script setup>
-import { useLoadingStore, useSocketStore, useStudentStore, useTestStore } from "@/store";
+import { useLoadingStore, useSocketStore, useStudentStore, useTestStore, useTeacherStore } from "@/store";
 
 const isLoading = useLoadingStore();
 let useSocket = null;
 let useStudent = null;
 let useTests = null;
+let useTeacher = null;
 
 function pageNext(page, next) {
   console.log(isLoading.store.pagination[isLoading.store.pageName]);
@@ -152,6 +153,9 @@ function pageNext(page, next) {
   } else if (isLoading.store.pageName == "tests") {
     isLoading.addLoading("getAllData/tests")
     useTests.getAllData();
+  } else if (isLoading.store.pageName == "teachers") {
+    isLoading.addLoading("getAllData/teachers")
+    useTeacher.getAllData();
   } 
 }
 
@@ -159,6 +163,7 @@ onMounted(() => {
   useSocket = useSocketStore();
   useStudent = useStudentStore();
   useTests = useTestStore();
+  useTeacher = useTeacherStore();
   isLoading.store.paginationStep = 0;
   // if (isLoading.store.pageName == "students") {
   //   useStudent.getAllData();

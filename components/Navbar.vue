@@ -61,26 +61,8 @@
     >
       <div class="py-2 h-full overflow-hidden duration-1000">
         <div
-          class="bg-gray-800 items-center justify-between w-full h-16 flex rounded-full shadow-lg px-2 sticky"
+          class="bg-gray-800 items-center justify-between w-full h-16 pl-4 flex rounded-full shadow-lg px-2 sticky"
         >
-          <div>
-            <div
-              class="p-2 mx-2 rounded-full bg-[#027DFC1A] hover:bg-[#027ffc3a] h-10 w-10 cursor-pointer"
-            >
-              <svg
-                class="h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-          </div>
           <input
             @input="searchBy"
             v-model="isLoading.search.search[isLoading.store.pageName]"
@@ -311,6 +293,7 @@ import {
   useSocketStore,
   useStudentStore,
   useTestStore,
+  useTeacherStore,
 } from "@/store";
 import { useNotification } from "@/composables/notification";
 import axios from "axios";
@@ -320,6 +303,7 @@ const { showError } = useNotification();
 let useSocket;
 let useStudent;
 let useTests;
+let useTeacher;
 const isMount = ref(false);
 const isLoading = useLoadingStore();
 
@@ -329,6 +313,11 @@ const searchDate = reactive({
 });
 
 const searchBy = (data) => {
+  console.log(data);
+  console.log(data.target?.value);
+  if (data.target?.value) {
+    isLoading.search.search[isLoading.store.pageName] = data.target.value;
+  }
   if (isLoading.search.searchType[isLoading.store.pageName] == "calendar") {
     isLoading.store.calendarModal = true;
     return;
@@ -348,6 +337,8 @@ const searchBy = (data) => {
     useStudent?.getAllData("searching");
   } else if (isLoading.store.pageName == "tests") {
     useTests?.getAllData("searching");
+  } else if (isLoading.store.pageName == "teachers") {
+    useTeacher?.getAllData("searching");
   }
 };
 
@@ -394,6 +385,7 @@ onMounted(() => {
   useSocket = useSocketStore();
   useStudent = useStudentStore();
   useTests = useTestStore();
+  useTeacher = useTeacherStore();
   isMount.value = true;
 });
 </script>

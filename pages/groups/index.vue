@@ -27,13 +27,33 @@
         <!-- filter results -->
         <div class="flex flex-wrap mt-2 justify-start">
           <div
+            class="flex flex-wrap items-center"
+            v-if="useGroup.appliedFilter.teacher_id?.length"
+          >
+            <div
+              v-for="(i, index) in useGroup.store.teachersList"
+              :key="i"
+              class="flex items-center justify-between border mr-2 my-0.5 rounded-full py-0.5 px-2"
+            >
+              <p>
+                {{ i }}
+              </p>
+              <img
+                @click="clearFromFilter('teacher_id', index)"
+                class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
+                src="@/assets/svg/deleteX.svg"
+                alt=""
+              />
+            </div>
+          </div>
+          <div
             v-if="isLoading.store.allData.subjects?.length != undefined"
             v-for="i in isLoading.store.allData.subjects"
             :key="i.id"
             v-show="useGroup.appliedFilter.subject_id == i.id"
           >
             <div
-              class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+              class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
             >
               <p>
                 {{ i.name }}
@@ -49,7 +69,7 @@
           <div
             v-if="useGroup.appliedFilter.weeks?.length"
             v-for="(i, index) in useGroup.appliedFilter.weeks"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
           >
             <p>
               {{ i }}
@@ -63,7 +83,7 @@
           </div>
           <div
             v-if="useGroup.appliedFilter.startDate"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
           >
             <p>
               {{ getData(useGroup.appliedFilter.startDate) }}
@@ -77,7 +97,7 @@
           </div>
           <div
             v-if="useGroup.appliedFilter.startTime"
-            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+            class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
           >
             <p>
               {{ isLoading.getTime(useGroup.appliedFilter.startTime) }}
@@ -110,6 +130,12 @@
                         class="px-4 py-4 text-left tracking-wider"
                       >
                         Nomi
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-4 py-4 text-left tracking-wider"
+                      >
+                        O'qituvchi
                       </th>
                       <th
                         scope="col"
@@ -155,7 +181,7 @@
                       class="bg-opacity-20 animate-pulse"
                     >
                       <td
-                        v-for="i in 8"
+                        v-for="i in 9"
                         :key="i"
                         class="px-4 h-[62px] py-4"
                       ></td>
@@ -173,6 +199,11 @@
                         class="px-4 items-center align-start w-40 whitespace-nowrap"
                       >
                         <p class="font-medium truncate w-40">{{ i.name }}</p>
+                      </td>
+                      <td
+                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                      >
+                        {{ i.teacher?.username }}
                       </td>
                       <td
                         class="px-4 items-center align-start w-40 whitespace-nowrap"
@@ -275,7 +306,7 @@
       >
         <div class="mt-8">
           <div>
-            <div class="space-y-3">
+            <div class="space-y-1">
               <div class="grid gap-3">
                 <input
                   type="text"
@@ -306,6 +337,24 @@
                   />
                 </el-select>
                 <el-select
+                  v-if="isMount"
+                  class="w-full"
+                  @input="(e) => inputSelectTeacher(e)"
+                  v-model="useGroup.group.teacher_id"
+                  filterable
+                  placeholder="O'qituvchini tanlang"
+                  required
+                >
+                  <el-option
+                    class="options"
+                    v-for="(item, index) in isLoading.store.allData?.teachers"
+                    :key="item.id"
+                    :label="item.username"
+                    :value="item.id"
+                  />
+                  <SelectPagination />
+                </el-select>
+                <el-select
                   class="w-full"
                   placeholder="Hafta kunlarini tanlang"
                   v-model="useGroup.group.weeks"
@@ -328,7 +377,7 @@
                 >
                   <div v-for="(item, index) in useGroup.group.weeks">
                     <div
-                      class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+                      class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
                     >
                       <p>
                         {{ item }}
@@ -443,14 +492,14 @@
     <!----------------------------------------------- filter --------------------------------------------------->
     <el-drawer
       v-if="isMount"
-      class="rounded-l-[40px] !bg-gray-800 min-w-[500px] px-[30px] text-sm"
+      class="rounded-l-[40px] !bg-gray-800 min-w-[500px] px-5 text-sm"
       v-model="useSocket.store.drawer"
       title="I am the title"
       :with-header="false"
     >
       <form @submit.prevent="applyFilter">
         <div
-          class="flex sticky top-0 h-[34px] items-center pt-[53px] justify-between bg-gray-800"
+          class="flex sticky top-0 h-5 items-center pt-7 justify-between bg-gray-800"
         >
           <h1 class="font-medium text-2xl leading-7">Filters</h1>
           <img
@@ -462,9 +511,53 @@
         </div>
         <div class="h-6 bg-gray-800"></div>
         <div
-          class="pt-[41px] px-[1px] space-y-10 max-h-[calc(100vh_-_240px)] overflow-hidden overflow-y-auto"
+          class="pt-5 px-[1px] space-y-7 max-h-[calc(100vh_-_240px)] overflow-hidden overflow-y-auto"
         >
-          <div class="space-y-3">
+          <div class="space-y-1">
+            <h1 class="uppercase font-bold text-[11px]">
+              O'qituvchi bo'yicha filtrlash
+            </h1>
+            <el-select
+              v-if="isMount"
+              class="w-full"
+              @input="(e) => inputSelectTeacher(e)"
+              v-model="useGroup.filter.teacher_id"
+              filterable
+              multiple
+              placeholder="O'qituvchini tanlang"
+              required
+            >
+              <el-option
+                class="options"
+                @click="() => changeTeacherIndex(item.username)"
+                v-for="(item, index) in isLoading.store.allData?.teachers"
+                :key="item.id"
+                :label="item.username"
+                :value="item.id"
+              />
+              <SelectPagination />
+            </el-select>
+            <div
+              v-if="useGroup.store.teachersList?.length"
+              class="flex flex-wrap pt-1 gap-2"
+            >
+              <div
+                v-for="(i, index) in useGroup.store.teachersList"
+                class="flex border justify-start py-0.5 px-2 rounded-full"
+              >
+                <p>
+                  {{ i }}
+                </p>
+                <img
+                  @click="clearFilteredTeacher(index)"
+                  class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
+                  src="@/assets/svg/deleteX.svg"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1">
             <h1 class="uppercase font-bold text-[11px]">
               Fan bo'yicha filtrlash
             </h1>
@@ -484,7 +577,7 @@
               />
             </el-select>
           </div>
-          <div class="space-y-3">
+          <div class="space-y-1">
             <h1 class="uppercase font-bold text-[11px]">
               Hafta kunlar bo'yicha filtrlash
             </h1>
@@ -511,7 +604,7 @@
             >
               <div v-for="(item, index) in useGroup.filter.weeks">
                 <div
-                  class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-1 px-2"
+                  class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
                 >
                   <p>
                     {{ item }}
@@ -526,7 +619,7 @@
               </div>
             </div>
           </div>
-          <div class="space-y-3">
+          <div class="space-y-1">
             <h1 class="uppercase font-bold text-[11px]">
               Boshlanish sanasi bo'yicha filtrlash
             </h1>
@@ -540,7 +633,7 @@
               required
             />
           </div>
-          <div class="space-y-3">
+          <div class="space-y-1">
             <h1 class="uppercase font-bold text-[11px]">
               Boshlanish vaqti bo'yicha filtrlash
             </h1>
@@ -587,16 +680,19 @@ import {
   useSocketStore,
   useGroupStore,
   useSubjectsStore,
+  useTeacherStore,
 } from "@/store";
 const isMount = ref(false);
 
 let useSocket;
 let useSubjects;
+let useTeacher;
 const isLoading = useLoadingStore();
 const useGroup = useGroupStore();
 isLoading.store.pageName = "groups";
 isLoading.addLoading("getAllData/groups");
 isLoading.search.searchType.groups = "id";
+isLoading.pagination.pageName = "teachers";
 isLoading.search.search.groups = "";
 isLoading.store.searchOptions = [
   {
@@ -689,19 +785,33 @@ const handleChange = (value) => {
 };
 
 function applyFilter(isClear) {
-  if (isClear == 'clear') {
+  if (isClear == "clear") {
     for (let type of Object.keys(useGroup.appliedFilter)) {
       useGroup.appliedFilter[type] = null;
       useGroup.filter[type] = null;
     }
   }
+  for (let i of Object.keys(useGroup.filter)) {
+    useGroup.appliedFilter[i] = useGroup.filter[i];
+  }
   useSocket.store.drawer = false;
   isLoading.store.isSearching = true;
-  useSocket.getAllData('searching');
+  useSocket.getAllData("searching");
+}
+
+function inputSelectTeacher(e) {
+  isLoading.store.isSearching = true;
+  isLoading.addLoading("getAllData/teachers");
+  isLoading.search.search.teachers = e.target.value.trim();
+  useTeacher.getAllData("searchByUsername");
 }
 
 function clearFromFilter(type, index) {
-  if (type == "weeks") {
+  if (type == "teacher_id") {
+    useGroup.appliedFilter.teacher_id?.splice(index, 1);
+    useGroup.filter.teacher_id.splice(index, 1);
+    useGroup.store.teachersList.splice(index, 1);
+  } else if (type == "weeks") {
     useGroup.appliedFilter[type].splice(index, 1);
     useGroup.filter[type].splice(index, 1);
   } else {
@@ -709,7 +819,21 @@ function clearFromFilter(type, index) {
     useGroup.filter[type] = null;
   }
   isLoading.store.isSearching = true;
-  useSocket.getAllData('searching');
+  useSocket.getAllData("searching");
+}
+
+function changeTeacherIndex(username) {
+  const isIndex = useGroup.store.teachersList.indexOf(username);
+  if (isIndex == -1) {
+    useGroup.store.teachersList.push(username);
+  } else {
+    useGroup.store.teachersList.splice(isIndex, 1);
+  }
+}
+
+function clearFilteredTeacher(index) {
+  useGroup.store.teachersList?.splice(index, 1);
+  useGroup.filter.teacher_id?.splice(index, 1);
 }
 
 function getData(date) {
@@ -753,6 +877,7 @@ const deleteGroup = () => {
 };
 
 onMounted(() => {
+  useTeacher = useTeacherStore();
   useSubjects = useSubjectsStore();
   useSocket = useSocketStore();
   isMount.value = true;
