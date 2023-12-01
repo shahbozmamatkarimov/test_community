@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Navbar>Dashboard</Navbar>
+    <!-- <Navbar>Dashboard</Navbar> -->
     <!-- <section class="p-10">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg">
           <div class="grid grid-cols-3 gap-4 mb-4">
