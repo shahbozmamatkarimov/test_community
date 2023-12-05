@@ -365,7 +365,7 @@
                 >
                   <el-option
                     class="options"
-                    v-for="item in weeks"
+                    v-for="item in constants.weeks"
                     :key="item.label"
                     :label="item.label"
                     :value="item.label"
@@ -592,7 +592,7 @@
             >
               <el-option
                 class="options"
-                v-for="item in weeks"
+                v-for="item in constants.weeks"
                 :key="item.label"
                 :label="item.label"
                 :value="item.label"
@@ -683,6 +683,7 @@ import {
   useTeacherStore,
 } from "@/store";
 const isMount = ref(false);
+import { constants } from "@/constants/data";
 
 let useSocket;
 let useSubjects;
@@ -725,36 +726,6 @@ const form = reactive({
   name: "",
   description: "",
 });
-
-const weeks = [
-  {
-    label: "Dushanba, Chorshanba, Juma",
-  },
-  {
-    label: "Seshanba, Payshanba, Shanba",
-  },
-  {
-    label: "Dushanba",
-  },
-  {
-    label: "Seshanba",
-  },
-  {
-    label: "Chorshanba",
-  },
-  {
-    label: "Payshanba",
-  },
-  {
-    label: "Juma",
-  },
-  {
-    label: "Shanba",
-  },
-  {
-    label: "Yakshanba",
-  },
-];
 
 function handleSubmit() {
   if (isLoading.modal.edit) {

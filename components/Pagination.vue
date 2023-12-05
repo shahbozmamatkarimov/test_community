@@ -1,6 +1,9 @@
 <template>
   <nav
-    v-if="isLoading.store.allData[isLoading.store.pageName] && isLoading.store.pageData[isLoading.store.pageName]?.total_pages != 0"
+    v-if="
+      isLoading.store.allData[isLoading.store.pageName] &&
+      isLoading.store.pageData[isLoading.store.pageName]?.total_pages != 0
+    "
     class="flex justify-between items-center py-5"
   >
     <div>
@@ -17,7 +20,11 @@
         class="flex items-center nextMainButton gap-2 active:bg-transparent active:border-white duration-150 border h-8 border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
       >
         <img class="rotate-180" src="@/assets/navbar/arrow.svg" alt="" />
-        <span v-if="$router.currentRoute.value.fullPath != '/tests'" class="nextButton">Previous</span>
+        <span
+          v-if="$router.currentRoute.value.fullPath != '/tests'"
+          class="nextButton"
+          >Previous</span
+        >
       </button>
     </div>
     <ul class="flex">
@@ -92,7 +99,11 @@
         "
         class="flex items-center nextMainButton gap-2 h-8 active:bg-transparent active:border-white duration-150 border border-blue-600 bg-blue-600 py-1 px-3 rounded-lg"
       >
-        <span v-if="$router.currentRoute.value.fullPath != '/tests'" class="nextButton">Next</span>
+        <span
+          v-if="$router.currentRoute.value.fullPath != '/tests'"
+          class="nextButton"
+          >Next</span
+        >
         <img src="@/assets/navbar/arrow.svg" alt="" />
       </button>
     </div>
@@ -100,7 +111,13 @@
 </template>
 
 <script setup>
-import { useLoadingStore, useSocketStore, useStudentStore, useTestStore, useTeacherStore } from "@/store";
+import {
+  useLoadingStore,
+  useSocketStore,
+  useStudentStore,
+  useTestStore,
+  useTeacherStore,
+} from "@/store";
 
 const isLoading = useLoadingStore();
 let useSocket = null;
@@ -137,6 +154,7 @@ function pageNext(page, next) {
     isLoading.store.pagination[isLoading.store.pageName] =
       isLoading.store.paginationStep + 1;
   } else if (page == "plus") {
+    console.log(page);
     isLoading.store.pagination[isLoading.store.pageName] += 1;
   } else if (page == "minus") {
     isLoading.store.pagination[isLoading.store.pageName] -= 1;
@@ -145,18 +163,18 @@ function pageNext(page, next) {
   }
 
   if (isLoading.store.pageName == "students") {
-    isLoading.addLoading("getAllData/students")
+    isLoading.addLoading("getAllData/students");
     useStudent.getAllData();
   } else if (isLoading.store.pageName == "groups") {
-    isLoading.addLoading("getAllData/groups")
+    isLoading.addLoading("getAllData/groups");
     useSocket.getAllData();
   } else if (isLoading.store.pageName == "tests") {
-    isLoading.addLoading("getAllData/tests")
+    isLoading.addLoading("getAllData/tests");
     useTests.getAllData();
   } else if (isLoading.store.pageName == "teachers") {
-    isLoading.addLoading("getAllData/teachers")
+    isLoading.addLoading("getAllData/teachers");
     useTeacher.getAllData();
-  } 
+  }
 }
 
 onMounted(() => {
@@ -170,6 +188,15 @@ onMounted(() => {
   // } else if (isLoading.store.pageName == "groups") {
   //   useSocket.getAllData();
   // }
+  // document.addEventListener("keydown", (e) => {
+  //   console.log(e.key);
+  //   if (e.key == "ArrowRight") {
+  //     pageNext("plus");
+  //   } else if (e.key == "ArrowLeft") {
+  //     pageNext("minus");
+  //   }
+  // });
+  // document.removeEventListener("keydown", () => {})
 });
 </script>
 

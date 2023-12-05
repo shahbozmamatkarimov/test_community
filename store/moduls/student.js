@@ -29,6 +29,9 @@ export const useStudentStore = defineStore("student", () => {
     studentStepFilter: 1,
     filterByGroup: [],
     filterByGroupIndex: [],
+    addStudentStep: 1,
+    addStudentModal: false,
+    weeks: [],
   });
 
   const filter = reactive({
@@ -42,6 +45,7 @@ export const useStudentStore = defineStore("student", () => {
     group_id: "",
     start_date: "",
     student_id: "",
+    subject_id: "",
   });
 
   // getAll
