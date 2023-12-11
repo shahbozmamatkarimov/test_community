@@ -23,7 +23,6 @@
             </button>
           </div>
         </div>
-
         <!-- filter results -->
         <div class="flex flex-wrap mt-2 justify-start">
           <div
@@ -162,12 +161,17 @@
                         Vaqti
                       </th>
                       <th
+                        v-if="!$router.currentRoute.value.query?.student"
                         scope="col"
                         class="px-4 text-start py-4 tracking-wider"
                       >
                         Tavfsif
                       </th>
-                      <th scope="col" class="px-4 py-4 min-w-[40px]"></th>
+                      <th
+                        v-if="!$router.currentRoute.value.query?.student"
+                        scope="col"
+                        class="px-4 py-4 min-w-[40px]"
+                      ></th>
                     </tr>
                   </thead>
                   <tbody
@@ -187,7 +191,7 @@
                       ></td>
                     </tr>
                   </tbody>
-                  <tbody v-else class="bg-gray-800">
+                  <tbody v-else @click="() => addStudent()" class="bg-gray-800">
                     <tr
                       v-for="(i, index) in isLoading.store.allData?.groups"
                       :key="i.id"
@@ -196,39 +200,43 @@
                     >
                       <td class="px-4 py-4">#{{ i.id }}</td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
-                        <p class="font-medium truncate w-40">{{ i.name }}</p>
+                        <p class="font-medium truncate">{{ i.name }}</p>
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
                         {{ i.teacher?.username }}
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
                         {{ i.subjects?.name }}
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="w-60 px-4 items-center align-start"
                       >
                         {{ i.weeks }}
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
                         {{ getData(i.startDate) }}
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
                         {{ i.startTime }}
                       </td>
-                      <td class="px-4 py-4 whitespace-nowrap">
-                        {{ i.description }}
+                      <td
+                        v-if="!$router.currentRoute.value.query?.student"
+                        class="px-4 py-4"
+                      >
+                        <p class="w-40 line-clamp-2 overflow-hidden">{{ i.description }}</p>
                       </td>
                       <td
+                        v-if="!$router.currentRoute.value.query?.student"
                         class="flex items-center justify-center mx-2 px-4 py-4 space-x-2 whitespace-nowrap"
                       >
                         <button
@@ -690,6 +698,7 @@ let useSubjects;
 let useTeacher;
 const isLoading = useLoadingStore();
 const useGroup = useGroupStore();
+const router = useRouter();
 isLoading.store.pageName = "groups";
 isLoading.addLoading("getAllData/groups");
 isLoading.search.searchType.groups = "id";
@@ -732,6 +741,14 @@ function handleSubmit() {
     useSocket.updateData();
   } else {
     useSocket.createData();
+  }
+}
+
+function addStudent() {
+  console.log(router.currentRoute.value.query?.student);
+  if (router.currentRoute.value.query?.student) {
+    router.push("/students?group=12");
+    isLoading.modal.create = true;
   }
 }
 

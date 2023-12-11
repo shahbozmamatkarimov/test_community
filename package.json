@@ -24,6 +24,8 @@
     "@pinia/nuxt": "^0.5.1",
     "apexcharts": "^3.42.0",
     "axios": "^1.6.0",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.6.0",
     "nuxt-socket-io": "^3.0.13",
     "pinia": "^2.1.7",
     "sass": "^1.69.5",

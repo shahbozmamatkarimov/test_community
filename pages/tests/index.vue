@@ -1050,22 +1050,26 @@ function localExcelPreview() {
   // -------------------------- local excel reader ------------------------
   store.jsonData = [];
   const file = useTests.store.files[0].raw;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const data = e.target.result;
-    const workbook = XLSX.read(data, { type: "binary" });
-    const jsonData = XLSX.utils.sheet_to_json(
-      workbook.Sheets[workbook.SheetNames[0]]
-    );
-    useTests.store.jsonData = jsonData;
-    console.log(jsonData);
-    console.log(workbook);
-    console.log(file);
-    useTests.create.test_count = jsonData?.length;
-    useTests.create.title = file.name;
-    useTests.create.variants = Object.keys(jsonData[0]).splice(1).join("");
-  };
-  reader.readAsBinaryString(file);
+  const data = file;
+  useTests.create.title = file.name;
+  useTests.create.test_count = "20";
+  useTests.create.variants = "ABCD";
+  // const reader = new FileReader();
+  // reader.onload = async (e) => {
+  //   const data = e.target.result;
+  //   const workbook = XLSX.read(data, { type: "binary" });
+  //   const jsonData = XLSX.utils.sheet_to_json(
+  //     workbook.Sheets[workbook.SheetNames[0]]
+  //   );
+  //   useTests.store.jsonData = jsonData;
+  //   console.log(jsonData);
+  //   console.log(workbook);
+  //   console.log(file);
+  //   useTests.create.test_count = jsonData?.length;
+  //   useTests.create.title = file.name;
+  //   useTests.create.variants = Object.keys(jsonData[0]).splice(1).join("");
+  // };
+  // reader.readAsBinaryString(file);
 }
 
 function checkDate(date) {
@@ -1099,6 +1103,21 @@ function handleSubmit() {
 }
 
 onMounted(() => {
+  axios
+    .get(
+      baseUrl + "/api/image/getfile",
+      {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    )
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   isLoading.search.search.tests = "";
   useSocket = useSocketStore();
   useTests = useTestStore();

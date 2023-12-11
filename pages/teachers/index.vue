@@ -72,14 +72,14 @@
                     >
                       <td class="px-4 py-4">{{ index + 1 }}</td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
-                        <p class="font-medium truncate w-40">
+                        <p class="font-medium truncate">
                           {{ i.username }}
                         </p>
                       </td>
                       <td
-                        class="px-4 items-center align-start w-40 whitespace-nowrap"
+                        class="px-4 items-center align-start whitespace-nowrap"
                       >
                         +998 {{ i.phone }}
                       </td>

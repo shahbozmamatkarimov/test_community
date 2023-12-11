@@ -927,12 +927,7 @@
       v-model="useStudent.store.addStudentModal"
       width="500"
       style="border-radius: 16px"
-      class="rounded-2xl p-10 mx-auto"
-      :class="
-        useStudent.store.addStudentStep == 3
-          ? 'min-w-[100vw] min-h-[100vh]'
-          : 'max-w-fit min-w-[400px]'
-      "
+      class="rounded-2xl max-w-fit min-w-[400px] p-10 mx-auto"
       align-center
       close-icon="false"
     >
@@ -1031,124 +1026,6 @@
           </div>
         </div>
       </div>
-      <div
-        v-else-if="useStudent.store.addStudentStep == 3"
-      >
-        <div class="flex justify-between items-center w-full">
-          <h1
-            class="flex gap-[14px] items-center font-medium text-2xl leading-[29px]"
-          >
-            <img
-              class="w-6 h-6 !fill-blue-600"
-              src="@/assets/svg/delete.svg"
-              alt=""
-            />
-            Guruhlar
-          </h1>
-          <img
-            @click="useStudent.store.addStudentModal = false"
-            class="hover:bg-[#027DFC1A] p-2 rounded-lg cursor-pointer"
-            src="@/assets/svg/x.svg"
-            alt="x"
-          />
-        </div>
-        <div class="flex justify-between">
-          <div>
-            <p class="mt-4 text-[16px] leading-[19px]">
-              Guruhni tanlang
-            </p>
-            <div class="flex flex-wrap my-2">
-              <div
-                class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
-              >
-                <p>VueJS</p>
-                <img
-                  class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-                  src="@/assets/svg/deleteX.svg"
-                  alt=""
-                />
-              </div>
-              <div
-                class="flex items-center justify-between border mr-2 rounded-full py-0.5 my-0.5 px-2"
-              >
-                <p>Dushanba</p>
-                <img
-                  class="cursor-pointer -mr-1 ml-1 hover:bg-[#027ffc3a] bg-[#027DFC1A] rounded-full p-1"
-                  src="@/assets/svg/deleteX.svg"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
-          <button
-            @click="useSocket.store.drawer = true"
-            class="flex justify-center items-center mt-4 rounded-[10px] hover:bg-[#027ffc3a] bg-[#027DFC1A] min-w-[40px] h-[40px]"
-          >
-            <img src="@/assets/svg/filter.svg" alt="" />
-          </button>
-        </div>
-        <div class="rounded-xl overflow-hidden overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead class="bg-blue-600 text-xs uppercase font-medium">
-              <tr>
-                <th scope="col" class="px-4 py-4 text-left tracking-wider">
-                  №
-                </th>
-                <th scope="col" class="px-4 py-4 text-left tracking-wider">
-                  Nomi
-                </th>
-                <th scope="col" class="px-4 py-4 text-left tracking-wider">
-                  O'qituvchi
-                </th>
-                <th scope="col" class="px-4 py-4 text-left tracking-wider">
-                  Sanasi
-                </th>
-                <th scope="col" class="px-4 py-4 text-left tracking-wider">
-                  Vaqti
-                </th>
-              </tr>
-            </thead>
-            <tbody
-              v-if="isLoading.isLoadingType('getAllData/groups')"
-              class="bg-gray-800 pointer-events-none"
-            >
-              <tr
-                v-for="i in 10"
-                :key="i.id"
-                :class="i % 2 == 0 ? 'bg-gray-800' : 'bg-black'"
-                class="bg-opacity-20 animate-pulse"
-              >
-                <td v-for="i in 5" :key="i" class="px-4 h-[62px] py-4"></td>
-              </tr>
-            </tbody>
-            <tbody v-else class="bg-gray-800">
-              <tr
-                v-for="(i, index) in isLoading.store.allData?.groups"
-                :key="i.id"
-                :class="index % 2 == 0 ? 'bg-black' : 'bg-gray-800'"
-                class="bg-opacity-20 hover:bg-[#027ffc3a]"
-              >
-                <td class="px-4 py-4 w-5">#{{ i.id }}</td>
-                <td
-                  class="px-4 items-center align-start w-40 whitespace-nowrap"
-                >
-                  <p class="font-medium truncate w-40">{{ i.name }}</p>
-                </td>
-                <td class="px-4 items-center align-start whitespace-nowrap">
-                  {{ i.teacher?.username }}
-                </td>
-                <td class="px-4 items-center align-start whitespace-nowrap">
-                  {{ getData(i.startDate) }}
-                </td>
-                <td class="px-4 items-center align-start whitespace-nowrap">
-                  {{ i.startTime }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <SelectPagination class="mt-2" />
-      </div>
       <div>
         <button
           @click="addStudentStep()"
@@ -1192,6 +1069,7 @@ isLoading.search.search.students = "";
 const { showError } = useNotification();
 const runtimeConfig = useRuntimeConfig();
 const baseURL = runtimeConfig.public.baseURL;
+const router = useRouter();
 isLoading.store.pageName = "students";
 
 isLoading.store.searchOptions = [
@@ -1277,6 +1155,9 @@ function inputSelectGroup(e, isSearch) {
 
 function addStudentStep() {
   useStudent.store.addStudentStep += 1;
+  if (useStudent.store.addStudentStep == 3) {
+    router.push("/groups?student=new");
+  }
   if (useStudent.store.addStudentStep == 4) {
     useStudent.store.addStudentModal = false;
     isLoading.modal.create = true;
